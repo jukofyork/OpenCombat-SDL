@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--                                                                            -->
+<!-- Victory Location positions are in units of MegaTiles. A MegaTile is        -->
+<!-- a 12x12 region of Tiles. For us, each Tile is 10x10 pixels, so a MegaTile  -->
+<!-- is 120x120 pixels.                                                         --> 
+<!--                                                                            -->
+<Map>
+	<Name>Acqueville</Name>
+	<Background>Acqueville/Acqueville.bgm.tga</Background>
+	<Mini>Acqueville/Acqueville.mmm.tga</Mini>
+	<Overland>Acqueville/Acqueville.ovm.tga</Overland>
+	<Elements>Acqueville/Acqueville.txt</Elements>
+	<Buildings>Acqueville/Acqueville.buildings.xml</Buildings>
+	<VictoryLocations>
+		<VL>
+			<X>4</X>
+			<Y>9</Y>
+			<Name>Hotel Atlantic</Name>
+			<Value>3</Value>
+			<LinksTo>
+				<MapName>MapName</MapName>
+				<VLName>VictoryLocationName</VLName>
+			</LinksTo>
+		</VL>
+		<VL>
+			<X>6</X>
+			<Y>5</Y>
+			<Name>Farmhouse</Name>
+			<Value>2</Value>
+			<LinksTo>
+				<MapName>MapName</MapName>
+				<VLName>VictoryLocationName</VLName>
+			</LinksTo>
+		</VL>
+		<VL>
+			<X>8</X>
+			<Y>12</Y>
+			<Name>to Les Pieux</Name>
+			<Value>1</Value>
+			<LinksTo>
+				<MapName>MapName</MapName>
+				<VLName>VictoryLocationName</VLName>
+			</LinksTo>
+		</VL>
+		<VL>
+			<X>10</X>
+			<Y>0</Y>
+			<Name>to Branville</Name>
+			<Value>1</Value>
+			<LinksTo>
+				<MapName>MapName</MapName>
+				<VLName>VictoryLocationName</VLName>
+			</LinksTo>
+		</VL>
+		<VL>
+			<X>11</X>
+			<Y>12</Y>
+			<Name>Hospital</Name>
+			<Value>3</Value>
+			<LinksTo>
+				<MapName>MapName</MapName>
+				<VLName>VictoryLocationName</VLName>
+			</LinksTo>
+		</VL>
+		<VL>
+			<X>15</X>
+			<Y>0</Y>
+			<Name>Sheep Farm</Name>
+			<Value>2</Value>
+			<LinksTo>
+				<MapName>MapName</MapName>
+				<VLName>VictoryLocationName</VLName>
+			</LinksTo>
+		</VL>
+		<VL>
+			<X>16</X>
+			<Y>8</Y>
+			<Name>Tractor Barn</Name>
+			<Value>2</Value>
+			<LinksTo>
+				<MapName>MapName</MapName>
+				<VLName>VictoryLocationName</VLName>
+			</LinksTo>
+		</VL>
+		<VL>
+			<X>17</X>
+			<Y>18</Y>
+			<Name>to Les Chevres</Name>
+			<Value>1</Value>
+			<LinksTo>
+				<MapName>MapName</MapName>
+				<VLName>VictoryLocationName</VLName>
+			</LinksTo>
+		</VL>
+		<VL>
+			<X>19</X>
+			<Y>9</Y>
+			<Name>to Cherbourg</Name>
+			<Value>1</Value>
+			<LinksTo>
+				<MapName>MapName</MapName>
+				<VLName>VictoryLocationName</VLName>
+			</LinksTo>
+		</VL>
+	</VictoryLocations>
+</Map>

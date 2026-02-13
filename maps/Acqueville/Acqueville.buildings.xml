@@ -1,0 +1,463 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Buildings>
+	<Building>
+		<!-- Used for interior detection, in map coordinates -->
+		<Boundary>
+			<Point><X>738</X><Y>631</Y></Point>
+			<Point><X>738</X><Y>704</Y></Point>
+			<Point><X>827</X><Y>704</Y></Point>
+			<Point><X>829</X><Y>662</Y></Point>
+			<Point><X>827</X><Y>632</Y></Point>
+		</Boundary>
+		<!-- The Upper Left Corner, in map coordinates -->
+		<Position><X>738</X><Y>631</Y></Position>
+		<ExteriorGraphic>Acqueville/building_graphics/exterior_000.tga</ExteriorGraphic>
+		<InteriorGraphic>Acqueville/building_graphics/interior_000.tga</InteriorGraphic>
+	</Building>
+	<Building>
+		<!-- Used for interior detection, in map coordinates -->
+		<Boundary>
+			<Point><X>1042</X><Y>1171</Y></Point>
+			<Point><X>1141</X><Y>1164</Y></Point>
+			<Point><X>1141</X><Y>1125</Y></Point>
+			<Point><X>1136</X><Y>1097</Y></Point>
+			<Point><X>1035</X><Y>1105</Y></Point>
+			<Point><X>1038</X><Y>1146</Y></Point>
+		</Boundary>
+		<!-- The Upper Left Corner, in map coordinates -->
+		<Position><X>1035</X><Y>1097</Y></Position>
+		<ExteriorGraphic>Acqueville/building_graphics/exterior_001.tga</ExteriorGraphic>
+		<InteriorGraphic>Acqueville/building_graphics/interior_001.tga</InteriorGraphic>
+	</Building>
+	<Building>
+		<!-- Used for interior detection, in map coordinates -->
+		<Boundary>
+			<Point><X>1364</X><Y>1115</Y></Point>
+			<Point><X>1465</X><Y>1117</Y></Point>
+			<Point><X>1473</X><Y>1110</Y></Point>
+			<Point><X>1473</X><Y>1047</Y></Point>
+			<Point><X>1371</X><Y>1047</Y></Point>
+			<Point><X>1364</X><Y>1055</Y></Point>
+		</Boundary>
+		<!-- The Upper Left Corner, in map coordinates -->
+		<Position><X>1364</X><Y>1047</Y></Position>
+		<ExteriorGraphic>Acqueville/building_graphics/exterior_002.tga</ExteriorGraphic>
+		<InteriorGraphic>Acqueville/building_graphics/interior_002.tga</InteriorGraphic>
+	</Building>
+	<Building>
+		<!-- Used for interior detection, in map coordinates -->
+		<Boundary>
+			<Point><X>1982</X><Y>1018</Y></Point>
+			<Point><X>1978</X><Y>961</Y></Point>
+			<Point><X>2033</X><Y>958</Y></Point>
+			<Point><X>2038</X><Y>988</Y></Point>
+			<Point><X>2040</X><Y>1060</Y></Point>
+			<Point><X>2030</X><Y>1062</Y></Point>
+			<Point><X>1978</X><Y>1064</Y></Point>
+			<Point><X>1975</X><Y>1027</Y></Point>
+		</Boundary>
+		<!-- The Upper Left Corner, in map coordinates -->
+		<Position><X>1975</X><Y>958</Y></Position>
+		<ExteriorGraphic>Acqueville/building_graphics/exterior_003.tga</ExteriorGraphic>
+		<InteriorGraphic>Acqueville/building_graphics/interior_003.tga</InteriorGraphic>
+	</Building>
+	<Building>
+		<!-- Used for interior detection, in map coordinates -->
+		<Boundary>
+			<Point><X>1975</X><Y>1027</Y></Point>
+			<Point><X>1982</X><Y>1018</Y></Point>
+			<Point><X>1978</X><Y>961</Y></Point>
+			<Point><X>1904</X><Y>965</Y></Point>
+			<Point><X>1901</X><Y>974</Y></Point>
+			<Point><X>1903</X><Y>1029</Y></Point>
+		</Boundary>
+		<!-- The Upper Left Corner, in map coordinates -->
+		<Position><X>1901</X><Y>961</Y></Position>
+		<ExteriorGraphic>Acqueville/building_graphics/exterior_004.tga</ExteriorGraphic>
+		<InteriorGraphic>Acqueville/building_graphics/interior_004.tga</InteriorGraphic>
+	</Building>
+	<Building>
+		<!-- Used for interior detection, in map coordinates -->
+		<Boundary>
+			<Point><X>2197</X><Y>1046</Y></Point>
+			<Point><X>2203</X><Y>1051</Y></Point>
+			<Point><X>2283</X><Y>1047</Y></Point>
+			<Point><X>2284</X><Y>1012</Y></Point>
+			<Point><X>2276</X><Y>981</Y></Point>
+			<Point><X>2198</X><Y>985</Y></Point>
+			<Point><X>2193</X><Y>991</Y></Point>
+		</Boundary>
+		<!-- The Upper Left Corner, in map coordinates -->
+		<Position><X>2193</X><Y>981</Y></Position>
+		<ExteriorGraphic>Acqueville/building_graphics/exterior_005.tga</ExteriorGraphic>
+		<InteriorGraphic>Acqueville/building_graphics/interior_005.tga</InteriorGraphic>
+	</Building>
+	<Building>
+		<!-- Used for interior detection, in map coordinates -->
+		<Boundary>
+			<Point><X>1760</X><Y>89</Y></Point>
+			<Point><X>1762</X><Y>98</Y></Point>
+			<Point><X>1810</X><Y>121</Y></Point>
+			<Point><X>1819</X><Y>120</Y></Point>
+			<Point><X>1854</X><Y>51</Y></Point>
+			<Point><X>1827</X><Y>31</Y></Point>
+			<Point><X>1798</X><Y>20</Y></Point>
+		</Boundary>
+		<!-- The Upper Left Corner, in map coordinates -->
+		<Position><X>1760</X><Y>20</Y></Position>
+		<ExteriorGraphic>Acqueville/building_graphics/exterior_006.tga</ExteriorGraphic>
+		<InteriorGraphic>Acqueville/building_graphics/interior_006.tga</InteriorGraphic>
+	</Building>
+	<Building>
+		<!-- Used for interior detection, in map coordinates -->
+		<Boundary>
+			<Point><X>1875</X><Y>1428</Y></Point>
+			<Point><X>1862</X><Y>1428</Y></Point>
+			<Point><X>1862</X><Y>1436</Y></Point>
+			<Point><X>1822</X><Y>1440</Y></Point>
+			<Point><X>1821</X><Y>1431</Y></Point>
+			<Point><X>1808</X><Y>1433</Y></Point>
+			<Point><X>1816</X><Y>1513</Y></Point>
+			<Point><X>1883</X><Y>1506</Y></Point>
+		</Boundary>
+		<!-- The Upper Left Corner, in map coordinates -->
+		<Position><X>1808</X><Y>1428</Y></Position>
+		<ExteriorGraphic>Acqueville/building_graphics/exterior_007.tga</ExteriorGraphic>
+		<InteriorGraphic>Acqueville/building_graphics/interior_007.tga</InteriorGraphic>
+	</Building>
+	<Building>
+		<!-- Used for interior detection, in map coordinates -->
+		<Boundary>
+			<Point><X>1862</X><Y>1428</Y></Point>
+			<Point><X>1862</X><Y>1436</Y></Point>
+			<Point><X>1822</X><Y>1440</Y></Point>
+			<Point><X>1821</X><Y>1431</Y></Point>
+			<Point><X>1820</X><Y>1431</Y></Point>
+			<Point><X>1817</X><Y>1414</Y></Point>
+			<Point><X>1861</X><Y>1411</Y></Point>
+			<Point><X>1864</X><Y>1428</Y></Point>
+		</Boundary>
+		<!-- The Upper Left Corner, in map coordinates -->
+		<Position><X>1817</X><Y>1411</Y></Position>
+		<ExteriorGraphic>Acqueville/building_graphics/exterior_008.tga</ExteriorGraphic>
+		<InteriorGraphic>Acqueville/building_graphics/interior_008.tga</InteriorGraphic>
+	</Building>
+	<Building>
+		<!-- Used for interior detection, in map coordinates -->
+		<Boundary>
+			<Point><X>1772</X><Y>1326</Y></Point>
+			<Point><X>1766</X><Y>1292</Y></Point>
+			<Point><X>1761</X><Y>1259</Y></Point>
+			<Point><X>1785</X><Y>1256</Y></Point>
+			<Point><X>1795</X><Y>1287</Y></Point>
+			<Point><X>1796</X><Y>1322</Y></Point>
+		</Boundary>
+		<!-- The Upper Left Corner, in map coordinates -->
+		<Position><X>1761</X><Y>1256</Y></Position>
+		<ExteriorGraphic>Acqueville/building_graphics/exterior_009.tga</ExteriorGraphic>
+		<InteriorGraphic>Acqueville/building_graphics/interior_009.tga</InteriorGraphic>
+	</Building>
+	<Building>
+		<!-- Used for interior detection, in map coordinates -->
+		<Boundary>
+			<Point><X>1711</X><Y>1336</Y></Point>
+			<Point><X>1705</X><Y>1303</Y></Point>
+			<Point><X>1699</X><Y>1268</Y></Point>
+			<Point><X>1647</X><Y>1277</Y></Point>
+			<Point><X>1653</X><Y>1311</Y></Point>
+			<Point><X>1659</X><Y>1344</Y></Point>
+		</Boundary>
+		<!-- The Upper Left Corner, in map coordinates -->
+		<Position><X>1647</X><Y>1268</Y></Position>
+		<ExteriorGraphic>Acqueville/building_graphics/exterior_010.tga</ExteriorGraphic>
+		<InteriorGraphic>Acqueville/building_graphics/interior_010.tga</InteriorGraphic>
+	</Building>
+	<Building>
+		<!-- Used for interior detection, in map coordinates -->
+		<Boundary>
+			<Point><X>1711</X><Y>1336</Y></Point>
+			<Point><X>1705</X><Y>1303</Y></Point>
+			<Point><X>1705</X><Y>1302</Y></Point>
+			<Point><X>1766</X><Y>1292</Y></Point>
+			<Point><X>1772</X><Y>1326</Y></Point>
+		</Boundary>
+		<!-- The Upper Left Corner, in map coordinates -->
+		<Position><X>1705</X><Y>1292</Y></Position>
+		<ExteriorGraphic>Acqueville/building_graphics/exterior_011.tga</ExteriorGraphic>
+		<InteriorGraphic>Acqueville/building_graphics/interior_011.tga</InteriorGraphic>
+	</Building>
+	<Building>
+		<!-- Used for interior detection, in map coordinates -->
+		<Boundary>
+			<Point><X>1699</X><Y>1268</Y></Point>
+			<Point><X>1705</X><Y>1303</Y></Point>
+			<Point><X>1706</X><Y>1302</Y></Point>
+			<Point><X>1766</X><Y>1292</Y></Point>
+			<Point><X>1761</X><Y>1259</Y></Point>
+		</Boundary>
+		<!-- The Upper Left Corner, in map coordinates -->
+		<Position><X>1699</X><Y>1259</Y></Position>
+		<ExteriorGraphic>Acqueville/building_graphics/exterior_012.tga</ExteriorGraphic>
+		<InteriorGraphic>Acqueville/building_graphics/interior_012.tga</InteriorGraphic>
+	</Building>
+	<Building>
+		<!-- Used for interior detection, in map coordinates -->
+		<Boundary>
+			<Point><X>1592</X><Y>1354</Y></Point>
+			<Point><X>1588</X><Y>1322</Y></Point>
+			<Point><X>1583</X><Y>1288</Y></Point>
+			<Point><X>1556</X><Y>1293</Y></Point>
+			<Point><X>1565</X><Y>1359</Y></Point>
+		</Boundary>
+		<!-- The Upper Left Corner, in map coordinates -->
+		<Position><X>1556</X><Y>1288</Y></Position>
+		<ExteriorGraphic>Acqueville/building_graphics/exterior_013.tga</ExteriorGraphic>
+		<InteriorGraphic>Acqueville/building_graphics/interior_013.tga</InteriorGraphic>
+	</Building>
+	<Building>
+		<!-- Used for interior detection, in map coordinates -->
+		<Boundary>
+			<Point><X>1592</X><Y>1354</Y></Point>
+			<Point><X>1588</X><Y>1322</Y></Point>
+			<Point><X>1589</X><Y>1321</Y></Point>
+			<Point><X>1653</X><Y>1311</Y></Point>
+			<Point><X>1659</X><Y>1344</Y></Point>
+		</Boundary>
+		<!-- The Upper Left Corner, in map coordinates -->
+		<Position><X>1588</X><Y>1311</Y></Position>
+		<ExteriorGraphic>Acqueville/building_graphics/exterior_014.tga</ExteriorGraphic>
+		<InteriorGraphic>Acqueville/building_graphics/interior_014.tga</InteriorGraphic>
+	</Building>
+	<Building>
+		<!-- Used for interior detection, in map coordinates -->
+		<Boundary>
+			<Point><X>1583</X><Y>1288</Y></Point>
+			<Point><X>1588</X><Y>1322</Y></Point>
+			<Point><X>1589</X><Y>1321</Y></Point>
+			<Point><X>1653</X><Y>1311</Y></Point>
+			<Point><X>1647</X><Y>1277</Y></Point>
+		</Boundary>
+		<!-- The Upper Left Corner, in map coordinates -->
+		<Position><X>1583</X><Y>1277</Y></Position>
+		<ExteriorGraphic>Acqueville/building_graphics/exterior_015.tga</ExteriorGraphic>
+		<InteriorGraphic>Acqueville/building_graphics/interior_015.tga</InteriorGraphic>
+	</Building>
+	<Building>
+		<!-- Used for interior detection, in map coordinates -->
+		<Boundary>
+			<Point><X>1348</X><Y>1547</Y></Point>
+			<Point><X>1382</X><Y>1514</Y></Point>
+			<Point><X>1417</X><Y>1480</Y></Point>
+			<Point><X>1418</X><Y>1479</Y></Point>
+			<Point><X>1446</X><Y>1508</Y></Point>
+			<Point><X>1377</X><Y>1578</Y></Point>
+		</Boundary>
+		<!-- The Upper Left Corner, in map coordinates -->
+		<Position><X>1348</X><Y>1479</Y></Position>
+		<ExteriorGraphic>Acqueville/building_graphics/exterior_016.tga</ExteriorGraphic>
+		<InteriorGraphic>Acqueville/building_graphics/interior_016.tga</InteriorGraphic>
+	</Building>
+	<Building>
+		<!-- Used for interior detection, in map coordinates -->
+		<Boundary>
+			<Point><X>1298</X><Y>1496</Y></Point>
+			<Point><X>1332</X><Y>1462</Y></Point>
+			<Point><X>1368</X><Y>1428</Y></Point>
+			<Point><X>1340</X><Y>1399</Y></Point>
+			<Point><X>1303</X><Y>1434</Y></Point>
+			<Point><X>1269</X><Y>1468</Y></Point>
+		</Boundary>
+		<!-- The Upper Left Corner, in map coordinates -->
+		<Position><X>1269</X><Y>1399</Y></Position>
+		<ExteriorGraphic>Acqueville/building_graphics/exterior_017.tga</ExteriorGraphic>
+		<InteriorGraphic>Acqueville/building_graphics/interior_017.tga</InteriorGraphic>
+	</Building>
+	<Building>
+		<!-- Used for interior detection, in map coordinates -->
+		<Boundary>
+			<Point><X>1298</X><Y>1496</Y></Point>
+			<Point><X>1331</X><Y>1463</Y></Point>
+			<Point><X>1332</X><Y>1463</Y></Point>
+			<Point><X>1382</X><Y>1514</Y></Point>
+			<Point><X>1348</X><Y>1547</Y></Point>
+		</Boundary>
+		<!-- The Upper Left Corner, in map coordinates -->
+		<Position><X>1298</X><Y>1463</Y></Position>
+		<ExteriorGraphic>Acqueville/building_graphics/exterior_018.tga</ExteriorGraphic>
+		<InteriorGraphic>Acqueville/building_graphics/interior_018.tga</InteriorGraphic>
+	</Building>
+	<Building>
+		<!-- Used for interior detection, in map coordinates -->
+		<Boundary>
+			<Point><X>1368</X><Y>1428</Y></Point>
+			<Point><X>1332</X><Y>1462</Y></Point>
+			<Point><X>1332</X><Y>1463</Y></Point>
+			<Point><X>1382</X><Y>1514</Y></Point>
+			<Point><X>1417</X><Y>1480</Y></Point>
+			<Point><X>1418</X><Y>1479</Y></Point>
+		</Boundary>
+		<!-- The Upper Left Corner, in map coordinates -->
+		<Position><X>1332</X><Y>1428</Y></Position>
+		<ExteriorGraphic>Acqueville/building_graphics/exterior_019.tga</ExteriorGraphic>
+		<InteriorGraphic>Acqueville/building_graphics/interior_019.tga</InteriorGraphic>
+	</Building>
+	<Building>
+		<!-- Used for interior detection, in map coordinates -->
+		<Boundary>
+			<Point><X>933</X><Y>1895</Y></Point>
+			<Point><X>938</X><Y>1983</Y></Point>
+			<Point><X>1011</X><Y>1980</Y></Point>
+			<Point><X>1004</X><Y>1890</Y></Point>
+			<Point><X>963</X><Y>1891</Y></Point>
+		</Boundary>
+		<!-- The Upper Left Corner, in map coordinates -->
+		<Position><X>933</X><Y>1890</Y></Position>
+		<ExteriorGraphic>Acqueville/building_graphics/exterior_020.tga</ExteriorGraphic>
+		<InteriorGraphic>Acqueville/building_graphics/interior_020.tga</InteriorGraphic>
+	</Building>
+	<Building>
+		<!-- Used for interior detection, in map coordinates -->
+		<Boundary>
+			<Point><X>1984</X><Y>2157</Y></Point>
+			<Point><X>1917</X><Y>2173</Y></Point>
+			<Point><X>1902</X><Y>2099</Y></Point>
+			<Point><X>1954</X><Y>2088</Y></Point>
+			<Point><X>1968</X><Y>2087</Y></Point>
+		</Boundary>
+		<!-- The Upper Left Corner, in map coordinates -->
+		<Position><X>1902</X><Y>2087</Y></Position>
+		<ExteriorGraphic>Acqueville/building_graphics/exterior_021.tga</ExteriorGraphic>
+		<InteriorGraphic>Acqueville/building_graphics/interior_021.tga</InteriorGraphic>
+	</Building>
+	<Building>
+		<!-- Used for interior detection, in map coordinates -->
+		<Boundary>
+			<Point><X>1984</X><Y>2157</Y></Point>
+			<Point><X>1986</X><Y>2165</Y></Point>
+			<Point><X>1983</X><Y>2167</Y></Point>
+			<Point><X>1992</X><Y>2213</Y></Point>
+			<Point><X>1959</X><Y>2222</Y></Point>
+			<Point><X>1927</X><Y>2225</Y></Point>
+			<Point><X>1917</X><Y>2173</Y></Point>
+		</Boundary>
+		<!-- The Upper Left Corner, in map coordinates -->
+		<Position><X>1917</X><Y>2157</Y></Position>
+		<ExteriorGraphic>Acqueville/building_graphics/exterior_022.tga</ExteriorGraphic>
+		<InteriorGraphic>Acqueville/building_graphics/interior_022.tga</InteriorGraphic>
+	</Building>
+	<Building>
+		<!-- Used for interior detection, in map coordinates -->
+		<Boundary>
+			<Point><X>1836</X><Y>1691</Y></Point>
+			<Point><X>1890</X><Y>1752</Y></Point>
+			<Point><X>1939</X><Y>1705</Y></Point>
+			<Point><X>1883</X><Y>1646</Y></Point>
+		</Boundary>
+		<!-- The Upper Left Corner, in map coordinates -->
+		<Position><X>1836</X><Y>1646</Y></Position>
+		<ExteriorGraphic>Acqueville/building_graphics/exterior_023.tga</ExteriorGraphic>
+		<InteriorGraphic>Acqueville/building_graphics/interior_023.tga</InteriorGraphic>
+	</Building>
+	<Building>
+		<!-- Used for interior detection, in map coordinates -->
+		<Boundary>
+			<Point><X>2189</X><Y>1457</Y></Point>
+			<Point><X>2207</X><Y>1513</Y></Point>
+			<Point><X>2218</X><Y>1515</Y></Point>
+			<Point><X>2298</X><Y>1492</Y></Point>
+			<Point><X>2292</X><Y>1454</Y></Point>
+			<Point><X>2277</X><Y>1422</Y></Point>
+			<Point><X>2194</X><Y>1446</Y></Point>
+		</Boundary>
+		<!-- The Upper Left Corner, in map coordinates -->
+		<Position><X>2189</X><Y>1422</Y></Position>
+		<ExteriorGraphic>Acqueville/building_graphics/exterior_024.tga</ExteriorGraphic>
+		<InteriorGraphic>Acqueville/building_graphics/interior_024.tga</InteriorGraphic>
+	</Building>
+	<Building>
+		<!-- Used for interior detection, in map coordinates -->
+		<Boundary>
+			<Point><X>2067</X><Y>1360</Y></Point>
+			<Point><X>2131</X><Y>1355</Y></Point>
+			<Point><X>2126</X><Y>1301</Y></Point>
+			<Point><X>2062</X><Y>1305</Y></Point>
+		</Boundary>
+		<!-- The Upper Left Corner, in map coordinates -->
+		<Position><X>2062</X><Y>1301</Y></Position>
+		<ExteriorGraphic>Acqueville/building_graphics/exterior_025.tga</ExteriorGraphic>
+		<InteriorGraphic>Acqueville/building_graphics/interior_025.tga</InteriorGraphic>
+	</Building>
+	<Building>
+		<!-- Used for interior detection, in map coordinates -->
+		<Boundary>
+			<Point><X>2062</X><Y>1305</Y></Point>
+			<Point><X>2126</X><Y>1301</Y></Point>
+			<Point><X>2126</X><Y>1304</Y></Point>
+			<Point><X>2131</X><Y>1303</Y></Point>
+			<Point><X>2123</X><Y>1225</Y></Point>
+			<Point><X>2064</X><Y>1229</Y></Point>
+			<Point><X>2054</X><Y>1237</Y></Point>
+		</Boundary>
+		<!-- The Upper Left Corner, in map coordinates -->
+		<Position><X>2054</X><Y>1225</Y></Position>
+		<ExteriorGraphic>Acqueville/building_graphics/exterior_026.tga</ExteriorGraphic>
+		<InteriorGraphic>Acqueville/building_graphics/interior_026.tga</InteriorGraphic>
+	</Building>
+	<Building>
+		<!-- Used for interior detection, in map coordinates -->
+		<Boundary>
+			<Point><X>2255</X><Y>1204</Y></Point>
+			<Point><X>2261</X><Y>1266</Y></Point>
+			<Point><X>2363</X><Y>1256</Y></Point>
+			<Point><X>2363</X><Y>1221</Y></Point>
+			<Point><X>2353</X><Y>1191</Y></Point>
+			<Point><X>2259</X><Y>1201</Y></Point>
+		</Boundary>
+		<!-- The Upper Left Corner, in map coordinates -->
+		<Position><X>2255</X><Y>1191</Y></Position>
+		<ExteriorGraphic>Acqueville/building_graphics/exterior_027.tga</ExteriorGraphic>
+		<InteriorGraphic>Acqueville/building_graphics/interior_027.tga</InteriorGraphic>
+	</Building>
+	<Building>
+		<!-- Used for interior detection, in map coordinates -->
+		<Boundary>
+			<Point><X>359</X><Y>1020</Y></Point>
+			<Point><X>433</X><Y>984</Y></Point>
+			<Point><X>462</X><Y>1044</Y></Point>
+			<Point><X>387</X><Y>1083</Y></Point>
+			<Point><X>359</X><Y>1023</Y></Point>
+		</Boundary>
+		<!-- The Upper Left Corner, in map coordinates -->
+		<Position><X>359</X><Y>984</Y></Position>
+		<ExteriorGraphic>Acqueville/building_graphics/exterior_028.tga</ExteriorGraphic>
+		<InteriorGraphic>Acqueville/building_graphics/interior_028.tga</InteriorGraphic>
+	</Building>
+	<Building>
+		<!-- Used for interior detection, in map coordinates -->
+		<Boundary>
+			<Point><X>551</X><Y>1223</Y></Point>
+			<Point><X>551</X><Y>1156</Y></Point>
+			<Point><X>605</X><Y>1159</Y></Point>
+			<Point><X>604</X><Y>1224</Y></Point>
+		</Boundary>
+		<!-- The Upper Left Corner, in map coordinates -->
+		<Position><X>551</X><Y>1156</Y></Position>
+		<ExteriorGraphic>Acqueville/building_graphics/exterior_029.tga</ExteriorGraphic>
+		<InteriorGraphic>Acqueville/building_graphics/interior_029.tga</InteriorGraphic>
+	</Building>
+	<Building>
+		<!-- Used for interior detection, in map coordinates -->
+		<Boundary>
+			<Point><X>551</X><Y>1223</Y></Point>
+			<Point><X>545</X><Y>1223</Y></Point>
+			<Point><X>544</X><Y>1221</Y></Point>
+			<Point><X>475</X><Y>1221</Y></Point>
+			<Point><X>476</X><Y>1155</Y></Point>
+			<Point><X>551</X><Y>1156</Y></Point>
+		</Boundary>
+		<!-- The Upper Left Corner, in map coordinates -->
+		<Position><X>475</X><Y>1155</Y></Position>
+		<ExteriorGraphic>Acqueville/building_graphics/exterior_030.tga</ExteriorGraphic>
+		<InteriorGraphic>Acqueville/building_graphics/interior_030.tga</InteriorGraphic>
+	</Building>
+</Buildings>

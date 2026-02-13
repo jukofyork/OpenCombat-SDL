@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Nationalities>
+	<Nationality>
+		<Name>American</Name>
+		<VictoryLocation>UI/Flags/Static/american.14.9.tga</VictoryLocation>
+		<MiniMap>UI/Flags/Static/minimap_american.tga</MiniMap>
+	</Nationality>
+	<Nationality>
+		<Name>German</Name>
+		<VictoryLocation>UI/Flags/Static/german.14.9.tga</VictoryLocation>
+		<MiniMap>UI/Flags/Static/minimap_german.tga</MiniMap>
+	</Nationality>
+	<Nationality>
+		<Name>Soviet</Name>
+		<VictoryLocation>UI/Flags/Static/soviet.14.9.tga</VictoryLocation>
+		<MiniMap>UI/Flags/Static/minimap_soviet.tga</MiniMap>
+	</Nationality>
+</Nationalities>
