@@ -70,7 +70,7 @@ SoldierActionHandlers::Handle(Soldier *soldier, Action *action, long dt)
 	if(actionIdx >= 0) {
 		// We need to perform this action before we can even attempt
 		// the one we are trying to do
-		soldier->_actionQueue.Insert(new Action(actionIdx, NULL), 0);
+		soldier->_actionQueue.push_front(new Action(actionIdx, NULL));
 		return false;
 	}
 
@@ -138,7 +138,7 @@ SoldierActionHandlers::ProneFireActionHandler(Soldier *soldier, Action *action, 
 				Action *a = new Action(SoldierAction::Stop, NULL);
 
 				// Insert it after our current one
-				soldier->_actionQueue.Insert(a, 1);
+				soldier->_actionQueue.insert(soldier->_actionQueue.begin() + 1, a);
 				return true;
 			}
 			break;
@@ -192,7 +192,7 @@ SoldierActionHandlers::RunActionHandler(Soldier *soldier, Action *action, long d
 			// Add a stop action
 			Action *a = new Action(SoldierAction::DestinationReached, NULL);
 			// Insert it after our current one
-			soldier->_actionQueue.Insert(a, 1);
+			soldier->_actionQueue.insert(soldier->_actionQueue.begin() + 1, a);
 			return true;
 		}
 	}
@@ -231,7 +231,7 @@ SoldierActionHandlers::WalkActionHandler(Soldier *soldier, Action *action, long 
 			// Add a stop action
 			Action *a = new Action(SoldierAction::DestinationReached, NULL);
 			// Insert it after our current one
-			soldier->_actionQueue.Insert(a, 1);
+			soldier->_actionQueue.insert(soldier->_actionQueue.begin() + 1, a);
 			return true;
 		}
 	}
@@ -280,7 +280,7 @@ SoldierActionHandlers::CrawlActionHandler(Soldier *soldier, Action *action, long
 			// Add a stop action
 			Action *a = new Action(SoldierAction::DestinationReached, NULL);
 			// Insert it after our current one
-			soldier->_actionQueue.Insert(a, 1);
+			soldier->_actionQueue.insert(soldier->_actionQueue.begin() + 1, a);
 			return true;
 		}
 	}
@@ -447,7 +447,7 @@ SoldierActionHandlers::ReloadActionHandler(Soldier *soldier, Action *action, lon
 				// We need to stop doing whatever we were doing
 				Action *a = new Action(SoldierAction::Stop, NULL);
 				// Insert it after our current one
-				soldier->_actionQueue.Insert(a, 1);
+				soldier->_actionQueue.insert(soldier->_actionQueue.begin() + 1, a);
 				return true;
 			}
 		}
@@ -622,7 +622,7 @@ SoldierActionHandlers::FollowInFormationActionHandler(Soldier *soldier, Action *
 	if(actionIdx >= 0) {
 		// We need to perform this action before we can even attempt
 		// the one we are trying to do
-		soldier->_actionQueue.Insert(new Action(actionIdx, NULL), 0);
+		soldier->_actionQueue.push_front(new Action(actionIdx, NULL));
 		return false;
 	}
 
@@ -696,11 +696,11 @@ SoldierActionHandlers::FollowInFormationActionHandler(Soldier *soldier, Action *
 		TileData *tileData = new TileData();
 		g_Globals->World.CurrentWorld->ConvertPositionToTile(data->TargetObject->Position.x + formation.x, data->TargetObject->Position.y - formation.y, &tileData->TileI, &tileData->TileJ);
 		newAction->Data = tileData;
-		soldier->_actionQueue.Insert(newAction, 1);
+		soldier->_actionQueue.insert(soldier->_actionQueue.begin() + 1, newAction);
 
 		// Make sure we are all facing in the right direction
 		newAction = new Action(SoldierAction::Turn, (void *) data->TargetObject->GetHeading());
-		soldier->_actionQueue.Insert(newAction, 2);
+		soldier->_actionQueue.insert(soldier->_actionQueue.begin() + 2, newAction);
 
 		delete data;
 		return true;

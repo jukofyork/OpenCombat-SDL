@@ -3,7 +3,6 @@
 
 #include <stdio.h>
 #include <math.h>
-#include <misc/Stack.h>
 #include <misc/TGA.h>
 #include <graphics/Widget.h>
 #include <application/Globals.h>

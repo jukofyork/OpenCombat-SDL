@@ -1,7 +1,8 @@
 #pragma once
 
+#include <deque>
+
 #include <misc/Array.h>
-#include <misc/Queue.h>
 #include <misc/Structs.h>
 #include <objects/Status.h>
 #include <objects/Target.h>
@@ -16,6 +17,7 @@ class World;
 class InterfaceState;
 class Effect;
 class Squad;
+struct Action;
 
 #define HEALTH_MAX 100
 
@@ -150,11 +152,11 @@ protected:
 
 	// The queue which contains the orders for this object. Orders are
 	// high level objects which are implemented by actions
-	Queue<Order> _orders;
+	std::deque<Order*> _orders;
 
 	// A queue of actions that are to be performed by this object.
 	// It is up to the object to determine what each action means
-	Queue<Action> _actionQueue;
+	std::deque<Action*> _actionQueue;
 
 	// The name of the icon used for this object
 	char _iconName[32];

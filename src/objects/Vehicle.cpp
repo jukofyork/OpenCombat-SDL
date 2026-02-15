@@ -88,9 +88,8 @@ Vehicle::Simulate(long dt, World *world)
 {
 	UNREFERENCED_PARAMETER(world);
 	// Check our current orders
-	Order *order = _orders.Peek();
-
-	if(order != NULL) {
+	if(!_orders.empty()) {
+		Order *order = _orders.front();
 		bool handled = false;
 		switch(order->GetType()) {
 			case Orders::Move:
@@ -113,7 +112,7 @@ Vehicle::Simulate(long dt, World *world)
 		}
 
 		if(handled) {
-			_orders.Dequeue();
+			_orders.pop_front();
 			order->Release();
 		}
 	}

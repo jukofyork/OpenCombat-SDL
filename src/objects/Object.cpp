@@ -48,23 +48,22 @@ void
 Object::AddOrder(Order *o)
 {
 	o->IncrementRefCount();
-	_orders.Enqueue(o);
+	_orders.push_back(o);
 }
 
 void
-Object::InsertOrder(Order *o, int i) 
+Object::InsertOrder(Order *o, int i)
 {
 	o->IncrementRefCount();
-	_orders.Insert(o, i);
+	_orders.insert(_orders.begin() + i, o);
 }
 
 void
 Object::ClearOrders()
 {
-	Order *o;
-
-	while((o = _orders.Peek()) != NULL) {
-		_orders.Dequeue();
+	while(!_orders.empty()) {
+		Order *o = _orders.front();
+		_orders.pop_front();
 		o->Release();
 	}
 }

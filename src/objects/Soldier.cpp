@@ -138,17 +138,17 @@ Soldier::Simulate(long dt, World *world)
 		}
 
 		// Clear out orders
-		Order *o;
-		while((o = _orders.Dequeue()) != NULL) {
+		while(!_orders.empty()) {
+			Order *o = _orders.front();
+			_orders.pop_front();
 			o->Release();
 		}
 		return;
 	}
 
 	// Check our current orders
-	Order *order = _orders.Peek();
-
-	if(order != NULL) {
+	if(!_orders.empty()) {
+		Order *order = _orders.front();
 		bool handled = false;
 		switch(order->GetType()) {
 			case Orders::Move:
@@ -173,7 +173,7 @@ Soldier::Simulate(long dt, World *world)
 		}
 
 		if(handled) {
-			_orders.Dequeue();
+			_orders.pop_front();
 			order->Release();
 		}
 	}
@@ -188,12 +188,12 @@ Soldier::Simulate(long dt, World *world)
 	_weapons[_currentWeaponIdx]->Simulate(dt);
 
 	// Perform any actions that need to be performed
-	Action *action = _actionQueue.Peek();
-	if(action != NULL)
+	if(!_actionQueue.empty())
 	{
+		Action *action = _actionQueue.front();
 		if(SoldierActionHandlers::Handle(this, action, dt))
 		{
-			action = _actionQueue.Dequeue();
+			_actionQueue.pop_front();
 			delete action;
 		}
 	}
@@ -266,10 +266,10 @@ Soldier::HandleStopOrder(StopOrder *order)
 	
 	// Clear our orders and our actions
 	// XXX/GWS: This needs to clean up memory!!!
-	_actionQueue.Clear();
+	_actionQueue.clear();
 	
 	// Add our action
-	_actionQueue.Enqueue(action);
+	_actionQueue.push_back(action);
 	
 	return true;
 }
@@ -295,14 +295,14 @@ Soldier::FollowPath(Path *path, SoldierAction::Action movementStyle)
 		path = path->Next;
 
 		// Add our action to the queue
-		_actionQueue.Insert(action, _actionQueue.Count());
+		_actionQueue.push_back(action);
 	}
 
 	// Add an action for our destination reached
 	Action *action = new Action(SoldierAction::DestinationReached, NULL);
-	_actionQueue.Insert(action, _actionQueue.Count());
+	_actionQueue.push_back(action);
 	action = new Action(SoldierAction::Stop, NULL);
-	_actionQueue.Insert(action, _actionQueue.Count());
+	_actionQueue.push_back(action);
 }
 
 // Tells this soldier to follow the given object
@@ -324,14 +324,14 @@ Soldier::Follow(Object *object, Formation::Type formationType, float formationSp
 	data->FormationSpread = formationSpread;
 	data->MovementStyle = movementStyle;
 	action->Data = data;
-	_actionQueue.Insert(action, _actionQueue.Count());
+	_actionQueue.push_back(action);
 
 	// Add an action for our destination reached
 	_pathComplete = false;
 	action = new Action(SoldierAction::DestinationReached, NULL);
-	_actionQueue.Insert(action, _actionQueue.Count());
+	_actionQueue.push_back(action);
 	action = new Action(SoldierAction::Stop, NULL);
-	_actionQueue.Insert(action, _actionQueue.Count());
+	_actionQueue.push_back(action);
 
 }
 
@@ -349,9 +349,9 @@ Soldier::Ambush(Direction heading)
 	//			slower their ability to enact orders?
 	Wait();
 	Action *action = new Action(SoldierAction::Turn, (void *)heading);
-	_actionQueue.Enqueue(action);
+	_actionQueue.push_back(action);
 	action = new Action(SoldierAction::Ambush, (void *)heading);
-	_actionQueue.Enqueue(action);
+	_actionQueue.push_back(action);
 }
 
 void
@@ -366,9 +366,9 @@ Soldier::Defend(Direction heading)
 	//			slower their ability to enact orders?
 	Wait();
 	Action *action = new Action(SoldierAction::Turn, (void *)heading);
-	_actionQueue.Enqueue(action);
+	_actionQueue.push_back(action);
 	action = new Action(SoldierAction::Defend, (void *)heading);
-	_actionQueue.Enqueue(action);
+	_actionQueue.push_back(action);
 }
 
 // Wait for an amount of time determined by the soldier reaction time
@@ -386,7 +386,7 @@ Soldier::Wait(long time)
 	data->ElapsedTime = 0;
 	data->WaitTime = time;
 	action->Data = data;
-	_actionQueue.Enqueue(action);
+	_actionQueue.push_back(action);
 }
 
 bool
@@ -411,7 +411,7 @@ Soldier::HandleFireOrder(FireOrder *order)
 	HandleStopOrder(NULL);
 
 	// Add our action
-	_actionQueue.Enqueue(action);
+	_actionQueue.push_back(action);
 
 	return true;
 }
@@ -633,19 +633,20 @@ Soldier::GetGeneralHeading(Vector2 *heading)
 	heading->y = 0.0f;
 
 	// Let's peak at our current action
-	Action *action = _actionQueue.Peek();
-	if(action != NULL 
-		&& (action->Index == SoldierAction::WalkTo 
+	if(!_actionQueue.empty()) {
+		Action *action = _actionQueue.front();
+		if(action->Index == SoldierAction::WalkTo
 			|| action->Index == SoldierAction::RunTo
 			|| action->Index == SoldierAction::CrawlTo
-			|| action->Index == SoldierAction::WalkSlowTo))
-	{
+			|| action->Index == SoldierAction::WalkSlowTo)
+		{
 		int x=0,y=0;
 		SoldierActionHandlers::TileData *data = (SoldierActionHandlers::TileData *)action->Data;
 		g_Globals->World.CurrentWorld->ConvertTileToPosition(data->TileI, data->TileJ, &x, &y);
 		heading->x = x-Position.x;
 		heading->y = y-Position.y;
 		heading->Normalize();
+		}
 	}
 
 #if 0
