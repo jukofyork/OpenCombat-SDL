@@ -1,9 +1,6 @@
 #include "./WeaponManager.h"
 #include <misc/tinyxml2.h>
 
-#include <assert.h>
-#include <stdio.h>
-#include <string.h>
 #include <objects/Weapon.h>
 
 using namespace tinyxml2;
@@ -44,26 +41,22 @@ WeaponManager::LoadWeapons(char *fileName)
 		// Parse fields
 		XMLElement* nameElem = weaponElem->FirstChildElement("Name");
 		if (nameElem && nameElem->GetText()) {
-			assert(strlen(nameElem->GetText()) < 32);
-			strcpy(weapon->Name, nameElem->GetText());
+			weapon->Name = nameElem->GetText();
 		}
 		
 		XMLElement* iconElem = weaponElem->FirstChildElement("Icon");
 		if (iconElem && iconElem->GetText()) {
-			assert(strlen(iconElem->GetText()) < 32);
-			sprintf(weapon->Icon, "%s", iconElem->GetText());
+			weapon->Icon = iconElem->GetText();
 		}
 		
 		XMLElement* soundElem = weaponElem->FirstChildElement("Sound");
 		if (soundElem && soundElem->GetText()) {
-			assert(strlen(soundElem->GetText()) < 64);
-			sprintf(weapon->Sound, "%s", soundElem->GetText());
+			weapon->Sound = soundElem->GetText();
 		}
 		
 		XMLElement* animElem = weaponElem->FirstChildElement("Animation");
 		if (animElem && animElem->GetText()) {
-			assert(strlen(animElem->GetText()) < 64);
-			sprintf(weapon->Animation, "%s", animElem->GetText());
+			weapon->Animation = animElem->GetText();
 		}
 		
 		XMLElement* timeElem = weaponElem->FirstChildElement("TimeToFire");
@@ -99,14 +92,14 @@ Weapon *
 WeaponManager::GetWeapon(char *weaponName)
 {
 	for(int i = 0; i < _weapons.Count; ++i) {
-		if(strcmp(weaponName, _weapons.Items[i]->Name) == 0) {
+		if(strcmp(weaponName, _weapons.Items[i]->Name.c_str()) == 0) {
 			Weapon *w = new Weapon();
 			
 			w->_numRounds = _weapons.Items[i]->NumRounds;
 			w->_totalRounds = _weapons.Items[i]->NumRounds;
-			strcpy(w->_name, _weapons.Items[i]->Name);
-			strcpy(w->_iconName, _weapons.Items[i]->Icon);
-			strcpy(w->_sound, _weapons.Items[i]->Sound);
+			w->_name = _weapons.Items[i]->Name;
+			w->_iconName = _weapons.Items[i]->Icon;
+			w->_sound = _weapons.Items[i]->Sound;
 			w->SetEffect(_weapons.Items[i]->Animation);
 			w->_reloadTimeChamber = _weapons.Items[i]->ReloadTimeChamber;
 			w->_reloadTimeClip = _weapons.Items[i]->ReloadTimeClip;

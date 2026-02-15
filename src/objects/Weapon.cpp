@@ -1,5 +1,4 @@
 #include "./Weapon.h"
-#include <stdio.h>
 
 #include <graphics/Animation.h>
 #include <sound/Sound.h>
@@ -76,14 +75,14 @@ Weapon::Simulate(long dt)
 }
 
 void
-Weapon::SetEffect(char *effectName)
+Weapon::SetEffect(const std::string &effectName)
 {
-	sprintf(_effects[North], "%s North", effectName);
-	sprintf(_effects[NorthEast], "%s NorthEast", effectName);
-	sprintf(_effects[East], "%s East", effectName);
-	sprintf(_effects[SouthEast], "%s SouthEast", effectName);
-	sprintf(_effects[South], "%s South", effectName);
-	sprintf(_effects[SouthWest], "%s SouthWest", effectName);
-	sprintf(_effects[West], "%s West", effectName);
-	sprintf(_effects[NorthWest], "%s NorthWest", effectName);
+	_effects[North] = effectName + " North";
+	_effects[NorthEast] = effectName + " NorthEast";
+	_effects[East] = effectName + " East";
+	_effects[SouthEast] = effectName + " SouthEast";
+	_effects[South] = effectName + " South";
+	_effects[SouthWest] = effectName + " SouthWest";
+	_effects[West] = effectName + " West";
+	_effects[NorthWest] = effectName + " NorthWest";
 }

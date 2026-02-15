@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <misc/Structs.h>
 
 class Weapon
@@ -26,15 +27,15 @@ public:
 	// Simulates this weapon. Updates firing times and stuff like that
 	void Simulate(long dt);
 
-	inline char *GetName() { return _name; }
+	inline const char *GetName() const { return _name.c_str(); }
 	inline int GetCurrentRounds() { return _numRounds; }
-	inline char *GetIconName() { return _iconName; }
+	inline const char *GetIconName() const { return _iconName.c_str(); }
 	inline int GetRoundsPerClip() { return _totalRounds; }
 	inline int GetRoundsPerBurst() { return _roundsPerBurst; }
 
 	// Set and get effects
-	void SetEffect(char *effectName);
-	inline char *GetEffect(Direction heading) { return _effects[heading]; }
+	void SetEffect(const std::string &effectName);
+	inline const char *GetEffect(Direction heading) const { return _effects[heading].c_str(); }
 
 	// Does this weapon cause a big boom?
 	inline bool IsGroundShaker() { return _bGroundShaker; }
@@ -48,13 +49,13 @@ protected:
 	};
 
 	// The name of this weapon
-	char _name[32];
+	std::string _name;
 
 	// The sound for this weapon
-	char _sound[64];
+	std::string _sound;
 
 	// The animation for this weapon
-	char _animation[64];
+	std::string _animation;
 
 	// The time it takes to fire the weapon
 	int _timeToFire;
@@ -69,7 +70,7 @@ protected:
 	int _roundsPerBurst;
 
 	// The name of the icon for this weapon
-	char _iconName[32];
+	std::string _iconName;
 
 	// The counter for our firing times
 	long _counter;
@@ -84,7 +85,7 @@ protected:
 	int _reloadTimeClip;
 	
 	// Effects
-	char _effects[NumDirections][64];
+	std::string _effects[NumDirections];
 
 	// Goes big boom
 	bool _bGroundShaker;

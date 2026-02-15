@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <misc/Array.h>
 
 class Weapon;
@@ -7,10 +8,10 @@ class Weapon;
 struct WeaponTemplate
 {
 	WeaponTemplate() { ShakeGround = false; }
-	char Name[32];
-	char Icon[32];
-	char Sound[64];
-	char Animation[64];
+	std::string Name;
+	std::string Icon;
+	std::string Sound;
+	std::string Animation;
 	int NumRounds;
 	int ReloadTimeClip;
 	int ReloadTimeChamber;
