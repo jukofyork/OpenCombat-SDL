@@ -1,8 +1,7 @@
 #include "./SoundManager.h"
 #include "misc/tinyxml2.h"
 
-#include <stdio.h>
-#include <math.h>
+#include <string>
 #include <SDL2/SDL_mixer.h>
 #include "sound/Sound.h"
 #include "application/Globals.h"
@@ -19,8 +18,8 @@ void
 SoundManager::LoadSounds(char *fileName)
 {
 	struct SoundAttributes {
-		char Name[MAX_NAME];
-		char SoundFile[MAX_NAME];
+		std::string Name;
+		std::string SoundFile;
 	};
 
 	using namespace tinyxml2;
@@ -44,12 +43,12 @@ SoundManager::LoadSounds(char *fileName)
 		
 		XMLElement* nameElem = soundElem->FirstChildElement("Name");
 		if (nameElem && nameElem->GetText()) {
-			strcpy(attr->Name, nameElem->GetText());
+			attr->Name = nameElem->GetText();
 		}
 		
 		XMLElement* fileElem = soundElem->FirstChildElement("File");
 		if (fileElem && fileElem->GetText()) {
-			sprintf(attr->SoundFile, "%s", fileElem->GetText());
+			attr->SoundFile = fileElem->GetText();
 		}
 		
 		dest.Add(attr);
@@ -57,26 +56,24 @@ SoundManager::LoadSounds(char *fileName)
 
 	// Okay, now iterate through all of the sound attributes and create
 	// our sounds
-	char fName[256];
- 
 	for(int i = 0; i < dest.Count; ++i) {
 		// Create the source sound file
-	   sprintf(fName, "%s/%s", g_Globals->Application.SoundsDirectory, dest.Items[i]->SoundFile);
+	   std::string fName = std::string(g_Globals->Application.SoundsDirectory) + "/" + dest.Items[i]->SoundFile;
 	   Sound *s = new Sound(dest.Items[i]->Name, fName);
 	   // Load the WAV file using SDL_mixer
-	   s->_chunk = Mix_LoadWAV(s->_soundFileName);
+	   s->_chunk = Mix_LoadWAV(s->_soundFileName.c_str());
 	   if (s->_chunk == NULL) {
-		   printf("Failed to load sound: %s - %s\n", s->_soundFileName, Mix_GetError());
+		   printf("Failed to load sound: %s - %s\n", s->_soundFileName.c_str(), Mix_GetError());
 	   }
 	   _sounds.Add(s);
 	}
 }
 
 Sound *
-SoundManager::GetSound(char *widgetName)
+SoundManager::GetSound(const std::string &soundName)
 {
 	for(int i = 0; i < _sounds.Count; ++i) {
-		if(strcmp(widgetName, _sounds.Items[i]->GetName()) == 0) {
+		if(soundName == _sounds.Items[i]->GetName()) {
 			return _sounds.Items[i];
 		}
 	}

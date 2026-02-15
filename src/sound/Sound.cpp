@@ -1,11 +1,9 @@
 #include "./Sound.h"
-#include <string.h>
-#include <stdio.h>
 
-Sound::Sound(char *name, char *soundFile)
+Sound::Sound(const std::string &name, const std::string &soundFile)
 {
-	strcpy(_name, name);
-	strcpy(_soundFileName, soundFile);
+	_name = name;
+	_soundFileName = soundFile;
 	_chunk = NULL;
 }
 

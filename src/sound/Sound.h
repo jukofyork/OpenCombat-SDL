@@ -1,25 +1,25 @@
 #pragma once
 
-#include <misc/Structs.h>
+#include <string>
 #include <SDL2/SDL_mixer.h>
 
 class Sound
 {
 public:
-	Sound(char *name, char *soundFile);
+	Sound(const std::string &name, const std::string &soundFile);
 	virtual ~Sound(void);
 
 	// Gets the name of this sound
-	inline char *GetName() { return _name; }
+	inline const char *GetName() const { return _name.c_str(); }
 
 	// Plays this sound
 	void Play();
 
 protected:
 	// The name of this sound
-	char _name[MAX_NAME];
+	std::string _name;
 	// The file of this sound
-	char _soundFileName[MAX_NAME];
+	std::string _soundFileName;
 
 	// The SDL_mixer chunk for this sound
 	Mix_Chunk *_chunk;

@@ -1,9 +1,10 @@
 #include "./EffectManager.h"
 #include "misc/tinyxml2.h"
 
-#include <stdio.h>
+#include <string>
+#include <vector>
+#include <algorithm>
 #include <dirent.h>
-#include <string.h>
 #include <assert.h>
 #include <misc/TGA.h>
 #include <graphics/Effect.h>
@@ -11,20 +12,12 @@
 
 using namespace tinyxml2;
 
-// Comparison function for sorting filenames
-static int compareEffectFilenames(const void *a, const void *b) {
-	const char *fa = (const char *)a;
-	const char *fb = (const char *)b;
-	return strcmp(fa, fb);
-}
-
 struct EffectAttributes
 {
-	EffectAttributes() { Dynamic=false;PlaceOnTurret=false;NumGraphicsFile=0; }
-	char Name[MAX_NAME];
-	char GraphicsFile[256][MAX_NAME];
-	char Sound[MAX_NAME];
-	int NumGraphicsFile;
+	EffectAttributes() { Dynamic=false;PlaceOnTurret=false; }
+	std::string Name;
+	std::vector<std::string> GraphicsFile;
+	std::string Sound;
 	long FrameHold;
 	bool Dynamic;
 	bool PlaceOnTurret;
@@ -66,18 +59,18 @@ EffectManager::LoadEffects(char *fileName)
 		}
 
 		const char* placeAttr = effectElem->Attribute("place");
-		if (placeAttr && strcmp(placeAttr, "turret") == 0) {
+		if (placeAttr && std::string(placeAttr) == "turret") {
 			attr->PlaceOnTurret = true;
 		}
 
 		XMLElement* nameElem = effectElem->FirstChildElement("Name");
 		if (nameElem && nameElem->GetText()) {
-			strcpy(attr->Name, nameElem->GetText());
+			attr->Name = nameElem->GetText();
 		}
 
 		XMLElement* soundElem = effectElem->FirstChildElement("Sound");
 		if (soundElem && soundElem->GetText()) {
-			strcpy(attr->Sound, soundElem->GetText());
+			attr->Sound = soundElem->GetText();
 		}
 
 		// Parse <Graphic> elements
@@ -85,9 +78,9 @@ EffectManager::LoadEffects(char *fileName)
 			 graphicElem != nullptr;
 			 graphicElem = graphicElem->NextSiblingElement("Graphic"))
 		{
-			if (graphicElem->GetText() && attr->NumGraphicsFile < 256) {
-				sprintf(attr->GraphicsFile[attr->NumGraphicsFile++], "%s/Effects/%s",
-						g_Globals->Application.GraphicsDirectory, graphicElem->GetText());
+			if (graphicElem->GetText()) {
+				attr->GraphicsFile.push_back(std::string(g_Globals->Application.GraphicsDirectory) + 
+					"/Effects/" + graphicElem->GetText());
 			}
 		}
 
@@ -105,8 +98,6 @@ EffectManager::LoadEffects(char *fileName)
 		dest.Add(attr);
 	}
 
-	char fName[256];
-
 	for(int i = 0; i < dest.Count; ++i) {
 		// Create the source TGA file
 		Effect *e = new Effect(dest.Items[i]->Name);
@@ -114,22 +105,26 @@ EffectManager::LoadEffects(char *fileName)
 		e->SetDynamic(dest.Items[i]->Dynamic);
 		e->SetPlaceOnTurret(dest.Items[i]->PlaceOnTurret);
 
-		for(int j = 0; j < dest.Items[i]->NumGraphicsFile; ++j) {
-			sprintf(fName, "%s", dest.Items[i]->GraphicsFile[j]);
-			TGA *tga = TGA::Create(fName);
+		for(size_t j = 0; j < dest.Items[i]->GraphicsFile.size(); ++j) {
+			TGA *tga = TGA::Create((char*)dest.Items[i]->GraphicsFile[j].c_str());
 			tga->SetTransparentColor(0,0,0);
 			_sourceImages.Add(tga);
 
 			// Let's find the hotspot for this effect. It is encoded in the
-			// filename.
-			char *last = strrchr(fName, '.');
-			*last = '\0';
-			char *second = strrchr(fName, '.');
-			*second = '\0';
-			char *third = strrchr(fName, '.');
-			int x = atoi(third+1);
-			int y = atoi(second+1);
-			tga->SetOrigin(x,y);
+			// filename (format: name.x.y.tga)
+			std::string fName = dest.Items[i]->GraphicsFile[j];
+			size_t lastDot = fName.rfind('.');
+			if (lastDot != std::string::npos) {
+				std::string yStr = fName.substr(lastDot + 1);
+				fName = fName.substr(0, lastDot);
+				size_t secondDot = fName.rfind('.');
+				if (secondDot != std::string::npos) {
+					std::string xStr = fName.substr(secondDot + 1);
+					int x = atoi(xStr.c_str());
+					int y = atoi(yStr.c_str());
+					tga->SetOrigin(x,y);
+				}
+			}
 			e->AddFrame(tga, dest.Items[i]->FrameHold);
 	    }
 		_effects.Add(e);
@@ -138,17 +133,15 @@ EffectManager::LoadEffects(char *fileName)
 
 void EffectManager::GetFiles(EffectAttributes *attr, const char *searchStr)
 {
-	char searchDir[512];
-	sprintf(searchDir, "%s/Effects/%s", g_Globals->Application.GraphicsDirectory, searchStr);
+	std::string searchDir = std::string(g_Globals->Application.GraphicsDirectory) + "/Effects/" + searchStr;
 
 	// Find the wildcard position
-	char *wildcard = strchr(searchDir, '*');
-	if (!wildcard) return;
+	size_t wildcardPos = searchDir.find('*');
+	if (wildcardPos == std::string::npos) return;
 
-	*wildcard = '\0';
-	char *pattern = wildcard + 1;
+	std::string baseDir = searchDir.substr(0, wildcardPos);
 
-	DIR* dir = opendir(searchDir);
+	DIR* dir = opendir(baseDir.c_str());
 	if (!dir) {
 		assert(0);
 		return;
@@ -159,27 +152,25 @@ void EffectManager::GetFiles(EffectAttributes *attr, const char *searchStr)
 		// Skip . and ..
 		if (entry->d_name[0] == '.') continue;
 
-		// Simple pattern matching - check if filename ends with pattern
-		char* dot = strrchr(entry->d_name, '.');
-		if (dot) {
-			if (attr->NumGraphicsFile < 256) {
-				sprintf(attr->GraphicsFile[attr->NumGraphicsFile++], "%s%s", searchDir, entry->d_name);
-			}
+		// Simple pattern matching - check if filename has extension
+		std::string fileName = entry->d_name;
+		if (fileName.find('.') != std::string::npos) {
+			attr->GraphicsFile.push_back(baseDir + fileName);
 		}
 	}
 	closedir(dir);
 	
-	// Sort the graphics files to ensure correct order (readdir doesn't guarantee order)
-	if(attr->NumGraphicsFile > 0) {
-		qsort(attr->GraphicsFile, attr->NumGraphicsFile, MAX_NAME, compareEffectFilenames);
+	// Sort the graphics files to ensure correct order
+	if(!attr->GraphicsFile.empty()) {
+		std::sort(attr->GraphicsFile.begin(), attr->GraphicsFile.end());
 	}
 }
 
 Effect *
-EffectManager::GetEffect(char *effectName)
+EffectManager::GetEffect(const std::string &effectName)
 {
 	for(int i = 0; i < _effects.Count; ++i) {
-		if(strcmp(effectName, _effects.Items[i]->GetName()) == 0) {
+		if(effectName == _effects.Items[i]->GetName()) {
 			Effect *e = _effects.Items[i]->Clone();
 			return e;
 		}

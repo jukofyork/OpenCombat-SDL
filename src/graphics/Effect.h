@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <misc/Array.h>
 #include <misc/Structs.h>
 
@@ -9,7 +10,7 @@ class TGA;
 class Effect 
 {
 public:
-	Effect(char *name);
+	Effect(const std::string &name);
 	virtual ~Effect(void);
 
 	// Clone's this effect
@@ -34,10 +35,10 @@ public:
 	virtual void Simulate(long dt);
 
 	// Gets the name of this effect
-	inline char *GetName() { return _name; }
+	inline const char *GetName() const { return _name.c_str(); }
 
 	// Set's the sound for this effect
-	void SetSound(char *name);
+	void SetSound(const std::string &name);
 
 	// Returns true if this is a dynamic effect (the origin is an offset)
 	bool IsDynamic() { return _dynamic; }
@@ -49,10 +50,10 @@ public:
 
 protected:
 	// The name of this effect
-	char _name[MAX_NAME];
+	std::string _name;
 
 	// The sound for this effect
-	char _sound[MAX_NAME];
+	std::string _sound;
 
 	// The time to display a frame for
 	long _frameHoldTime;

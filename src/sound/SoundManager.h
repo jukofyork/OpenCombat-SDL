@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include "misc/Array.h"
 
 class Sound;
@@ -14,7 +15,7 @@ public:
 	virtual void LoadSounds(char *fileName);
 
 	// Retrieves a sound from this manager
-	virtual Sound *GetSound(char *soundName);
+	virtual Sound *GetSound(const std::string &soundName);
 
 protected:
 	// The array of sounds we are managing

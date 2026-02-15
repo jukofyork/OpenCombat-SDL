@@ -5,9 +5,9 @@
 #include <sound/Sound.h>
 #include <application/Globals.h>
 
-Effect::Effect(char *name)
+Effect::Effect(const std::string &name)
 {
-	strcpy(_name, name);
+	_name = name;
 	_frameHoldTime = 0;
 	_completed = false;
 	_currentFrameNumber = 0;
@@ -15,7 +15,7 @@ Effect::Effect(char *name)
 	_incrementalTime = 0;
 	Position.x = 0;
 	Position.y = 0;
-	_sound[0] = '\0';
+	_sound.clear();
 	_bPlaceOnTurret = false;
 }
 
@@ -36,7 +36,7 @@ Effect *
 Effect::Clone()
 {
 	Effect *e = new Effect(_name);
-	strcpy(e->_sound, _sound);
+	e->_sound = _sound;
 	e->_dynamic = _dynamic;
 	e->_bPlaceOnTurret = _bPlaceOnTurret;
 
@@ -49,7 +49,7 @@ Effect::Clone()
 void
 Effect::Simulate(long dt)
 {
-	if(_totalTime == 0 && _sound[0] != '\0') {
+	if(_totalTime == 0 && !_sound.empty()) {
 		g_Globals->World.SoundEffects->GetSound(_sound)->Play();	
 	}
 
@@ -80,11 +80,7 @@ Effect::Render(Screen *screen)
 }
 
 void
-Effect::SetSound(char *name)
+Effect::SetSound(const std::string &name)
 {
-	if(strlen(name) > 0) {
-		strcpy(_sound, name);
-	} else {
-		_sound[0] = '\0';
-	}
+	_sound = name;
 }

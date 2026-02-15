@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <misc/Array.h>
 
 class Effect;
@@ -13,7 +14,7 @@ public:
 	virtual ~EffectManager(void);
 
 	void LoadEffects(char *fileName);
-	Effect *GetEffect(char *effectName);
+	Effect *GetEffect(const std::string &effectName);
 	
 	void GetFiles(EffectAttributes *attr, const char *searchStr);
 
