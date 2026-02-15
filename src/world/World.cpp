@@ -20,6 +20,7 @@
 #include <objects/Vehicle.h>
 #include <application/Globals.h>
 #include <world/MiniMap.h>
+#include <misc/GameConstants.h>
 
 World::World(void)
 {
@@ -33,6 +34,11 @@ World::World(void)
 	_markColors = (Mark::Color*) calloc(_maxMarks, sizeof(Mark::Color));
 	_screenWidth = 0;
 	_screenHeight = 0;
+	_scrollLeft = false;
+	_scrollRight = false;
+	_scrollUp = false;
+	_scrollDown = false;
+	_scrollTimer = 0;
 }
 
 World::~World(void)
@@ -340,6 +346,34 @@ World::Simulate(long dt)
 		if(_effects.Items[i]->IsCompleted()) {
 			delete _effects.RemoveAt(i);
 			--i;
+		}
+	}
+
+	// Handle scroll key repeat
+	bool isScrolling = _scrollLeft || _scrollRight || _scrollUp || _scrollDown;
+	if(isScrolling) {
+		_scrollTimer += dt;
+		if(_scrollTimer >= SCROLL_INITIAL_DELAY_MS) {
+			// Calculate scroll amount based on time delta for frame-rate independent movement
+			int scrollAmount = (SCROLL_SPEED_PPS * dt) / 1000;
+			int newX = _originX;
+			int newY = _originY;
+
+			if(_scrollLeft) {
+				newX -= scrollAmount;
+			}
+			if(_scrollRight) {
+				newX += scrollAmount;
+			}
+			if(_scrollUp) {
+				newY -= scrollAmount;
+			}
+			if(_scrollDown) {
+				newY += scrollAmount;
+			}
+
+			SetOrigin(newX, newY);
+			_currentMiniMap->Update();
 		}
 	}
 
@@ -841,6 +875,43 @@ World::KeyUp(int key)
 	{
 		SetOrigin(_originX, _originY+KEY_MULTIPLIER*TileSize.h);
 		_currentMiniMap->Update();
+	}
+
+	// Handle scroll key release
+	if(key == KEY_LEFT) {
+		_scrollLeft = false;
+	}
+	if(key == KEY_RIGHT) {
+		_scrollRight = false;
+	}
+	if(key == KEY_UP) {
+		_scrollUp = false;
+	}
+	if(key == KEY_DOWN) {
+		_scrollDown = false;
+	}
+
+	// Reset scroll timer if no scroll keys are held
+	if(!_scrollLeft && !_scrollRight && !_scrollUp && !_scrollDown) {
+		_scrollTimer = 0;
+	}
+}
+
+void
+World::KeyDown(int key)
+{
+	// Handle scroll key press
+	if(key == KEY_LEFT) {
+		_scrollLeft = true;
+	}
+	if(key == KEY_RIGHT) {
+		_scrollRight = true;
+	}
+	if(key == KEY_UP) {
+		_scrollUp = true;
+	}
+	if(key == KEY_DOWN) {
+		_scrollDown = true;
 	}
 }
 

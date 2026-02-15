@@ -25,4 +25,5 @@ public:
 
 	// Keyboard events
 	virtual void KeyUp(int key) = 0;
+	virtual void KeyDown(int key) = 0;
 };

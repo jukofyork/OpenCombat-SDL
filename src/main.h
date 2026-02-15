@@ -81,6 +81,7 @@ public:
 
 	// Input handling
 	void HandleKeyUp(SDL_Keycode key);
+	void HandleKeyDown(SDL_Keycode key);
 	void HandleMouseButtonDown(Uint8 button, int x, int y);
 	void HandleMouseButtonUp(Uint8 button, int x, int y);
 	void HandleMouseMotion(int x, int y);

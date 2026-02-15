@@ -28,6 +28,7 @@ public:
 
 	// Keyboard events
 	virtual void KeyUp(int key);
+	virtual void KeyDown(int key);
 
 	// Selects a new module and initializes it
 	virtual void ChooseModule(AvailableModules module);

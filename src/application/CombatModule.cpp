@@ -588,8 +588,18 @@ CombatModule::KeyUp(int key)
 		case 120: /* F9 */
 			g_Globals->World.bRenderElements = !g_Globals->World.bRenderElements;
 			break;
-		default:
+	default:
 			_currentWorld->KeyUp(key);
 			break;
+	}
+}
+
+void
+CombatModule::KeyDown(int key)
+{
+	// Pass through to world for scroll key handling
+	// (F-keys and other special keys don't need repeat)
+	if(key != 113 && key != 114 && key != 116 && key != 117 && key != 118 && key != 119 && key != 120) {
+		_currentWorld->KeyDown(key);
 	}
 }

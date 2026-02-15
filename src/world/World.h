@@ -110,6 +110,7 @@ public:
 
 	// Key events - XXX/GWS: This is only used for debugging the game I believe
 	virtual void KeyUp(int key);
+	virtual void KeyDown(int key);
 
 	// Issue orders to all selected objects
 	virtual void IssueOrder(Order *o);
@@ -240,4 +241,11 @@ protected:
 
 	// The current mini map for this world
 	MiniMap *_currentMiniMap;
+
+	// Scroll state for key repeat
+	bool _scrollLeft;
+	bool _scrollRight;
+	bool _scrollUp;
+	bool _scrollDown;
+	long _scrollTimer;
 };

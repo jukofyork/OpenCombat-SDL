@@ -81,3 +81,9 @@ GameApplication::KeyUp(int key)
 {
 	_modules[_currentModule]->KeyUp(key);
 }
+
+void 
+GameApplication::KeyDown(int key)
+{
+	_modules[_currentModule]->KeyDown(key);
+}

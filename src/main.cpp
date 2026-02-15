@@ -19,6 +19,7 @@
 #include "misc/TGA.h"
 #include "graphics/FontManager.h"
 #include "application/Globals.h"
+#include "misc/GameConstants.h"
 
 #ifndef UNREFERENCED_PARAMETER
 #define UNREFERENCED_PARAMETER(x) (void)(x)
@@ -516,9 +517,13 @@ void CSDLApplication::Run()
 					running = false;
 					break;
 
-				case SDL_KEYUP:
-					HandleKeyUp(event.key.keysym.sym);
-					break;
+			case SDL_KEYDOWN:
+				HandleKeyDown(event.key.keysym.sym);
+				break;
+
+			case SDL_KEYUP:
+				HandleKeyUp(event.key.keysym.sym);
+				break;
 
 				case SDL_MOUSEBUTTONDOWN:
 					HandleMouseButtonDown(event.button.button, event.button.x, event.button.y);
@@ -567,9 +572,9 @@ void CSDLApplication::Update()
 	// Update the game state
 	long oldMillis = _millis;
 	long currentMillis = GetTickCount();
-	if(oldMillis != 0 && (currentMillis - oldMillis) >= 33) {
+	if(oldMillis != 0 && (currentMillis - oldMillis) >= SIMULATION_TIMESTEP_MS) {
 		_millis = currentMillis;
-		_game->Simulate(33);
+		_game->Simulate(SIMULATION_TIMESTEP_MS);
 	} else if(oldMillis == 0) {
 		_millis = currentMillis;
 	}
@@ -693,6 +698,50 @@ void CSDLApplication::HandleKeyUp(SDL_Keycode key)
 	// Pass the mapped key to the game
 	if(_game) {
 		_game->KeyUp(gameKey);
+	}
+}
+
+//-----------------------------------------------------------------------------
+// Name: HandleKeyDown()
+// Desc: Handle key press events (for key repeat)
+//-----------------------------------------------------------------------------
+void CSDLApplication::HandleKeyDown(SDL_Keycode key)
+{
+	int gameKey = 0;
+	
+	// Map SDL keycodes to game key codes (Windows virtual key codes)
+	switch(key) {
+		// Arrow keys (Windows VK codes)
+		case SDLK_LEFT:   gameKey = 0x25; break;
+		case SDLK_UP:     gameKey = 0x26; break;
+		case SDLK_RIGHT:  gameKey = 0x27; break;
+		case SDLK_DOWN:   gameKey = 0x28; break;
+		
+		// Function keys (mapped to ASCII codes as expected by CombatModule)
+		case SDLK_F2:     gameKey = 113; break;  // 'q'
+		case SDLK_F3:     gameKey = 114; break;  // 'r'
+		case SDLK_F5:     gameKey = 116; break;  // 't'
+		case SDLK_F6:     gameKey = 117; break;  // 'u'
+		case SDLK_F7:     gameKey = 118; break;  // 'v'
+		case SDLK_F8:     gameKey = 119; break;  // 'w'
+		case SDLK_F9:     gameKey = 120; break;  // 'x'
+		
+		// Letter keys (pass through ASCII values)
+		case SDLK_k:      gameKey = 'k'; break;
+		case SDLK_f:      gameKey = 'f'; break;
+		
+		default:
+			// For other keys, try to use the ASCII value if it's in range
+			if(key < 128) {
+				gameKey = key;
+			} else {
+				return;  // Unknown key, ignore
+			}
+	}
+	
+	// Pass the mapped key to the game
+	if(_game) {
+		_game->KeyDown(gameKey);
 	}
 }
 
