@@ -15,6 +15,7 @@
 #include <application/SoundInterface.h>
 #include <states/SoldierStateLoader.h>
 #include <states/SoldierActionLoader.h>
+#include "../main.h"
 
 CombatModule::CombatModule()
 {
@@ -163,7 +164,19 @@ CombatModule::Initialize(void *app)
 	g_Globals->World.CurrentWorld = _currentWorld;
 	sprintf(fileName, "%s/Acqueville/Acqueville.xml", g_Globals->Application.MapsDirectory);
 	_currentWorld->Load(fileName, _soldierManager, _animationManager);
-	
+
+	// Set maximum window size to prevent exceeding map dimensions
+	// This prevents assertion failures when window is larger than map
+	if(_app) {
+		CSDLApplication* app = (CSDLApplication*)_app;
+		int mapWidth = _currentWorld->GetWidth();
+		int mapHeight = _currentWorld->GetHeight();
+		// Max height includes space for UI panels
+		int bottomBarHeight = _longBottomBackground ? _longBottomBackground->GetHeight() : 84;
+		int maxHeight = mapHeight + bottomBarHeight;
+		app->SetMaxWindowSize(mapWidth, maxHeight);
+	}
+
 	// Create the mini map
 	g_Globals->Application.Status->Status("Creating mini map...");
 	_currentMiniMap = MiniMap::Create(_currentWorld->GetMiniMapName(), _currentWorld);

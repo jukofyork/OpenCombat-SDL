@@ -194,7 +194,7 @@ bool CSDLApplication::CreateWindow()
 		SDL_WINDOWPOS_CENTERED,
 		m_windowWidth,
 		m_windowHeight,
-		SDL_WINDOW_SHOWN
+		SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE
 	);
 
 	if(m_window == NULL) {
@@ -304,6 +304,102 @@ bool CSDLApplication::CreateRenderer()
 	}
 
 	return true;
+}
+
+//-----------------------------------------------------------------------------
+// Name: RecreateRendererResources()
+// Desc: Recreate surface and texture on window resize
+//-----------------------------------------------------------------------------
+bool CSDLApplication::RecreateRendererResources(int newWidth, int newHeight)
+{
+	// Update dimensions
+	m_windowWidth = newWidth;
+	m_windowHeight = newHeight;
+
+	// Destroy old resources
+	if(m_screenTexture) {
+		SDL_DestroyTexture(m_screenTexture);
+		m_screenTexture = NULL;
+	}
+
+	if(m_screenSurface) {
+		if(SDL_MUSTLOCK(m_screenSurface) && m_screenSurface->locked > 0) {
+			SDL_UnlockSurface(m_screenSurface);
+		}
+		SDL_FreeSurface(m_screenSurface);
+		m_screenSurface = NULL;
+	}
+
+	// Create new surface
+	m_screenSurface = SDL_CreateRGBSurfaceWithFormat(
+		0,
+		m_windowWidth,
+		m_windowHeight,
+		32,
+		SDL_PIXELFORMAT_ARGB8888
+	);
+
+	if(m_screenSurface == NULL) {
+		fprintf(stderr, "SDL_CreateRGBSurface failed: %s\n", SDL_GetError());
+		return false;
+	}
+
+	// Create new texture
+	m_screenTexture = SDL_CreateTexture(
+		m_renderer,
+		SDL_PIXELFORMAT_ARGB8888,
+		SDL_TEXTUREACCESS_STREAMING,
+		m_windowWidth,
+		m_windowHeight
+	);
+
+	if(m_screenTexture == NULL) {
+		fprintf(stderr, "SDL_CreateTexture failed: %s\n", SDL_GetError());
+		return false;
+	}
+
+	// Update screen capabilities with new surface
+	if(_screen) {
+		unsigned char* pixels = (unsigned char*)m_screenSurface->pixels;
+		_screen->SetCapabilities(
+			pixels,
+			m_windowWidth,
+			m_windowHeight,
+			SDL_PIXELFORMAT_ARGB8888,
+			m_screenSurface->pitch
+		);
+	}
+
+	return true;
+}
+
+//-----------------------------------------------------------------------------
+// Name: SetMaxWindowSize()
+// Desc: Set maximum window size to prevent exceeding map dimensions
+//-----------------------------------------------------------------------------
+void CSDLApplication::SetMaxWindowSize(int maxWidth, int maxHeight)
+{
+	if(m_window) {
+		// Get current window position
+		int currentX, currentY;
+		SDL_GetWindowPosition(m_window, &currentX, &currentY);
+		
+		// If window is currently larger than max, resize it
+		if(m_windowWidth > maxWidth || m_windowHeight > maxHeight) {
+			int newWidth = (m_windowWidth > maxWidth) ? maxWidth : m_windowWidth;
+			int newHeight = (m_windowHeight > maxHeight) ? maxHeight : m_windowHeight;
+			
+			// Ensure minimum size
+			if(newWidth < 800) newWidth = 800;
+			if(newHeight < 600) newHeight = 600;
+			
+			SDL_SetWindowSize(m_window, newWidth, newHeight);
+			RecreateRendererResources(newWidth, newHeight);
+		}
+		
+		// Set the maximum size constraint
+		SDL_SetWindowMaximumSize(m_window, maxWidth, maxHeight);
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -432,9 +528,22 @@ void CSDLApplication::Run()
 					HandleMouseButtonUp(event.button.button, event.button.x, event.button.y);
 					break;
 
-				case SDL_MOUSEMOTION:
-					HandleMouseMotion(event.motion.x, event.motion.y);
-					break;
+			case SDL_MOUSEMOTION:
+				HandleMouseMotion(event.motion.x, event.motion.y);
+				break;
+
+			case SDL_WINDOWEVENT:
+				if(event.window.event == SDL_WINDOWEVENT_RESIZED) {
+					int newWidth = event.window.data1;
+					int newHeight = event.window.data2;
+					if(newWidth != m_windowWidth || newHeight != m_windowHeight) {
+						RecreateRendererResources(newWidth, newHeight);
+					}
+				} else if(event.window.event == SDL_WINDOWEVENT_MAXIMIZED) {
+					// Block maximize - restore to previous size
+					SDL_RestoreWindow(m_window);
+				}
+				break;
 			}
 		}
 

@@ -5,7 +5,7 @@
 OpenCombat SDL is a C++ tactical wargame being ported from DirectX/Windows to SDL2/cross-platform.
 - **Language**: C++11
 - **Lines**: ~14,000 lines across 158 source files
-- **Status**: Active SDL2 port (graphics/input complete, audio/XML pending)
+- **Status**: Active SDL2 port complete, testing phase
 
 ---
 
@@ -42,16 +42,22 @@ make clean
 
 ## Test Commands
 
-### Run Self-Tests
+### Run All Self-Tests
 Self-tests run automatically at startup:
 ```bash
 ./opencombat
 ```
 
 ### Run Single Test
-Add to `src/main.cpp` and rebuild:
+Edit `src/main.cpp` to call specific test, then rebuild:
 ```cpp
-ActionQueue::SelfTest();  // Example single test
+// In main(), before app.Initialize():
+Screen::SelfTest();       // Test screen/blitting
+ActionQueue::SelfTest();  // Test action queue
+```
+Then run:
+```bash
+make && ./opencombat
 ```
 
 ### Available Self-Tests
@@ -113,7 +119,7 @@ MyClass::Initialize(void)
 // 3. Third-party (SDL2)
 #include <SDL2/SDL.h>
 
-// 4. Project headers (use forward slashes)
+// 4. Project headers (forward slashes)
 #include "graphics/Screen.h"
 #include "misc/Array.h"
 ```
@@ -150,8 +156,8 @@ if (!Initialize()) return false;
 ### Completed
 - Graphics: Direct3D → SDL2 (Screen.cpp, FontManager.cpp)
 - Input: Win32 messages → SDL2 events
-- Audio: DirectSound → SDL2_mixer (Phase 3)
-- XML: MSXML4 → tinyxml2 (Phase 4)
+- Audio: DirectSound → SDL2_mixer
+- XML: MSXML4 → tinyxml2
 
 ### Path Handling
 ```cpp
@@ -181,14 +187,11 @@ Linux filesystem is case-sensitive:
 
 ## Image Asset Handling
 
-### TGA File Reading
-This project uses TGA image files extensively (e.g., `graphics/Vehicles/panzer_IVG_wreck.11.21.tga`). These cannot be read directly but can be viewed after converting to PNG:
-
+### TGA Files
+This project uses TGA images (e.g., `graphics/Vehicles/panzer_IVG_wreck.11.21.tga`). View them by converting to PNG:
 ```bash
 convert graphics/Vehicles/panzer_IVG_wreck.11.21.tga /tmp/view.png
 ```
-
-The `convert` command from ImageMagick converts TGA to PNG format for viewing.
 
 ---
 

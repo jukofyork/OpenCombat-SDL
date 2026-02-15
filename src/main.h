@@ -94,6 +94,12 @@ public:
 	// From CursorInterface
 	virtual void ShowCursor(bool bShow, CursorType type);
 
+	// Set maximum window size to prevent exceeding map dimensions
+	void SetMaxWindowSize(int maxWidth, int maxHeight);
+
+	// Get the screen object
+	Screen* GetScreen() { return _screen; }
+
 protected:
 	bool CreateWindow();
 	bool CreateRenderer();
@@ -101,6 +107,7 @@ protected:
 	void CleanupAudio();
 	bool LoadCursors();
 	void FreeCursors();
+	bool RecreateRendererResources(int newWidth, int newHeight);
 };
 
 // Global access to the app
