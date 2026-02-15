@@ -87,9 +87,20 @@ Map::Render(Screen *screen, Rect *clip)
 		int nx = clip->w / _nPixelsPerBlockX;
 		int ny = clip->h / _nPixelsPerBlockY;
 
+		// Clamp to valid map bounds to prevent buffer overflow
+		if(startX < 0) startX = 0;
+		if(startY < 0) startY = 0;
+		if(startX >= _nBlocksX) startX = _nBlocksX - 1;
+		if(startY >= _nBlocksY) startY = _nBlocksY - 1;
+		
+		int endX = startX + nx;
+		int endY = startY + ny;
+		if(endX > _nBlocksX) endX = _nBlocksX;
+		if(endY > _nBlocksY) endY = _nBlocksY;
+
 		Array<Building> buildingsToDraw;
-		for(int j = startY; j < (startY+ny); ++j) {
-			for(int i = startX; i < (startX+nx); ++i) {
+		for(int j = startY; j < endY; ++j) {
+			for(int i = startX; i < endX; ++i) {
 				// Is there a building on this tile?
 				if(_buildingIndices[j*_nBlocksX+i] > 0)
 				{
