@@ -228,6 +228,8 @@ CombatModule::Render(Screen *screen)
 		x = 0;
 		y = screen->GetHeight() - _longBottomBackground->GetHeight() - (_showTeamPanel ? _unitBackground->GetHeight()-squadPanelDY : 0) - _currentMiniMap->GetHeight();
 		_currentMiniMap->SetPosition(x, y);
+		// Tell the minimap the actual visible map area (accounting for panels)
+		_currentMiniMap->SetVisibleArea(clip.w, clip.h);
 		_currentMiniMap->Render(screen);
 	}
 

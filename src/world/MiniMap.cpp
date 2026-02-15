@@ -11,6 +11,8 @@ MiniMap::MiniMap(void)
 	_zoomHeight = -1;
 	_x = 0;
 	_y = 0;
+	_visibleWidth = -1;
+	_visibleHeight = -1;
 }
 
 MiniMap::~MiniMap(void)
@@ -90,22 +92,36 @@ MiniMap::Render(Screen *screen)
 		}
 	}
 
-	// Now we need to draw the yellow line. If we have not determined our extents yet,
-	// then find them
-	if(_zoomWidth < 0 || _calcWidth != screen->GetWidth()) {
-		// We need to figure out how big our box should be
-		_widthPct = (float) screen->GetWidth() / (float) _parentWorld->GetWidth();
-		_heightPct = (float) screen->GetHeight() / (float) _parentWorld->GetHeight();
-		_calcWidth = screen->GetWidth();
-		_calcHeight = screen->GetHeight();
-
-		// Now figure out our zoom width
+	// Now we need to draw the yellow line. Calculate size and position every frame
+	// Use visible area if set, otherwise fall back to screen dimensions
+	int viewWidth = (_visibleWidth > 0) ? _visibleWidth : screen->GetWidth();
+	int viewHeight = (_visibleHeight > 0) ? _visibleHeight : screen->GetHeight();
+	
+	// Recalculate zoom extents if visible area changed
+	if(_zoomWidth < 0 || _calcWidth != viewWidth || _calcHeight != viewHeight) {
+		_widthPct = (float) viewWidth / (float) _parentWorld->GetWidth();
+		_heightPct = (float) viewHeight / (float) _parentWorld->GetHeight();
+		_calcWidth = viewWidth;
+		_calcHeight = viewHeight;
 		_zoomWidth = (int)(_widthPct * (float) _tga->GetWidth());
-		_zoomHeight= (int)(_heightPct * (float) _tga->GetHeight());
-	} else {
-		Color yellow(255,255,0);
-		screen->DrawRect(Position.x+2+_x, Position.y+2+_y, _zoomWidth, _zoomHeight, 1, &yellow);
+		_zoomHeight = (int)(_heightPct * (float) _tga->GetHeight());
 	}
+	
+	// Calculate yellow rectangle position based on current world origin
+	int originX, originY;
+	_parentWorld->GetOrigin(&originX, &originY);
+	_x = (int)(((float) originX / (float) _parentWorld->GetWidth()) * (float) _tga->GetWidth());
+	_y = (int)(((float) originY / (float) _parentWorld->GetHeight()) * (float) _tga->GetHeight());
+	
+	// Clamp to minimap bounds
+	if(_x < 0) _x = 0;
+	if(_y < 0) _y = 0;
+	if(_x > _tga->GetWidth() - _zoomWidth) _x = _tga->GetWidth() - _zoomWidth;
+	if(_y > _tga->GetHeight() - _zoomHeight) _y = _tga->GetHeight() - _zoomHeight;
+	
+	// Draw the yellow rectangle
+	Color yellow(255,255,0);
+	screen->DrawRect(Position.x+2+_x, Position.y+2+_y, _zoomWidth, _zoomHeight, 1, &yellow);
 }
 
 MiniMap *

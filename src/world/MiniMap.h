@@ -15,6 +15,9 @@ public:
 	Point Position;
 	virtual void SetPosition(int x, int y) { Position.x = x; Position.y = y; }
 
+	// Sets the visible area dimensions (actual map view area, not full screen)
+	virtual void SetVisibleArea(int width, int height) { _visibleWidth = width; _visibleHeight = height; }
+
 	// Renders this minimap
 	virtual void Render(Screen *screen);
 
@@ -55,4 +58,7 @@ protected:
 
 	// The (x,y) location of the zoom rectangle
 	int _x, _y;
+
+	// The visible area of the map (actual viewable area, accounting for panels)
+	int _visibleWidth, _visibleHeight;
 };
