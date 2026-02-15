@@ -1,8 +1,9 @@
 #include "./LegacyMapLoader.h"
-#include <misc/readline.h>
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
+#include <fstream>
+#include <string>
 
 /**
  * Legacy maps are defined in the Close Combat txt files. 
@@ -30,38 +31,36 @@ LegacyMapLoader::~LegacyMapLoader(void)
 void
 LegacyMapLoader::Load(char *mapFile)
 {
-	FILE *fp;
-	const int bufferLen = 1024;
-	char buffer[bufferLen];
-	int nread = 0;
+	std::ifstream fp(mapFile);
+	assert(fp.is_open());
+
+	std::string line;
 	int mapIdx = 0;
 
-	fp = fopen(mapFile, "r");
-
 	// Let's read the map index
-	nread = readline(fp, buffer, bufferLen);
-	mapIdx = atoi(buffer);
+	assert(std::getline(fp, line));
+	mapIdx = atoi(line.c_str());
 
 	// Let's read a blank line
-	readline(fp, buffer, bufferLen);
+	assert(std::getline(fp, line));
 
 	// Let's read the macroblocks in the x direction
-	readline(fp, buffer, bufferLen);
-	_nMacroblocksX = atoi(buffer);
+	assert(std::getline(fp, line));
+	_nMacroblocksX = atoi(line.c_str());
 
 	// Let's read the macroblocks in the y direction
-	readline(fp, buffer, bufferLen);
-	_nMacroblocksY = atoi(buffer);
+	assert(std::getline(fp, line));
+	_nMacroblocksY = atoi(line.c_str());
 
 	// Now read two lines of I don't know what they are yet
-	readline(fp, buffer, bufferLen);
-	readline(fp, buffer, bufferLen);
+	assert(std::getline(fp, line));
+	assert(std::getline(fp, line));
 	
 	// And a line of column headers
-	readline(fp, buffer, bufferLen);
+	assert(std::getline(fp, line));
 	
 	// And the '&'
-	readline(fp, buffer, bufferLen);
+	assert(std::getline(fp, line));
 	
 	// Allocate the elements and elevation
 	_elements = (unsigned short *) calloc(_nMacroblocksX*_nMacroblocksY*_nBlocksPerMacroblockX*_nBlocksPerMacroblockY, sizeof(short));
@@ -72,11 +71,12 @@ LegacyMapLoader::Load(char *mapFile)
 	{
 		for(int i = 0; i < _nMacroblocksX; ++i) {
 			// Let's read in this line
-			readline(fp, buffer, bufferLen);
+			assert(std::getline(fp, line));
 		
 			// Now let's tokenize it based on '\t' characters
 			// and extract all of the elements out first. Our first token
 			// is the index
+			char *buffer = strdup(line.c_str());
 			char *token = strtok(buffer, "\t\r\n");
 			assert(token != NULL);
 			
@@ -104,8 +104,9 @@ LegacyMapLoader::Load(char *mapFile)
 
 			// Now make sure we are at the end of the line
 			assert(token == NULL);
+			free(buffer);
 		}
 	}
 
-	fclose(fp);
+	fp.close();
 }

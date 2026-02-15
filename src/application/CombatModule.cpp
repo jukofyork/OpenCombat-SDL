@@ -298,8 +298,14 @@ CombatModule::Render(Screen *screen)
 			case Unit::Crawling:
 				w = _iconManager->GetWidget("Unit Action Crawling Green");
 				break;
-			case Unit::MovingFast:
+		case Unit::MovingFast:
 				w = _iconManager->GetWidget("Unit Action Running Green");
+				break;
+		case Unit::Ambushing:
+				w = _iconManager->GetWidget("Unit Action Defending Green");
+				break;
+		case Unit::Sneaking:
+				w = _iconManager->GetWidget("Unit Action Crawling Green");
 				break;
 			default:
 				w = _iconManager->GetWidget("Unit Action Defending White");
@@ -380,15 +386,24 @@ CombatModule::Render(Screen *screen)
 				case Team::Sneaking:
 					w = _iconManager->GetWidget("Team Action Sneaking Green");
 					break;
-				case Team::Defending:
-					w = _iconManager->GetWidget("Team Action Defending White");
-					break;
-				case Team::Firing:
-					w = _iconManager->GetWidget("Team Action Firing Green");
-					break;
-				default:
-					w = _iconManager->GetWidget("Team Action Defending White");
-					break;
+			case Team::Defending:
+				w = _iconManager->GetWidget("Team Action Defending White");
+				break;
+			case Team::Ambushing:
+				w = _iconManager->GetWidget("Team Action Defending White");
+				break;
+			case Team::Hiding:
+				w = _iconManager->GetWidget("Team Action Sneaking Green");
+				break;
+			case Team::Cowering:
+				w = _iconManager->GetWidget("Team Action Defending White");
+				break;
+			case Team::Firing:
+				w = _iconManager->GetWidget("Team Action Firing Green");
+				break;
+			default:
+				w = _iconManager->GetWidget("Team Action Defending White");
+				break;
 			}
 			w->Render(screen, x+43, y+16, 77, 10);
 			delete w;

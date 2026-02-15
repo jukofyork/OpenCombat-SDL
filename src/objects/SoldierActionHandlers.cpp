@@ -491,6 +491,9 @@ SoldierActionHandlers::RunToActionHandler(Soldier *soldier, Action *action, long
 	// Set the current animation state
 	soldier->_currentAnimationState = Soldier::AnimationState::Running;
 
+	// Update our action for the UI
+	soldier->_currentAction = Unit::MovingFast;
+
 	// Update our state
 	g_Globals->World.Actions.Soldiers.UpdateState(action->Index, &soldier->_currentState);
 
@@ -530,6 +533,9 @@ SoldierActionHandlers::WalkToActionHandler(Soldier *soldier, Action *action, lon
 
 	// Set the current animation state
 	soldier->_currentAnimationState = Soldier::AnimationState::Walking;
+
+	// Update our action for the UI
+	soldier->_currentAction = Unit::Moving;
 
 	// Update our state
 	g_Globals->World.Actions.Soldiers.UpdateState(action->Index, &soldier->_currentState);
@@ -576,6 +582,9 @@ SoldierActionHandlers::CrawlToActionHandler(Soldier *soldier, Action *action, lo
 
 	// Set the current animation state
 	soldier->_currentAnimationState = Soldier::AnimationState::Sneaking;
+
+	// Update our action for the UI
+	soldier->_currentAction = Unit::Crawling;
 
 	// Update our state
 	g_Globals->World.Actions.Soldiers.UpdateState(action->Index, &soldier->_currentState);
@@ -632,23 +641,27 @@ SoldierActionHandlers::FollowInFormationActionHandler(Soldier *soldier, Action *
 	// Now update the state of the movement style we are using
 	g_Globals->World.Actions.Soldiers.UpdateState(data->MovementStyle, &soldier->_currentState);
 
-	// Set the current animation state
+	// Set the current animation state and action
 	if(soldier->_currentState.IsSet(SoldierState::Running))
 	{
 		soldier->_currentAnimationState = Soldier::AnimationState::Running;
+		soldier->_currentAction = Unit::MovingFast;
 	}
 	else if(soldier->_currentState.IsSet(SoldierState::Walking))
 	{
 		soldier->_currentAnimationState = Soldier::AnimationState::Walking;
+		soldier->_currentAction = Unit::Moving;
 	}
 	else if(soldier->_currentState.IsSet(SoldierState::WalkingSlow))
 	{
 		// XXX/GWS: This needs to be corrected!
 		soldier->_currentAnimationState = Soldier::AnimationState::Walking;
+		soldier->_currentAction = Unit::Sneaking;
 	}
 	else if(soldier->_currentState.IsSet(SoldierState::Crawling))
 	{
 		soldier->_currentAnimationState = Soldier::AnimationState::Sneaking;
+		soldier->_currentAction = Unit::Crawling;
 	}
 
 	// Let's first steer for alignment

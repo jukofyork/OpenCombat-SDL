@@ -1,27 +1,34 @@
 #include <states/SoldierStateLoader.h>
-#include <misc/readline.h>
 #include <misc/Array.h>
-#include <misc/trim.h>
-#include <stdio.h>
+#include <string>
+#include <fstream>
+
+// Helper function to trim whitespace from both ends of a string
+static std::string trim(const std::string &s)
+{
+	const char *ws = " \t\n\r\f\v";
+	size_t start = s.find_first_not_of(ws);
+	if (start == std::string::npos) return "";
+	size_t end = s.find_last_not_of(ws);
+	return s.substr(start, end - start + 1);
+}
 
 void
 SoldierStateLoader::Load(char *fileName, ObjectStates *states)
 {
-	char buffer[1024];
-	int nread;
+	std::string line;
 	Array<char> stateNames;
 
 	// We need to read in the file and load the states deal thing
-	FILE *fp = fopen(fileName, "r");
-	while((nread = readline(fp, buffer, 1024)) > 0) {
+	std::ifstream fp(fileName);
+	while(std::getline(fp, line)) {
 		// Let's trim our string
-		char *p = _ltrim(buffer);
-		p = _ttrim(p);
-		if(strlen(p) > 0) {
-			stateNames.Add(strdup(p));
+		std::string trimmed = trim(line);
+		if(!trimmed.empty()) {
+			stateNames.Add(strdup(trimmed.c_str()));
 		}
 	}
-	fclose(fp);
+	fp.close();
 
 	// Now go back through the array and add to our dest
 	states->NumStates = stateNames.Count;

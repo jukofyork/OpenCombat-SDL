@@ -9,7 +9,8 @@
 #include <misc/Color.h>
 #include <graphics/AnimationManager.h>
 #include <objects/WeaponManager.h>
-#include <misc/readline.h>
+#include <fstream>
+#include <string>
 
 using namespace tinyxml2;
 
@@ -188,24 +189,18 @@ SoldierManager::LoadSoldiers(char *fileName, char *soldierNames)
 	}
 
 	// Now read in the soldier names file
-	FILE *fp = fopen(soldierNames, "r");
-	char buffer[MAX_NAME];
-	int nread;
+	std::ifstream fp(soldierNames);
+	std::string line;
 	srand(time(NULL));
-	while((nread = readline(fp, buffer, MAX_NAME)) > 0) {
-		if(buffer[0] == '#') {
+	while(std::getline(fp, line)) {
+		if(!line.empty() && line[0] == '#') {
 			break;
 		}
 
-		buffer[nread] = '\0';
-		// Strip trailing newlines (handles both Unix \n and Windows \r\n)
-		while(nread > 0 && (buffer[nread-1] == '\r' || buffer[nread-1] == '\n')) {
-			buffer[nread-1] = '\0';
-			nread--;
-		}
-		assert(strlen(buffer) < 32);
-		_soldierNames.Add(strdup(buffer));
+		assert(line.length() < 32);
+		_soldierNames.Add(strdup(line.c_str()));
 	}
+	fp.close();
 }
 
 Soldier *
