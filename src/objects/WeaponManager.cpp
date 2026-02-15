@@ -89,7 +89,7 @@ WeaponManager::LoadWeapons(char *fileName)
 }
 
 Weapon *
-WeaponManager::GetWeapon(char *weaponName)
+WeaponManager::GetWeapon(const char *weaponName)
 {
 	for(int i = 0; i < _weapons.Count; ++i) {
 		if(strcmp(weaponName, _weapons.Items[i]->Name.c_str()) == 0) {

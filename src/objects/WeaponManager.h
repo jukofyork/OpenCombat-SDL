@@ -30,7 +30,7 @@ public:
 	void LoadWeapons(char *fileName);
 
 	// Retrieves a weapon by name
-	Weapon *GetWeapon(char *weaponName);
+	Weapon *GetWeapon(const char *weaponName);
 
 protected:
 	// The array of weapon templates

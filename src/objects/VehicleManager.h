@@ -17,7 +17,7 @@ public:
 	void Load(char *fileName);
 
 	// Retrieves a Vehicle from this manager
-	Vehicle *GetVehicle(char *widgetName);
+	Vehicle *GetVehicle(const char *vehicleName);
 
 protected:
 	// The array of widgets we are managing

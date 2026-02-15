@@ -271,7 +271,7 @@ Vehicle *
 Vehicle::Clone()
 {
 	Vehicle *v = new Vehicle();
-	strcpy(v->_name, _name);
+	v->_name = _name;
 	v->_hullGraphics = _hullGraphics;
 	v->_turretGraphics = _turretGraphics;
 	v->_wreckGraphics = _wreckGraphics;

@@ -1,6 +1,7 @@
 #include "./VehicleManager.h"
 #include "misc/tinyxml2.h"
 
+#include <string>
 #include <stdio.h>
 #include <math.h>
 #include <misc/TGA.h>
@@ -12,14 +13,14 @@
 #define MAX_HULL_WEAPONS    8
 
 struct WeaponAttributes {
-    char Name[32];
+    std::string Name;
     int Slot;
     int NumClips;
 };
 
 struct TurretAttributes {
     TurretAttributes() { Tga = NULL; NumWeapons = 0; RotationRate = 0; }
-    char Graphic[MAX_NAME];
+    std::string Graphic;
     TGA *Tga;
     WeaponAttributes Weapons[MAX_TURRET_WEAPONS];
     int NumWeapons;
@@ -30,7 +31,7 @@ struct TurretAttributes {
 
 struct HullAttributes {
     HullAttributes() { Tga = NULL; NumWeapons = 0; RotationRate = 0; }
-    char Graphic[MAX_NAME];
+    std::string Graphic;
     TGA *Tga;
     WeaponAttributes Weapons[MAX_HULL_WEAPONS];
     int NumWeapons;
@@ -39,12 +40,12 @@ struct HullAttributes {
 
 struct WreckAttributes {
     WreckAttributes() { Tga = NULL; }
-    char Graphic[MAX_NAME];
+    std::string Graphic;
     TGA *Tga;
 };
 
 struct VehicleAttributes {
-    char Name[MAX_NAME];
+    std::string Name;
     int Index;
     HullAttributes Hull;
     TurretAttributes Turret;
@@ -90,7 +91,7 @@ VehicleManager::Load(char *fileName)
         // Parse Name
         XMLElement* nameElem = vehicleElem->FirstChildElement("Name");
         if (nameElem && nameElem->GetText()) {
-            strcpy(vehicle->Name, nameElem->GetText());
+            vehicle->Name = nameElem->GetText();
         }
         
         // Parse Index
@@ -116,7 +117,7 @@ VehicleManager::Load(char *fileName)
         if (hullElem) {
             XMLElement* graphicElem = hullElem->FirstChildElement("Graphic");
             if (graphicElem && graphicElem->GetText()) {
-                sprintf(vehicle->Hull.Graphic, "%s", graphicElem->GetText());
+                vehicle->Hull.Graphic = graphicElem->GetText();
             }
             
             XMLElement* rotElem = hullElem->FirstChildElement("RotationRate");
@@ -142,8 +143,7 @@ VehicleManager::Load(char *fileName)
                 }
                 
                 if (weaponElem->GetText()) {
-                    assert(strlen(weaponElem->GetText()) < 32);
-                    strcpy(vehicle->Hull.Weapons[vehicle->Hull.NumWeapons].Name, weaponElem->GetText());
+                    vehicle->Hull.Weapons[vehicle->Hull.NumWeapons].Name = weaponElem->GetText();
                 }
                 
                 vehicle->Hull.NumWeapons++;
@@ -155,7 +155,7 @@ VehicleManager::Load(char *fileName)
         if (turretElem) {
             XMLElement* graphicElem = turretElem->FirstChildElement("Graphic");
             if (graphicElem && graphicElem->GetText()) {
-                sprintf(vehicle->Turret.Graphic, "%s", graphicElem->GetText());
+                vehicle->Turret.Graphic = graphicElem->GetText();
             }
             
             XMLElement* rotElem = turretElem->FirstChildElement("RotationRate");
@@ -201,8 +201,7 @@ VehicleManager::Load(char *fileName)
                 }
                 
                 if (weaponElem->GetText()) {
-                    assert(strlen(weaponElem->GetText()) < 32);
-                    strcpy(vehicle->Turret.Weapons[vehicle->Turret.NumWeapons].Name, weaponElem->GetText());
+                    vehicle->Turret.Weapons[vehicle->Turret.NumWeapons].Name = weaponElem->GetText();
                 }
                 
                 vehicle->Turret.NumWeapons++;
@@ -214,7 +213,7 @@ VehicleManager::Load(char *fileName)
         if (wreckElem) {
             XMLElement* graphicElem = wreckElem->FirstChildElement("Graphic");
             if (graphicElem && graphicElem->GetText()) {
-                sprintf(vehicle->Wreck.Graphic, "%s", graphicElem->GetText());
+                vehicle->Wreck.Graphic = graphicElem->GetText();
             }
         }
         
@@ -223,17 +222,17 @@ VehicleManager::Load(char *fileName)
 }
 
 Vehicle *
-VehicleManager::GetVehicle(char *vehicleName)
+VehicleManager::GetVehicle(const char *vehicleName)
 {
 	for(int i = 0; i < _vehicles.Count; ++i) {
-		if(strcmp(vehicleName, _vehicles.Items[i]->Name) == 0) {
+		if(strcmp(vehicleName, _vehicles.Items[i]->Name.c_str()) == 0) {
 			Vehicle *v = new Vehicle();
 		    // Okay, now iterate through all of the widget attributes and create
 		    // our widgets
 			// XXX/GWS: The hardcoded directory here is bad
 			char fName[256];
 
-			strcpy(v->_name, _vehicles.Items[i]->Name);
+			v->_name = _vehicles.Items[i]->Name;
 			v->_turretPosition.x = _vehicles.Items[i]->Turret.Position.x;
 			v->_turretPosition.y = _vehicles.Items[i]->Turret.Position.y;
 			v->_turretRotationRate = _vehicles.Items[i]->Turret.RotationRate;
@@ -245,21 +244,21 @@ VehicleManager::GetVehicle(char *vehicleName)
 
 			// The hull graphics
 			if(_vehicles.Items[i]->Hull.Tga == NULL) {
-				sprintf(fName, "%s/%s", g_Globals->Application.GraphicsDirectory, _vehicles.Items[i]->Hull.Graphic); 
+				sprintf(fName, "%s/%s", g_Globals->Application.GraphicsDirectory, _vehicles.Items[i]->Hull.Graphic.c_str()); 
 				_vehicles.Items[i]->Hull.Tga = TGA::Create(fName);
 			}
 			v->_hullGraphics = _vehicles.Items[i]->Hull.Tga;
 		
 			// The turret graphic
 			if(_vehicles.Items[i]->Turret.Tga == NULL) {
-				sprintf(fName, "%s/%s", g_Globals->Application.GraphicsDirectory, _vehicles.Items[i]->Turret.Graphic); 
+				sprintf(fName, "%s/%s", g_Globals->Application.GraphicsDirectory, _vehicles.Items[i]->Turret.Graphic.c_str()); 
 				_vehicles.Items[i]->Turret.Tga = TGA::Create(fName);
 			}
 			v->_turretGraphics = _vehicles.Items[i]->Turret.Tga;
 		
 			// The wreck graphic
 			if(_vehicles.Items[i]->Wreck.Tga == NULL) {
-				sprintf(fName, "%s/%s", g_Globals->Application.GraphicsDirectory, _vehicles.Items[i]->Wreck.Graphic); 
+				sprintf(fName, "%s/%s", g_Globals->Application.GraphicsDirectory, _vehicles.Items[i]->Wreck.Graphic.c_str()); 
 				_vehicles.Items[i]->Wreck.Tga = TGA::Create(fName);
 			}
 			v->_wreckGraphics = _vehicles.Items[i]->Wreck.Tga;
@@ -267,12 +266,12 @@ VehicleManager::GetVehicle(char *vehicleName)
 			// Now do all of the weapons
 			for(int j = 0; j < _vehicles.Items[i]->Hull.NumWeapons; ++j)
 			{
-				v->AddWeapon(g_Globals->World.Weapons->GetWeapon(_vehicles.Items[i]->Hull.Weapons[j].Name),
+				v->AddWeapon(g_Globals->World.Weapons->GetWeapon(_vehicles.Items[i]->Hull.Weapons[j].Name.c_str()),
 					_vehicles.Items[i]->Hull.Weapons[j].Slot, _vehicles.Items[i]->Hull.Weapons[j].NumClips, true);
 			}
 			for(int j = 0; j < _vehicles.Items[i]->Turret.NumWeapons; ++j)
 			{
-				v->AddWeapon(g_Globals->World.Weapons->GetWeapon(_vehicles.Items[i]->Turret.Weapons[j].Name),
+				v->AddWeapon(g_Globals->World.Weapons->GetWeapon(_vehicles.Items[i]->Turret.Weapons[j].Name.c_str()),
 					_vehicles.Items[i]->Turret.Weapons[j].Slot, _vehicles.Items[i]->Turret.Weapons[j].NumClips, false);
 			}
 

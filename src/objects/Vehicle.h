@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 #include <objects/Object.h>
 #include <misc/Structs.h>
 #include <orders/Orders.h>
@@ -99,7 +100,7 @@ protected:
 	Point _shortDestination;
 
 	// The name of this vehicle
-	char _name[64];
+	std::string _name;
 
 	// The hull graphics for this vehic
 	TGA *_hullGraphics;
