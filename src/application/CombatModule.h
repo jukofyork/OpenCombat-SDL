@@ -30,6 +30,9 @@ public:
 	virtual void RightMouseDrag(int x, int y);
 	virtual void KeyUp(int key);
 	virtual void KeyDown(int key);
+	virtual void MiddleMouseDown(int x, int y);
+	virtual void MiddleMouseUp(int x, int y);
+	virtual void MiddleMouseDrag(int x, int y);
 
 protected:
 	// Graphical elements of the Combat UI

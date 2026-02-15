@@ -603,3 +603,21 @@ CombatModule::KeyDown(int key)
 		_currentWorld->KeyDown(key);
 	}
 }
+
+void
+CombatModule::MiddleMouseDown(int x, int y)
+{
+	_currentWorld->MiddleMouseDown(x, y);
+}
+
+void
+CombatModule::MiddleMouseUp(int x, int y)
+{
+	_currentWorld->MiddleMouseUp(x, y);
+}
+
+void
+CombatModule::MiddleMouseDrag(int x, int y)
+{
+	_currentWorld->MiddleMouseDrag(x, y);
+}

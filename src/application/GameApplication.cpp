@@ -76,14 +76,32 @@ GameApplication::RightMouseDrag(int x, int y)
 	_modules[_currentModule]->RightMouseDrag(x,y);
 }
 
-void 
+void
 GameApplication::KeyUp(int key)
 {
 	_modules[_currentModule]->KeyUp(key);
 }
 
-void 
+void
 GameApplication::KeyDown(int key)
 {
 	_modules[_currentModule]->KeyDown(key);
+}
+
+void
+GameApplication::MiddleMouseDown(int x, int y)
+{
+	_modules[_currentModule]->MiddleMouseDown(x, y);
+}
+
+void
+GameApplication::MiddleMouseUp(int x, int y)
+{
+	_modules[_currentModule]->MiddleMouseUp(x, y);
+}
+
+void
+GameApplication::MiddleMouseDrag(int x, int y)
+{
+	_modules[_currentModule]->MiddleMouseDrag(x, y);
 }

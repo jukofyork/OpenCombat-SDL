@@ -40,6 +40,9 @@ World::World(void)
 	_scrollDown = false;
 	_scrollRepeating = false;
 	_scrollTimer = 0;
+	_middleDragActive = false;
+	_middleDragLastX = 0;
+	_middleDragLastY = 0;
 }
 
 World::~World(void)
@@ -927,6 +930,40 @@ World::KeyDown(int key)
 	}
 	if(key == KEY_DOWN) {
 		_scrollDown = true;
+	}
+}
+
+void
+World::MiddleMouseDown(int x, int y)
+{
+	_middleDragActive = true;
+	_middleDragLastX = x;
+	_middleDragLastY = y;
+}
+
+void
+World::MiddleMouseUp(int x, int y)
+{
+	UNREFERENCED_PARAMETER(x);
+	UNREFERENCED_PARAMETER(y);
+	_middleDragActive = false;
+}
+
+void
+World::MiddleMouseDrag(int x, int y)
+{
+	if(_middleDragActive) {
+		// Calculate delta from last position
+		int deltaX = _middleDragLastX - x;
+		int deltaY = _middleDragLastY - y;
+
+		// Scroll the view by the delta
+		SetOrigin(_originX + deltaX, _originY + deltaY);
+		_currentMiniMap->Update();
+
+		// Update last position
+		_middleDragLastX = x;
+		_middleDragLastY = y;
 	}
 }
 

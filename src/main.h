@@ -29,6 +29,7 @@ struct MouseState
 	int Y;
 	bool bLeftDown;
 	bool bRightDown;
+	bool bMiddleDown;
 };
 
 //-----------------------------------------------------------------

@@ -25,6 +25,9 @@ public:
 	virtual void RightMouseDown(int x, int y);
 	virtual void RightMouseUp(int x, int y);
 	virtual void RightMouseDrag(int x, int y);
+	virtual void MiddleMouseDown(int x, int y);
+	virtual void MiddleMouseUp(int x, int y);
+	virtual void MiddleMouseDrag(int x, int y);
 
 	// Keyboard events
 	virtual void KeyUp(int key);

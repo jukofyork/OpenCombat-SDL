@@ -112,6 +112,11 @@ public:
 	virtual void KeyUp(int key);
 	virtual void KeyDown(int key);
 
+	// Middle mouse drag scrolling
+	virtual void MiddleMouseDown(int x, int y);
+	virtual void MiddleMouseUp(int x, int y);
+	virtual void MiddleMouseDrag(int x, int y);
+
 	// Issue orders to all selected objects
 	virtual void IssueOrder(Order *o);
 
@@ -249,4 +254,9 @@ protected:
 	bool _scrollDown;
 	bool _scrollRepeating;
 	long _scrollTimer;
+
+	// Middle mouse drag scrolling state
+	bool _middleDragActive;
+	int _middleDragLastX;
+	int _middleDragLastY;
 };

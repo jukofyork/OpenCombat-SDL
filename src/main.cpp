@@ -613,6 +613,23 @@ void CSDLApplication::Update()
 		_game->RightMouseDrag(mouseX, mouseY);
 	}
 	_oldMouseState.bRightDown = _currentMouseState.bRightDown;
+
+	if(_currentMouseState.bMiddleDown && !_oldMouseState.bMiddleDown) {
+		// Middle mouse was up, now is down
+		int mouseX = _currentMouseState.X;
+		int mouseY = _currentMouseState.Y;
+		_game->MiddleMouseDown(mouseX, mouseY);
+	} else if(!_currentMouseState.bMiddleDown && _oldMouseState.bMiddleDown) {
+		int mouseX = _currentMouseState.X;
+		int mouseY = _currentMouseState.Y;
+		_game->MiddleMouseUp(mouseX, mouseY);
+	} else if(_currentMouseState.bMiddleDown && _oldMouseState.bMiddleDown) {
+		// Middle mouse is dragged
+		int mouseX = _currentMouseState.X;
+		int mouseY = _currentMouseState.Y;
+		_game->MiddleMouseDrag(mouseX, mouseY);
+	}
+	_oldMouseState.bMiddleDown = _currentMouseState.bMiddleDown;
 }
 
 //-----------------------------------------------------------------------------
@@ -755,6 +772,8 @@ void CSDLApplication::HandleMouseButtonDown(Uint8 button, int x, int y)
 		_currentMouseState.bLeftDown = true;
 	} else if(button == SDL_BUTTON_RIGHT) {
 		_currentMouseState.bRightDown = true;
+	} else if(button == SDL_BUTTON_MIDDLE) {
+		_currentMouseState.bMiddleDown = true;
 	}
 	_currentMouseState.X = x;
 	_currentMouseState.Y = y;
@@ -770,6 +789,8 @@ void CSDLApplication::HandleMouseButtonUp(Uint8 button, int x, int y)
 		_currentMouseState.bLeftDown = false;
 	} else if(button == SDL_BUTTON_RIGHT) {
 		_currentMouseState.bRightDown = false;
+	} else if(button == SDL_BUTTON_MIDDLE) {
+		_currentMouseState.bMiddleDown = false;
 	}
 	_currentMouseState.X = x;
 	_currentMouseState.Y = y;
