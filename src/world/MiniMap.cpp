@@ -110,14 +110,23 @@ MiniMap::Render(Screen *screen)
 	// Calculate yellow rectangle position based on current world origin
 	int originX, originY;
 	_parentWorld->GetOrigin(&originX, &originY);
-	_x = (int)(((float) originX / (float) _parentWorld->GetWidth()) * (float) _tga->GetWidth());
-	_y = (int)(((float) originY / (float) _parentWorld->GetHeight()) * (float) _tga->GetHeight());
 	
-	// Clamp to minimap bounds
+	// When at maximum scroll, force rectangle to edge to avoid precision gaps
+	if(originX + _calcWidth >= _parentWorld->GetWidth()) {
+		_x = _tga->GetWidth() - _zoomWidth;
+	} else {
+		_x = (int)(((float) originX / (float) _parentWorld->GetWidth()) * (float) _tga->GetWidth());
+	}
+	
+	if(originY + _calcHeight >= _parentWorld->GetHeight()) {
+		_y = _tga->GetHeight() - _zoomHeight;
+	} else {
+		_y = (int)(((float) originY / (float) _parentWorld->GetHeight()) * (float) _tga->GetHeight());
+	}
+	
+	// Clamp to minimap bounds (safety check)
 	if(_x < 0) _x = 0;
 	if(_y < 0) _y = 0;
-	if(_x > _tga->GetWidth() - _zoomWidth) _x = _tga->GetWidth() - _zoomWidth;
-	if(_y > _tga->GetHeight() - _zoomHeight) _y = _tga->GetHeight() - _zoomHeight;
 	
 	// Draw the yellow rectangle
 	Color yellow(255,255,0);
@@ -178,10 +187,10 @@ MiniMap::LeftMouseDrag(int x, int y)
 	int ox = (int)((float)_parentWorld->GetWidth() * ((float)_x/(float)_tga->GetWidth()));
 	int oy = (int)((float)_parentWorld->GetHeight() * ((float)_y/(float)_tga->GetHeight()));
 	if((ox+_calcWidth) >= _parentWorld->GetWidth()) {
-		ox = _parentWorld->GetWidth() - _calcWidth - 1;
+		ox = _parentWorld->GetWidth() - _calcWidth;
 	}
 	if((oy+_calcHeight) >= _parentWorld->GetHeight()) {
-		oy = _parentWorld->GetHeight() - _calcHeight - 1;
+		oy = _parentWorld->GetHeight() - _calcHeight;
 	}
 
 	_parentWorld->SetOrigin(ox, oy);
