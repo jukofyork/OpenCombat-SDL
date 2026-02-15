@@ -1,11 +1,10 @@
 #include "./Animation.h"
-#include <string.h>
 #include <graphics/Screen.h>
 
-Animation::Animation(char *name)
+Animation::Animation(const std::string &name)
 {
 	_reverse = false;
-	strcpy(_name, name);
+	_name = name;
 	for(int i = 0; i < NumDirections; ++i) {
 		_currentFrameNums[i] = 0;
 		_totalTimes[i] = 0;

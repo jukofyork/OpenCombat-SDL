@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <misc/Array.h>
 #include <misc/Color.h>
 #include <misc/Structs.h>
@@ -16,14 +17,14 @@ class Screen;
 class Animation
 {
 public:
-	Animation(char *name);
+	Animation(const std::string &name);
 	virtual ~Animation(void);
 
 	// Adds a frame to this animation
 	void AddFrame(Frame *f, Direction dir);
 
 	// Returns the name of this animation set
-	inline char *GetName() { return _name; }
+	inline const char *GetName() const { return _name.c_str(); }
 
 	// Clones this object
 	Animation *Clone();
@@ -54,7 +55,7 @@ protected:
 	Array<Frame> _frames[NumDirections];
 
 	// The name of this animation set
-	char _name[MAX_NAME];
+	std::string _name;
 
 	// The current animation frame number
 	int _currentFrameNums[NumDirections];

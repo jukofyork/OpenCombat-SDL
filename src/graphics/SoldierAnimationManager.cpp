@@ -31,11 +31,11 @@ void
 SoldierAnimationManager::LoadAnimations(char *fileName)
 {
 	struct AnimationAttributes {
-		char Name[MAX_NAME];
+		std::string Name;
 		int nDirections;
 		int nFrames;
 		int Time;
-		char FirstDirection[MAX_NAME];
+		std::string FirstDirection;
 		unsigned int TransparentColor;
 	};
 
@@ -72,12 +72,12 @@ SoldierAnimationManager::LoadAnimations(char *fileName)
 		
 		XMLElement* nameElem = animElem->FirstChildElement("Name");
 		if (nameElem && nameElem->GetText()) {
-			strcpy(attr->Name, nameElem->GetText());
+			attr->Name = nameElem->GetText();
 		}
 		
 		XMLElement* firstDirElem = animElem->FirstChildElement("FirstDirection");
 		if (firstDirElem && firstDirElem->GetText()) {
-			strcpy(attr->FirstDirection, firstDirElem->GetText());
+			attr->FirstDirection = firstDirElem->GetText();
 		}
 		
 		XMLElement* dirElem = animElem->FirstChildElement("Directions");

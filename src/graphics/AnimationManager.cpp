@@ -1,8 +1,7 @@
 #include "./AnimationManager.h"
 #include "misc/tinyxml2.h"
 #include <misc/Color.h>
-#include <stdio.h>
-#include <math.h>
+#include <string>
 
 using namespace tinyxml2;
 
@@ -18,8 +17,8 @@ void
 AnimationManager::LoadAnimations(char *fileName)
 {
     struct AnimationAttributes {
-        char Name[MAX_NAME];
-        char GraphicsFile[MAX_NAME];
+        std::string Name;
+        std::string GraphicsFile;
         int nDirections;
         int nFrames;
         int Width;
@@ -53,12 +52,12 @@ AnimationManager::LoadAnimations(char *fileName)
         
         XMLElement* nameElem = animElem->FirstChildElement("Name");
         if (nameElem && nameElem->GetText()) {
-            strcpy(attr->Name, nameElem->GetText());
+            attr->Name = nameElem->GetText();
         }
         
         XMLElement* graphicElem = animElem->FirstChildElement("Graphic");
         if (graphicElem && graphicElem->GetText()) {
-            sprintf(attr->GraphicsFile, "%s", graphicElem->GetText());
+            attr->GraphicsFile = graphicElem->GetText();
         }
         
         XMLElement* dirElem = animElem->FirstChildElement("Directions");
@@ -100,7 +99,7 @@ AnimationManager::LoadAnimations(char *fileName)
         Animation *a = new Animation(dest.Items[i]->Name);
 
         // Create the source TGA file
-        TGA *tga = TGA::Create(dest.Items[i]->GraphicsFile);
+        TGA *tga = TGA::Create((char*)dest.Items[i]->GraphicsFile.c_str());
         _sourceImages.Add(tga);
 
         // Parse the transparent color
