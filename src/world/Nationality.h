@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <misc/Array.h>
 
 class TGA;
@@ -16,7 +17,7 @@ public:
 	// Load nationalities from XML file
 	static void Load(char *fileName, Array<Nationality> *nationalities);
 
-	char Name[256];
+	std::string Name;
 	TGA *VictoryLocation;
 	TGA *MiniMap;
 };

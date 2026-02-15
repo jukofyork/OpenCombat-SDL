@@ -9,7 +9,6 @@ using namespace tinyxml2;
 
 Nationality::Nationality(void)
 {
-	Name[0] = '\0';
 	VictoryLocation = nullptr;
 	MiniMap = nullptr;
 }
@@ -49,8 +48,7 @@ Nationality::Load(char *fileName, Array<Nationality> *nationalities)
 		
 		XMLElement* nameElem = natElem->FirstChildElement("Name");
 		if (nameElem && nameElem->GetText()) {
-			strncpy(nationality->Name, nameElem->GetText(), sizeof(nationality->Name) - 1);
-			nationality->Name[sizeof(nationality->Name) - 1] = '\0';
+			nationality->Name = nameElem->GetText();
 		}
 		
 		// Load VictoryLocation (flag) image

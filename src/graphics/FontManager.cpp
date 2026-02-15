@@ -73,7 +73,7 @@ FontManager::Invalidate()
 }
 
 void
-FontManager::GetTextSize(char *msg, int *w, int *h, FontSize size)
+FontManager::GetTextSize(const char *msg, int *w, int *h, FontSize size)
 {
 	if(size < 0 || size >= FontSize_Count) {
 		size = FontSize_Small;
@@ -89,7 +89,7 @@ FontManager::GetTextSize(char *msg, int *w, int *h, FontSize size)
 }
 
 void 
-FontManager::Render(Screen *screen, char *msg, int x, int y, Color *c, FontSize size)
+FontManager::Render(Screen *screen, const char *msg, int x, int y, Color *c, FontSize size)
 {
 	if(size < 0 || size >= FontSize_Count) {
 		size = FontSize_Small;

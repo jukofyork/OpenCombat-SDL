@@ -76,7 +76,7 @@ MapManager::Parse(char *fileName)
             
             XMLElement* vlNameElem = vlElem->FirstChildElement("Name");
             if (vlNameElem && vlNameElem->GetText()) {
-                strcpy(vl->Name, vlNameElem->GetText());
+                vl->Name = vlNameElem->GetText();
             }
             
             XMLElement* xElem = vlElem->FirstChildElement("X");
@@ -98,14 +98,12 @@ MapManager::Parse(char *fileName)
             if (linksElem) {
                 XMLElement* mapNameElem = linksElem->FirstChildElement("MapName");
                 if (mapNameElem && mapNameElem->GetText()) {
-                    assert(strlen(mapNameElem->GetText()) < sizeof(vl->LinksToMapName));
-                    strcpy(vl->LinksToMapName, mapNameElem->GetText());
+                    vl->LinksToMapName = mapNameElem->GetText();
                 }
                 
                 XMLElement* vlNameElem = linksElem->FirstChildElement("VLName");
                 if (vlNameElem && vlNameElem->GetText()) {
-                    assert(strlen(vlNameElem->GetText()) < sizeof(vl->LinksToVictoryLocationName));
-                    strcpy(vl->LinksToVictoryLocationName, vlNameElem->GetText());
+                    vl->LinksToVictoryLocationName = vlNameElem->GetText();
                 }
             }
             

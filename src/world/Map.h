@@ -66,7 +66,7 @@ public:
 	// Gets the number of victory locations
 	int GetNumVictoryLocations() { return _victoryLocations.Count; }
 	void GetVictoryLocation(int idx, int *x, int *y, Nationality **nationality);
-	char *GetVictoryLocationName(int idx);
+	const char *GetVictoryLocationName(int idx);
 
 protected:
 	// Populates the buildings index array

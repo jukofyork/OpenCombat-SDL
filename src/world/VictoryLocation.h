@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <misc/Structs.h>
 
 class VictoryLocation
@@ -8,11 +9,11 @@ public:
 	VictoryLocation(void);
 	virtual ~VictoryLocation(void);
 
-	char Name[MAX_NAME];
+	std::string Name;
 	int X;
 	int Y;
 	int Value;
-	char LinksToMapName[MAX_NAME];
-	char LinksToVictoryLocationName[MAX_NAME];
+	std::string LinksToMapName;
+	std::string LinksToVictoryLocationName;
 	int ControllingTeam;
 };

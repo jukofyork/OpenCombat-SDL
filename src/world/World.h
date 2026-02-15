@@ -163,7 +163,7 @@ public:
 	// Gets the number of victory locations
 	int GetNumVictoryLocations() { return _currentMap->GetNumVictoryLocations(); }
 	void GetVictoryLocation(int index, int *x, int *y, Nationality **nationality) { return _currentMap->GetVictoryLocation(index, x, y, nationality); }
-	char *GetVictoryLocationName(int index) { return _currentMap->GetVictoryLocationName(index); }
+	const char *GetVictoryLocationName(int index) { return _currentMap->GetVictoryLocationName(index); }
 
 protected:
 
