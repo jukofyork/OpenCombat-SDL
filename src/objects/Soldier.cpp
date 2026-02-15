@@ -417,28 +417,25 @@ Soldier::HandleFireOrder(FireOrder *order)
 }
 
 void 
-Soldier::SetTitle(char *title)
+Soldier::SetTitle(const std::string& title)
 {
-	assert(strlen(title) < 32);
-	strcpy(_title, title);
+	_title = title;
 }
 
 void
-Soldier::SetRank(char *rank)
+Soldier::SetRank(const std::string& rank)
 {
-	assert(strlen(rank) < 32);
-	strcpy(_rank, rank);
+	_rank = rank;
 }
 
 void
-Soldier::SetCamouflage(char *camo)
+Soldier::SetCamouflage(const std::string& camo)
 {
-	assert(strlen(camo) < 64);
-	strcpy(_camo, camo);
+	_camo = camo;
 
 	// Find the color modifier idx for this camo
 	for(int i = 0; i < g_NumColorModifiers; ++i) {
-		if(strcmp(_camo, g_ColorModifiers[i].Name) == 0) {
+		if(_camo == g_ColorModifiers[i].Name) {
 			_camoIdx = i;
 			return;
 		}
@@ -448,13 +445,13 @@ Soldier::SetCamouflage(char *camo)
 void
 Soldier::UpdateInterfaceState(InterfaceState *state, int teamIdx, int unitIdx)
 {
-	strcpy(state->SquadStates[teamIdx].UnitStates[unitIdx].Name, GetPersonalName());
+	state->SquadStates[teamIdx].UnitStates[unitIdx].Name = GetPersonalName();
 	state->SquadStates[teamIdx].UnitStates[unitIdx].CurrentAction = _currentAction;
 	state->SquadStates[teamIdx].UnitStates[unitIdx].CurrentStatus = _currentStatus;
-	strcpy(state->SquadStates[teamIdx].UnitStates[unitIdx].WeaponIcon, _weapons[_currentWeaponIdx]->GetIconName());
+	state->SquadStates[teamIdx].UnitStates[unitIdx].WeaponIcon = _weapons[_currentWeaponIdx]->GetIconName();
 	state->SquadStates[teamIdx].UnitStates[unitIdx].NumRounds = _weapons[_currentWeaponIdx]->GetCurrentRounds() + _weapons[_currentWeaponIdx]->GetRoundsPerClip()*_weaponsNumClips[_currentWeaponIdx];
-	strcpy(state->SquadStates[teamIdx].UnitStates[unitIdx].Title, _title);
-	strcpy(state->SquadStates[teamIdx].UnitStates[unitIdx].Rank, _rank);
+	state->SquadStates[teamIdx].UnitStates[unitIdx].Title = _title;
+	state->SquadStates[teamIdx].UnitStates[unitIdx].Rank = _rank;
 }
 
 void

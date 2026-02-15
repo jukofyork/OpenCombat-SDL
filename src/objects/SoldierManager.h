@@ -19,7 +19,7 @@ public:
 	void LoadSoldiers(char *fileName, char *soldierNames);
 
 	// Creates an instance of a specific soldier
-	Soldier *CreateSoldier(char *soldierType, AnimationManager *animationManager, WeaponManager *weaponManager);
+	Soldier *CreateSoldier(const char *soldierType, AnimationManager *animationManager, WeaponManager *weaponManager);
 
 protected:
 	// The list of soldier templates that we are managing
@@ -29,6 +29,6 @@ protected:
 	Array<char> _soldierNames;
 
 	// Retrieves an animation from the animation manager by name
-	Animation *GetAnimation(AnimationManager *animationManager, char *name, SoldierTemplate *tplate);
+	Animation *GetAnimation(AnimationManager *animationManager, const char *name, SoldierTemplate *tplate);
 
 };

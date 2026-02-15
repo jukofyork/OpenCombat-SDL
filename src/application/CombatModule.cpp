@@ -253,8 +253,8 @@ CombatModule::Render(Screen *screen)
 			dy = w->GetHeight();
 			delete w;
 			
-			Color white(255,255,255);
-			g_Globals->World.Fonts->Render(screen, _currentWorld->State.SquadStates[_currentWorld->State.SelectedSquad].UnitStates[i].Name, x+3+10, y-dy+3, &white);
+Color white(255,255,255);
+			g_Globals->World.Fonts->Render(screen, const_cast<char*>(_currentWorld->State.SquadStates[_currentWorld->State.SelectedSquad].UnitStates[i].Name.c_str()), x+3+10, y-dy+3, &white);
 
 			// Do the status
 			w = NULL;
@@ -314,8 +314,8 @@ CombatModule::Render(Screen *screen)
 			w->Render(screen, x+2,y-dy+18);
 			delete w;
 
-			// Do the weapon icon
-			w = _weaponIconManager->GetWidget(_currentWorld->State.SquadStates[_currentWorld->State.SelectedSquad].UnitStates[i].WeaponIcon);
+// Do the weapon icon
+			w = _weaponIconManager->GetWidget(const_cast<char*>(_currentWorld->State.SquadStates[_currentWorld->State.SelectedSquad].UnitStates[i].WeaponIcon.c_str()));
 			w->Render(screen, x+93, y-dy+18);
 			delete w;
 
@@ -324,8 +324,8 @@ CombatModule::Render(Screen *screen)
 			sprintf(rounds, "%d", _currentWorld->State.SquadStates[_currentWorld->State.SelectedSquad].UnitStates[i].NumRounds);
 			g_Globals->World.Fonts->Render(screen, rounds, x+166, y-dy+18, &white);
 
-			// Do the title
-			w = _iconManager->GetWidget(_currentWorld->State.SquadStates[_currentWorld->State.SelectedSquad].UnitStates[i].Title);
+// Do the title
+			w = _iconManager->GetWidget(const_cast<char*>(_currentWorld->State.SquadStates[_currentWorld->State.SelectedSquad].UnitStates[i].Title.c_str()));
 			w->Render(screen, x+93, y-dy+3);
 			delete w;
 
@@ -361,7 +361,7 @@ CombatModule::Render(Screen *screen)
 
 			// First render the icon
 			// XXX/GWS: This should be done better
-			Widget *w = _iconManager->GetWidget(_currentWorld->State.SquadStates[i].Icon);
+			Widget *w = _iconManager->GetWidget(const_cast<char*>(_currentWorld->State.SquadStates[i].Icon.c_str()));
 			w->Render(screen, x+4, y + 3);
 			delete w;
 		
@@ -372,7 +372,7 @@ CombatModule::Render(Screen *screen)
 
 			// Now render the squad name
 			Color black(0,0,0);
-			g_Globals->World.Fonts->Render(screen, _currentWorld->State.SquadStates[i].Name, x+44,y+3, &black);
+			g_Globals->World.Fonts->Render(screen, const_cast<char*>(_currentWorld->State.SquadStates[i].Name.c_str()), x+44,y+3, &black);
 
 			// Now render the current action
 			w = NULL;
@@ -456,7 +456,7 @@ CombatModule::Render(Screen *screen)
 		_teamBarBlank->GetDepth());
 
 	if(_currentWorld->State.SelectedSquad >= 0) {
-		Widget *w = _iconManager->GetWidget(_currentWorld->State.SquadStates[_currentWorld->State.SelectedSquad].Icon);
+		Widget *w = _iconManager->GetWidget(const_cast<char*>(_currentWorld->State.SquadStates[_currentWorld->State.SelectedSquad].Icon.c_str()));
 		w->Render(screen, x+4, y+6);
 		delete w;
 
@@ -465,7 +465,7 @@ CombatModule::Render(Screen *screen)
 		delete w;
 
 		Color black(0,0,0);
-		g_Globals->World.Fonts->Render(screen, _currentWorld->State.SquadStates[_currentWorld->State.SelectedSquad].Name, x+85,y+4, &black);
+		g_Globals->World.Fonts->Render(screen, const_cast<char*>(_currentWorld->State.SquadStates[_currentWorld->State.SelectedSquad].Name.c_str()), x+85,y+4, &black);
 
 		int x1=x+84, y1=y+22;
 		for(int j = 0; j < _currentWorld->State.SquadStates[_currentWorld->State.SelectedSquad].NumUnits; ++j) {
@@ -489,12 +489,12 @@ CombatModule::Render(Screen *screen)
 
 		// Render the rank
 		Color white(255,255,255);
-		w = _iconManager->GetWidget(_currentWorld->State.SquadStates[_currentWorld->State.SelectedSquad].UnitStates[_currentWorld->State.SquadStates[_currentWorld->State.SelectedSquad].SquadLeaderIdx].Rank);
+		w = _iconManager->GetWidget(const_cast<char*>(_currentWorld->State.SquadStates[_currentWorld->State.SelectedSquad].UnitStates[_currentWorld->State.SquadStates[_currentWorld->State.SelectedSquad].SquadLeaderIdx].Rank.c_str()));
 		w->Render(screen, x+47, y+5, &white);
 		delete w;
 
 		// Render the team quality
-		w = _iconManager->GetWidget(_currentWorld->State.SquadStates[_currentWorld->State.SelectedSquad].Quality);
+		w = _iconManager->GetWidget(const_cast<char*>(_currentWorld->State.SquadStates[_currentWorld->State.SelectedSquad].Quality.c_str()));
 		w->Render(screen, x+171, y+21);
 		delete w;
 	}

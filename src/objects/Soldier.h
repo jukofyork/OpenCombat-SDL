@@ -1,4 +1,6 @@
 #pragma once
+
+#include <string>
 #include <objects/Object.h>
 #include <graphics/Animation.h>
 #include <orders/Orders.h>
@@ -50,20 +52,20 @@ public:
 	inline void SetSquad(Squad *squad) { _currentSquad = squad; }
 
 	// Gets the personal name of this soldier
-	inline char *GetPersonalName() { return _personalName; }
+	inline const char *GetPersonalName() { return _personalName.c_str(); }
 
 	// Gets the title of this soldier (leader, asst, soldier, etc)
-	inline char *GetTitle() { return _title; }
+	inline const char *GetTitle() { return _title.c_str(); }
 
 	// Set's the title of this soldier
-	void SetTitle(char *title);
+	void SetTitle(const std::string& title);
 
 	// Sets and gets the rank of this soldier
-	inline char *GetRank() { return _rank; }
-	void SetRank(char *rank);
+	inline const char *GetRank() { return _rank.c_str(); }
+	void SetRank(const std::string& rank);
 
 	// Sets the camo scheme
-	void SetCamouflage(char *camo);
+	void SetCamouflage(const std::string& camo);
 
 	// Gets the current unit status
 	virtual Unit::Status GetCurrentStatus();
@@ -223,7 +225,7 @@ protected:
 	Animation *_animations[NumStates];
 
 	// The personal name of this soldier
-	char _personalName[32];
+	std::string _personalName;
 
 	// The weapons this soldier carries
 	Weapon *_weapons[MAX_WEAPONS_PER_SOLDIER];
@@ -232,13 +234,13 @@ protected:
 	int _numWeapons;
 
 	// The title of the soldier
-	char _title[32];
+	std::string _title;
 
 	// The rank of this soldier
-	char _rank[32];
+	std::string _rank;
 
 	// The camouflage scheme of this soldier
-	char _camo[64];
+	std::string _camo;
 	int _camoIdx;
 
 	// The current frame of the animation in the current state

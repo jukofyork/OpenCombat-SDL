@@ -1,6 +1,7 @@
 #pragma once
 
 #include <deque>
+#include <string>
 
 #include <misc/Array.h>
 #include <misc/Structs.h>
@@ -78,10 +79,10 @@ public:
 	inline Bounds *GetMinBounds() { return &_minBounds; }
 
 	// Gets the icon name for this object
-	inline char *GetIconName() { return _iconName; }
+	inline const char *GetIconName() { return _iconName.c_str(); }
 
 	// Gets the name of this object
-	inline char *GetName() { return _name; }
+	inline const char *GetName() { return _name.c_str(); }
 
 	// Gets the unique identifier for this object
 	inline long GetID() { return _id; }
@@ -159,10 +160,10 @@ protected:
 	std::deque<Action*> _actionQueue;
 
 	// The name of the icon used for this object
-	char _iconName[32];
+	std::string _iconName;
 
 	// The name of this object
-	char _name[32];
+	std::string _name;
 
 	// A unique ID for this object
 	long _id;

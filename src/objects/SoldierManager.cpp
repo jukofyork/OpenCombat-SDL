@@ -16,8 +16,8 @@ using namespace tinyxml2;
 
 // SoldierState structure for animation states
 struct SoldierState {
-	char Name[MAX_NAME];
-	char Animation[MAX_NAME];
+	std::string Name;
+	std::string Animation;
 };
 
 // SoldierTemplate class definition
@@ -57,9 +57,9 @@ public:
 	bool CanAmbush;
 	bool CanSmoke;
 
-	char Name[MAX_NAME];
+	std::string Name;
 
-	char PrimaryWeapon[MAX_NAME];
+	std::string PrimaryWeapon;
 	int PrimaryWeaponNumClips;
 
 	Array<SoldierState> States;
@@ -95,12 +95,12 @@ SoldierManager::LoadSoldiers(char *fileName, char *soldierNames)
 		// Parse simple fields
 		XMLElement* nameElem = soldierElem->FirstChildElement("Name");
 		if (nameElem && nameElem->GetText()) {
-			strcpy(soldier->Name, nameElem->GetText());
+			soldier->Name = nameElem->GetText();
 		}
 		
 		XMLElement* weaponElem = soldierElem->FirstChildElement("PrimaryWeapon");
 		if (weaponElem && weaponElem->GetText()) {
-			strcpy(soldier->PrimaryWeapon, weaponElem->GetText());
+			soldier->PrimaryWeapon = weaponElem->GetText();
 		}
 		
 		XMLElement* clipsElem = soldierElem->FirstChildElement("PrimaryWeaponNumClips");
@@ -173,12 +173,12 @@ SoldierManager::LoadSoldiers(char *fileName, char *soldierNames)
 				
 				XMLElement* stateNameElem = stateElem->FirstChildElement("Name");
 				if (stateNameElem && stateNameElem->GetText()) {
-					strcpy(state->Name, stateNameElem->GetText());
+					state->Name = stateNameElem->GetText();
 				}
 				
 				XMLElement* animElem = stateElem->FirstChildElement("Animation");
 				if (animElem && animElem->GetText()) {
-					sprintf(state->Animation, "%s", animElem->GetText());
+					state->Animation = animElem->GetText();
 				}
 				
 				soldier->States.Add(state);
@@ -204,20 +204,20 @@ SoldierManager::LoadSoldiers(char *fileName, char *soldierNames)
 }
 
 Soldier *
-SoldierManager::CreateSoldier(char *soldierType, AnimationManager *animationManager, WeaponManager *weaponManager)
+SoldierManager::CreateSoldier(const char *soldierType, AnimationManager *animationManager, WeaponManager *weaponManager)
 {
 	for(int i = 0; i < _soldiers.Count; ++i) {
 		SoldierTemplate *t = _soldiers.Items[i];
-		if(strcmp(t->Name, soldierType) == 0) {
+		if(t->Name == soldierType) {
 			// Create a soldier of this type
 			Soldier *s = new Soldier();
-			strcpy(s->_name, soldierType);
+			s->_name = soldierType;
 
 			// Give this soldier a personal name
-			strcpy(s->_personalName, _soldierNames.Items[rand()%_soldierNames.Count]);
+			s->_personalName = _soldierNames.Items[rand()%_soldierNames.Count];
 
 			// Get the primary weapon
-			s->_weapons[0] = weaponManager->GetWeapon(t->PrimaryWeapon);
+			s->_weapons[0] = weaponManager->GetWeapon(const_cast<char*>(t->PrimaryWeapon.c_str()));
 			s->_currentWeaponIdx = 0;
 			s->_numWeapons = 1;
 			s->_weaponsNumClips[0] = t->PrimaryWeaponNumClips;
@@ -264,11 +264,11 @@ SoldierManager::CreateSoldier(char *soldierType, AnimationManager *animationMana
 }
 
 Animation *
-SoldierManager::GetAnimation(AnimationManager *animationManager, char *name, SoldierTemplate *tplate)
+SoldierManager::GetAnimation(AnimationManager *animationManager, const char *name, SoldierTemplate *tplate)
 {
 	for(int i = 0; i < tplate->States.Count; ++i) {
-		if(strcmp(name, tplate->States.Items[i]->Name) == 0) {
-			return animationManager->GetAnimation(tplate->States.Items[i]->Animation);
+		if(tplate->States.Items[i]->Name == name) {
+			return animationManager->GetAnimation(const_cast<char*>(tplate->States.Items[i]->Animation.c_str()));
 		}
 	}
 	return NULL;

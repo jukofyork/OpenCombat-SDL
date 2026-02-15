@@ -19,7 +19,7 @@ public:
 	void LoadSquads(char *fileName);
 
 	// Creates an instance of a specific soldier
-	Squad *CreateSquad(char *squadType, SoldierManager *soldierManager, VehicleManager *vehicleManager, AnimationManager *animationManager, WeaponManager *weaponManager);
+	Squad *CreateSquad(const char *squadName, SoldierManager *soldierManager, VehicleManager *vehicleManager, AnimationManager *animationManager, WeaponManager *weaponManager);
 
 protected:
 	// The list of squad templates that we are managing

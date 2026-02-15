@@ -7,16 +7,17 @@
 #include <stdio.h>
 #include <assert.h>
 #include <strings.h>
+#include <string>
 
 #define MAX_SOLDIERS_IN_SQUAD 32
 #define MAX_VEHICLES_IN_SQUAD 1
 
 struct SquadSoldierAttributes {
 	SquadSoldierAttributes() { Slot=-1; }
-	char Type[256];
-	char Title[32];
-	char Rank[32];
-	char Camo[64];
+	std::string Type;
+	std::string Title;
+	std::string Rank;
+	std::string Camo;
 	int Slot;
 };
 
@@ -24,7 +25,7 @@ struct SquadVehicleAttributes {
 	SquadVehicleAttributes() { NumSoldiers=0; }
 	int NumSoldiers;
 	SquadSoldierAttributes Soldiers[MAX_SOLDIERS_IN_SQUAD];
-	char Type[64];
+	std::string Type;
 };
 
 struct SquadTemplate {
@@ -33,8 +34,8 @@ struct SquadTemplate {
 	int  NumVehicles;
 	SquadSoldierAttributes Soldiers[MAX_SOLDIERS_IN_SQUAD];
 	SquadVehicleAttributes Vehicles[MAX_VEHICLES_IN_SQUAD];
-	char Name[256];
-	char IconName[32];
+	std::string Name;
+	std::string IconName;
 };
 
 using namespace tinyxml2;
@@ -71,15 +72,13 @@ SquadManager::LoadSquads(char *fileName)
 		// Parse Name
 		XMLElement* nameElem = squadElem->FirstChildElement("Name");
 		if (nameElem && nameElem->GetText()) {
-			assert(strlen(nameElem->GetText()) < 32);
-			strcpy(squad->Name, nameElem->GetText());
+			squad->Name = nameElem->GetText();
 		}
-		
+
 		// Parse Icon
 		XMLElement* iconElem = squadElem->FirstChildElement("Icon");
 		if (iconElem && iconElem->GetText()) {
-			assert(strlen(iconElem->GetText()) <= 32);
-			strcpy(squad->IconName, iconElem->GetText());
+			squad->IconName = iconElem->GetText();
 		}
 		
 		// Parse Soldiers directly under Squad
@@ -91,26 +90,22 @@ SquadManager::LoadSquads(char *fileName)
 			
 			XMLElement* titleElem = soldierElem->FirstChildElement("Title");
 			if (titleElem && titleElem->GetText()) {
-				assert(strlen(titleElem->GetText()) < 32);
-				strcpy(squad->Soldiers[squad->NumSoldiers].Title, titleElem->GetText());
+				squad->Soldiers[squad->NumSoldiers].Title = titleElem->GetText();
 			}
-			
+
 			XMLElement* rankElem = soldierElem->FirstChildElement("Rank");
 			if (rankElem && rankElem->GetText()) {
-				assert(strlen(rankElem->GetText()) < 32);
-				strcpy(squad->Soldiers[squad->NumSoldiers].Rank, rankElem->GetText());
+				squad->Soldiers[squad->NumSoldiers].Rank = rankElem->GetText();
 			}
-			
+
 			XMLElement* typeElem = soldierElem->FirstChildElement("Type");
 			if (typeElem && typeElem->GetText()) {
-				assert(strlen(typeElem->GetText()) < 64);
-				strcpy(squad->Soldiers[squad->NumSoldiers].Type, typeElem->GetText());
+				squad->Soldiers[squad->NumSoldiers].Type = typeElem->GetText();
 			}
-			
+
 			XMLElement* camoElem = soldierElem->FirstChildElement("Camo");
 			if (camoElem && camoElem->GetText()) {
-				assert(strlen(camoElem->GetText()) < 64);
-				strcpy(squad->Soldiers[squad->NumSoldiers].Camo, camoElem->GetText());
+				squad->Soldiers[squad->NumSoldiers].Camo = camoElem->GetText();
 			}
 			
 			squad->NumSoldiers++;
@@ -127,44 +122,39 @@ SquadManager::LoadSquads(char *fileName)
 			
 			XMLElement* typeElem = vehicleElem->FirstChildElement("Type");
 			if (typeElem && typeElem->GetText()) {
-				assert(strlen(typeElem->GetText()) < 64);
-				strcpy(vehicle->Type, typeElem->GetText());
+				vehicle->Type = typeElem->GetText();
 			}
-			
+
 			// Parse Soldiers inside Vehicle
 			for (XMLElement* soldierElem = vehicleElem->FirstChildElement("Soldier");
 				 soldierElem != nullptr;
 				 soldierElem = soldierElem->NextSiblingElement("Soldier"))
 			{
 				if (vehicle->NumSoldiers >= MAX_SOLDIERS_IN_SQUAD) break;
-				
+
 				const char* slotAttr = soldierElem->Attribute("slot");
 				if (slotAttr) {
 					vehicle->Soldiers[vehicle->NumSoldiers].Slot = atoi(slotAttr);
 				}
-				
+
 				XMLElement* titleElem = soldierElem->FirstChildElement("Title");
 				if (titleElem && titleElem->GetText()) {
-					assert(strlen(titleElem->GetText()) < 32);
-					strcpy(vehicle->Soldiers[vehicle->NumSoldiers].Title, titleElem->GetText());
+					vehicle->Soldiers[vehicle->NumSoldiers].Title = titleElem->GetText();
 				}
-				
+
 				XMLElement* rankElem = soldierElem->FirstChildElement("Rank");
 				if (rankElem && rankElem->GetText()) {
-					assert(strlen(rankElem->GetText()) < 32);
-					strcpy(vehicle->Soldiers[vehicle->NumSoldiers].Rank, rankElem->GetText());
+					vehicle->Soldiers[vehicle->NumSoldiers].Rank = rankElem->GetText();
 				}
-				
+
 				XMLElement* soldierTypeElem = soldierElem->FirstChildElement("Type");
 				if (soldierTypeElem && soldierTypeElem->GetText()) {
-					assert(strlen(soldierTypeElem->GetText()) < 64);
-					strcpy(vehicle->Soldiers[vehicle->NumSoldiers].Type, soldierTypeElem->GetText());
+					vehicle->Soldiers[vehicle->NumSoldiers].Type = soldierTypeElem->GetText();
 				}
-				
+
 				XMLElement* camoElem = soldierElem->FirstChildElement("Camo");
 				if (camoElem && camoElem->GetText()) {
-					assert(strlen(camoElem->GetText()) < 64);
-					strcpy(vehicle->Soldiers[vehicle->NumSoldiers].Camo, camoElem->GetText());
+					vehicle->Soldiers[vehicle->NumSoldiers].Camo = camoElem->GetText();
 				}
 				
 				vehicle->NumSoldiers++;
@@ -179,26 +169,26 @@ SquadManager::LoadSquads(char *fileName)
 
 // Creates an instance of a specific soldier
 Squad *
-SquadManager::CreateSquad(char *squadType, SoldierManager *soldierManager, VehicleManager *vehicleManager, AnimationManager *animationManager, WeaponManager *weaponManager)
+SquadManager::CreateSquad(const char *squadType, SoldierManager *soldierManager, VehicleManager *vehicleManager, AnimationManager *animationManager, WeaponManager *weaponManager)
 {
 	for(int i = 0; i < _squads.Count; ++i) {
-		if(strcmp(squadType, _squads.Items[i]->Name) == 0) {
+		if(squadType == _squads.Items[i]->Name) {
 			Squad *squad = new Squad();
-			strcpy(squad->_iconName, _squads.Items[i]->IconName);
-			strcpy(squad->_name, squadType);
+			squad->_iconName = _squads.Items[i]->IconName;
+			squad->_name = squadType;
 			// XXX/GWS: Fix this random team quality thing here!
 			squad->_quality = (Squad::Quality) (rand() % Squad::NumQuality);
 
 			// Add all of the soldiers
 			for(int j = 0; j < _squads.Items[i]->NumSoldiers; ++j) {
-				Soldier *s = soldierManager->CreateSoldier(_squads.Items[i]->Soldiers[j].Type, animationManager, weaponManager);
+				Soldier *s = soldierManager->CreateSoldier(_squads.Items[i]->Soldiers[j].Type.c_str(), animationManager, weaponManager);
 				s->SetTitle(_squads.Items[i]->Soldiers[j].Title);
 				s->SetRank(_squads.Items[i]->Soldiers[j].Rank);
 				s->SetCamouflage(_squads.Items[i]->Soldiers[j].Camo);
 				s->SetFormationPosition(j);
 				// XXX/GWS: Need better determination of the squad leader
-				if(strcasecmp(_squads.Items[i]->Soldiers[j].Title, "Leader") == 0
-					|| strcasecmp(_squads.Items[i]->Soldiers[j].Title, "Gunner") == 0)
+				if(strcasecmp(_squads.Items[i]->Soldiers[j].Title.c_str(), "Leader") == 0
+					|| strcasecmp(_squads.Items[i]->Soldiers[j].Title.c_str(), "Gunner") == 0)
 				{
 					s->SetSquadLeader(true);
 				}
@@ -209,18 +199,18 @@ SquadManager::CreateSquad(char *squadType, SoldierManager *soldierManager, Vehic
 			// Add all of the vehicles
 			for(int j = 0; j < _squads.Items[i]->NumVehicles; ++j)
 			{
-				Vehicle *v = vehicleManager->GetVehicle(_squads.Items[i]->Vehicles[j].Type);
+				Vehicle *v = vehicleManager->GetVehicle(const_cast<char*>(_squads.Items[i]->Vehicles[j].Type.c_str()));
 				v->SetSquadLeader(true); // XXX/GWS: Better determination here
 
 				// Now add soldiers to this vehicle
 				for(int k = 0; k < _squads.Items[i]->Vehicles[j].NumSoldiers; ++k) {
-					Soldier *s = soldierManager->CreateSoldier(_squads.Items[i]->Vehicles[j].Soldiers[k].Type, animationManager, weaponManager);
+					Soldier *s = soldierManager->CreateSoldier(_squads.Items[i]->Vehicles[j].Soldiers[k].Type.c_str(), animationManager, weaponManager);
 					s->SetTitle(_squads.Items[i]->Vehicles[j].Soldiers[k].Title);
 					s->SetRank(_squads.Items[i]->Vehicles[j].Soldiers[k].Rank);
 					s->SetCamouflage(_squads.Items[i]->Vehicles[j].Soldiers[k].Camo);
 					// XXX/GWS: Need better determination of the squad leader
-					if(strcasecmp(_squads.Items[i]->Vehicles[j].Soldiers[k].Title, "Leader") == 0
-						|| strcasecmp(_squads.Items[i]->Vehicles[j].Soldiers[k].Title, "Gunner") == 0)
+					if(strcasecmp(_squads.Items[i]->Vehicles[j].Soldiers[k].Title.c_str(), "Leader") == 0
+						|| strcasecmp(_squads.Items[i]->Vehicles[j].Soldiers[k].Title.c_str(), "Gunner") == 0)
 					{
 						s->SetSquadLeader(true);
 					}

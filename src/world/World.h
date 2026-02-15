@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 struct Rect;
 class AnimationManager;
 class ColorManager;
@@ -29,15 +31,15 @@ class MiniMap;
 #define MAX_UNITS		16
 #define MAX_SQUADS		32
 
-class UnitState 
+class UnitState
 {
 public:
-	char Name[32];
-	char State[32];
-	char Icon[32];
-	char WeaponIcon[32];
-	char Title[32];
-	char Rank[32];
+	std::string Name;
+	std::string State;
+	std::string Icon;
+	std::string WeaponIcon;
+	std::string Title;
+	std::string Rank;
 	int NumRounds;
 	long ID;
 	Unit::Action CurrentAction;
@@ -47,9 +49,9 @@ public:
 class SquadState
 {
 public:
-	char Name[32];
-	char Icon[32];
-	char Quality[32];
+	std::string Name;
+	std::string Icon;
+	std::string Quality;
 	UnitState UnitStates[MAX_UNITS];
 	int NumUnits;
 	long ID;

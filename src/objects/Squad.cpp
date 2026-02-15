@@ -387,12 +387,12 @@ void
 Squad::UpdateInterfaceState(InterfaceState *state, int teamIdx, int unitIdx)
 {
 	UNREFERENCED_PARAMETER(unitIdx);
-	sprintf(state->SquadStates[teamIdx].Name, "%s", GetName());
-	sprintf(state->SquadStates[teamIdx].Icon, "%s", GetIconName());
+	state->SquadStates[teamIdx].Name = GetName();
+	state->SquadStates[teamIdx].Icon = GetIconName();
 	state->SquadStates[teamIdx].NumUnits = GetSoldiers()->Count;
 	state->SquadStates[teamIdx].ID = GetID();
 	state->SquadStates[teamIdx].CurrentAction = _currentAction;
-	strcpy(state->SquadStates[teamIdx].Quality, GetQualityDesc());
+	state->SquadStates[teamIdx].Quality = GetQualityDesc();
 	state->SquadStates[teamIdx].SelectedSoldierIdx = _selectedSoldierIdx;
 	for(int j = 0; j < GetSoldiers()->Count; ++j) {
 		GetSoldiers()->Items[j]->UpdateInterfaceState(state, teamIdx, j);
