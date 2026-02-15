@@ -1,12 +1,11 @@
 #include "./Widget.h"
-#include <string.h>
 #include <graphics/Screen.h>
 #include <misc/TGA.h>
 #include <application/Globals.h>
 
-Widget::Widget(char *name, TGA *tga)
+Widget::Widget(const std::string &name, TGA *tga)
 {
-	strcpy(_name, name);
+	_name = name;
 	_tga = tga;
 }
 

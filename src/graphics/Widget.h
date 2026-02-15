@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <misc/Structs.h>
 #include <misc/TGA.h>
 #include <misc/Color.h>
@@ -9,7 +10,7 @@ class Screen;
 class Widget
 {
 public:
-	Widget(char *name, TGA *tga);
+	Widget(const std::string &name, TGA *tga);
 	virtual ~Widget(void);
 
 	// Renders this widget
@@ -20,7 +21,7 @@ public:
 	virtual void Render(Screen *screen, int x, int y, Color *transparentColor);
 
 	// Retrieves the name of this widget
-	inline char *GetName() { return _name; }
+	inline const char *GetName() const { return _name.c_str(); }
 
 	// Clone's this widget
 	Widget *Clone();
@@ -37,7 +38,7 @@ public:
 	inline int GetIndex() { return _index; }
 
 protected:
-	char _name[MAX_NAME];
+	std::string _name;
 	int _index;
 	TGA *_tga;
 };
