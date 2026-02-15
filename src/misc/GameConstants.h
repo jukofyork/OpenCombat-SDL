@@ -11,8 +11,11 @@
 // Scroll repeat configuration
 // Scroll speed in pixels per second when holding arrow keys
 // The actual scroll per frame is calculated as: (SCROLL_SPEED_PPS * dt) / 1000
-#define SCROLL_SPEED_PPS 480
+#define SCROLL_SPEED_PPS 720
 
 // Initial delay in milliseconds before scroll repeat starts
 // Set to 0 to start scrolling immediately when key is held
-#define SCROLL_INITIAL_DELAY_MS 200
+#define SCROLL_INITIAL_DELAY_MS 100
+
+// Single press scroll multiplier (number of tiles to scroll per key press)
+#define KEY_MULTIPLIER_TILES 4

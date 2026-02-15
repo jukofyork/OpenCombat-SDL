@@ -38,6 +38,7 @@ World::World(void)
 	_scrollRight = false;
 	_scrollUp = false;
 	_scrollDown = false;
+	_scrollRepeating = false;
 	_scrollTimer = 0;
 }
 
@@ -354,6 +355,9 @@ World::Simulate(long dt)
 	if(isScrolling) {
 		_scrollTimer += dt;
 		if(_scrollTimer >= SCROLL_INITIAL_DELAY_MS) {
+			// Mark that we've started continuous scrolling
+			_scrollRepeating = true;
+			
 			// Calculate scroll amount based on time delta for frame-rate independent movement
 			int scrollAmount = (SCROLL_SPEED_PPS * dt) / 1000;
 			int newX = _originX;
@@ -837,7 +841,6 @@ World::IssueOrder(Order *order)
 #define KEY_RIGHT		0x27
 #define KEY_UP			0x26
 #define KEY_DOWN		0x28
-#define KEY_MULTIPLIER	4
 void
 World::KeyUp(int key)
 {
@@ -857,24 +860,35 @@ World::KeyUp(int key)
 	}
 	else if(key == KEY_LEFT)
 	{
-		// Update the origin of the world
-		SetOrigin(_originX-KEY_MULTIPLIER*TileSize.w, _originY);
-		_currentMiniMap->Update();
+		// Only do the jump if we weren't continuously scrolling
+		if(!_scrollRepeating) {
+			SetOrigin(_originX-KEY_MULTIPLIER_TILES*TileSize.w, _originY);
+			_currentMiniMap->Update();
+		}
 	}
 	else if(key == KEY_RIGHT)
 	{
-		SetOrigin(_originX+KEY_MULTIPLIER*TileSize.w, _originY);
-		_currentMiniMap->Update();
+		// Only do the jump if we weren't continuously scrolling
+		if(!_scrollRepeating) {
+			SetOrigin(_originX+KEY_MULTIPLIER_TILES*TileSize.w, _originY);
+			_currentMiniMap->Update();
+		}
 	}
 	else if(key == KEY_UP)
 	{
-		SetOrigin(_originX, _originY-KEY_MULTIPLIER*TileSize.h);
-		_currentMiniMap->Update();
+		// Only do the jump if we weren't continuously scrolling
+		if(!_scrollRepeating) {
+			SetOrigin(_originX, _originY-KEY_MULTIPLIER_TILES*TileSize.h);
+			_currentMiniMap->Update();
+		}
 	}
 	else if(key == KEY_DOWN)
 	{
-		SetOrigin(_originX, _originY+KEY_MULTIPLIER*TileSize.h);
-		_currentMiniMap->Update();
+		// Only do the jump if we weren't continuously scrolling
+		if(!_scrollRepeating) {
+			SetOrigin(_originX, _originY+KEY_MULTIPLIER_TILES*TileSize.h);
+			_currentMiniMap->Update();
+		}
 	}
 
 	// Handle scroll key release
@@ -891,9 +905,10 @@ World::KeyUp(int key)
 		_scrollDown = false;
 	}
 
-	// Reset scroll timer if no scroll keys are held
+	// Reset scroll state if no scroll keys are held
 	if(!_scrollLeft && !_scrollRight && !_scrollUp && !_scrollDown) {
 		_scrollTimer = 0;
+		_scrollRepeating = false;
 	}
 }
 

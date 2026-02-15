@@ -247,5 +247,6 @@ protected:
 	bool _scrollRight;
 	bool _scrollUp;
 	bool _scrollDown;
+	bool _scrollRepeating;
 	long _scrollTimer;
 };
