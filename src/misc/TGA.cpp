@@ -40,7 +40,7 @@ TGA::~TGA(void)
 }
 
 TGA *
-TGA::Create(char *fileName)
+TGA::Create(const char *fileName)
 {
 	HEADER header;
 	FILE *fptr;

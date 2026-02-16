@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <misc/Array.h>
 #include <misc/Structs.h>
 #include <misc/TGA.h>
@@ -49,10 +50,10 @@ public:
 	Element *GetTileElement(int i, int j);
 
 	// Gets the mini map name
-	char *GetMiniName() { return _miniName; }
+	const char *GetMiniName() { return _miniName.c_str(); }
 
 	// Gets the overland name
-	char *GetOverlandName() { return _overlandName; }
+	const char *GetOverlandName() { return _overlandName.c_str(); }
 
 	// Moves an object from one tile to another
 	void MoveObject(Object *object, Point *from, Point *to);
@@ -112,6 +113,6 @@ protected:
 	// Victory locations on this map
 	Array<VictoryLocation> _victoryLocations;
 
-	char _miniName[MAX_NAME];
-	char _overlandName[MAX_NAME];
+	std::string _miniName;
+	std::string _overlandName;
 };

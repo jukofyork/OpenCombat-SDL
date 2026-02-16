@@ -8,7 +8,7 @@
 #include <application/Globals.h>
 
 void
-BuildingManager::LoadBuildings(char *fileName, Array<Building> *buildings)
+BuildingManager::LoadBuildings(const char *fileName, Array<Building> *buildings)
 {
 	tinyxml2::XMLDocument doc;
 	if (doc.LoadFile(fileName) != tinyxml2::XML_SUCCESS) {

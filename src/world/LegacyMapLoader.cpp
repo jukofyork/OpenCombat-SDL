@@ -29,7 +29,7 @@ LegacyMapLoader::~LegacyMapLoader(void)
  * Load a legacy map file.
  */
 void
-LegacyMapLoader::Load(char *mapFile)
+LegacyMapLoader::Load(const char *mapFile)
 {
 	std::ifstream fp(mapFile);
 	assert(fp.is_open());

@@ -7,7 +7,7 @@ public:
 	virtual ~LegacyMapLoader(void);
 
 	/* Loads a legacy map file */
-	virtual void Load(char *mapFile);
+	virtual void Load(const char *mapFile);
 
 	/* Retrieves the elements array */
 	virtual unsigned short *GetElements() { return _elements; }

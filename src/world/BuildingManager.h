@@ -9,5 +9,5 @@ class BuildingManager
 {
 public:
 	// Loads a group of widgets into this widget manager
-	static void LoadBuildings(char *fileName, Array<Building> *buildings);
+	static void LoadBuildings(const char *fileName, Array<Building> *buildings);
 };

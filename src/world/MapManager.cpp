@@ -1,6 +1,7 @@
 #include "./MapManager.h"
 #include "misc/tinyxml2.h"
 
+#include <string>
 #include <stdio.h>
 #include <math.h>
 #include <application/Globals.h>
@@ -32,37 +33,37 @@ MapManager::Parse(char *fileName)
     // Parse Map Name
     XMLElement* nameElem = root->FirstChildElement("Name");
     if (nameElem && nameElem->GetText()) {
-        strcpy(attr->Name, nameElem->GetText());
+        attr->Name = nameElem->GetText();
     }
     
     // Parse Background
     XMLElement* bgElem = root->FirstChildElement("Background");
     if (bgElem && bgElem->GetText()) {
-        sprintf(attr->Background, "%s/%s", g_Globals->Application.MapsDirectory, bgElem->GetText());
+        attr->Background = std::string(g_Globals->Application.MapsDirectory) + "/" + bgElem->GetText();
     }
     
     // Parse Buildings
     XMLElement* buildingsElem = root->FirstChildElement("Buildings");
     if (buildingsElem && buildingsElem->GetText()) {
-        sprintf(attr->Buildings, "%s/%s", g_Globals->Application.MapsDirectory, buildingsElem->GetText());
+        attr->Buildings = std::string(g_Globals->Application.MapsDirectory) + "/" + buildingsElem->GetText();
     }
     
     // Parse Elements
     XMLElement* elementsElem = root->FirstChildElement("Elements");
     if (elementsElem && elementsElem->GetText()) {
-        sprintf(attr->Elements, "%s/%s", g_Globals->Application.MapsDirectory, elementsElem->GetText());
+        attr->Elements = std::string(g_Globals->Application.MapsDirectory) + "/" + elementsElem->GetText();
     }
     
     // Parse Mini
     XMLElement* miniElem = root->FirstChildElement("Mini");
     if (miniElem && miniElem->GetText()) {
-        sprintf(attr->Mini, "%s/%s", g_Globals->Application.MapsDirectory, miniElem->GetText());
+        attr->Mini = std::string(g_Globals->Application.MapsDirectory) + "/" + miniElem->GetText();
     }
     
     // Parse Overland
     XMLElement* overlandElem = root->FirstChildElement("Overland");
     if (overlandElem && overlandElem->GetText()) {
-        sprintf(attr->Overland, "%s/%s", g_Globals->Application.MapsDirectory, overlandElem->GetText());
+        attr->Overland = std::string(g_Globals->Application.MapsDirectory) + "/" + overlandElem->GetText();
     }
     
     // Parse Victory Locations

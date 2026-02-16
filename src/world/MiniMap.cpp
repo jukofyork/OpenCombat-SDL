@@ -134,7 +134,7 @@ MiniMap::Render(Screen *screen)
 }
 
 MiniMap *
-MiniMap::Create(char *fileName, World *parentWorld)
+MiniMap::Create(const char *fileName, World *parentWorld)
 {
 	MiniMap *mm = new MiniMap();
 	mm->_tga = TGA::Create(fileName);

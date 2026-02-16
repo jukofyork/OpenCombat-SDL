@@ -1,21 +1,18 @@
 #pragma once
 
+#include <string>
 #include <misc/Structs.h>
 #include <world/VictoryLocation.h>
 #include <misc/Array.h>
 
-#ifndef MAX_NAME
-#define MAX_NAME 256
-#endif
-
 struct MapAttributes
 {
-	char Name[MAX_NAME];
-	char Background[MAX_NAME];
-	char Overland[MAX_NAME];
-	char Mini[MAX_NAME];
-	char Elements[MAX_NAME];
-	char Buildings[MAX_NAME];
+	std::string Name;
+	std::string Background;
+	std::string Overland;
+	std::string Mini;
+	std::string Elements;
+	std::string Buildings;
 	Array<VictoryLocation> VictoryLocations;
 };
 

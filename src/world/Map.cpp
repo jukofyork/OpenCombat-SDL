@@ -197,12 +197,12 @@ Map::Create(char *fileName)
 	
 	MapAttributes *attr = MapManager::Parse(fileName);
 
-	strcpy(m->_miniName, attr->Mini);
-	strcpy(m->_overlandName, attr->Overland);
-	m->_mapImage = TGA::Create(attr->Background);
+	m->_miniName = attr->Mini;
+	m->_overlandName = attr->Overland;
+	m->_mapImage = TGA::Create(attr->Background.c_str());
 	
 	LegacyMapLoader *l = new LegacyMapLoader();
-	l->Load(attr->Elements);
+	l->Load(attr->Elements.c_str());
 	m->_elements = l->GetElements();
 	m->_elevations = l->GetElevations();
 	l->GetNumPixelsPerBlock(&(m->_nPixelsPerBlockX), &(m->_nPixelsPerBlockY));
@@ -211,7 +211,7 @@ Map::Create(char *fileName)
 	m->_buildingIndices = (unsigned short *) calloc(m->_nBlocksX*m->_nBlocksY, sizeof(short));
 
 	// Load the buildings into this map.
-	BuildingManager::LoadBuildings(attr->Buildings, &m->_buildings);
+	BuildingManager::LoadBuildings(attr->Buildings.c_str(), &m->_buildings);
 	
 	// Populate the building indices array
 	m->PopulateBuildingsIndices();
