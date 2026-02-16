@@ -1,5 +1,7 @@
 #pragma once
 
+#include <filesystem>
+
 class Map;
 
 class LineOfSight
@@ -9,7 +11,7 @@ public:
 	virtual ~LineOfSight(void);
 
 	// Exports line of sight information to a file
-	void Export(Map *map, char *fileName);
+	void Export(Map *map, const std::filesystem::path& fileName);
 
 	// Calculates the LOS from (x1,y1) to (x2,y2)
 	bool CalculateLOSForTile(int x1, int y1, int x2, int y2, int *ox, int *oy, int *oz, Map *map);

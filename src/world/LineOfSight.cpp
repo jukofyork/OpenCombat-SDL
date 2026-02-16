@@ -35,14 +35,14 @@ LineOfSight::~LineOfSight(void)
  * Exports the line of sight calculations to another file.
  */
 void
-LineOfSight::Export(Map *map, char *fileName)
+LineOfSight::Export(Map *map, const std::filesystem::path& fileName)
 {
 	// Get the block size of the map
 	int sx, sy;
 	map->GetNumTiles(&sx, &sy);
 
 	// Create the file for exporting
-	FILE *fp = fopen(fileName, "wb");
+	FILE *fp = fopen(fileName.c_str(), "wb");
 
 	// Let's allocate a temporary array for LOS calculations. This array
 	// is large enough to hold the calculations for one tile only.

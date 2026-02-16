@@ -808,11 +808,9 @@ void CSDLApplication::HandleMouseMotion(int x, int y)
 // Name: Status()
 // Desc: Update status text
 //-----------------------------------------------------------------------------
-void CSDLApplication::Status(char *msg)
+void CSDLApplication::Status(const std::string& msg)
 {
-	if(msg) {
-		_statusText = msg;
-	}
+	_statusText = msg;
 }
 
 //-----------------------------------------------------------------------------

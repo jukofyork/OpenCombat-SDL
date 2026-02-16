@@ -131,7 +131,7 @@ EffectManager::LoadEffects(const std::filesystem::path& fileName)
    }
 }
 
-void EffectManager::GetFiles(EffectAttributes *attr, const char *searchStr)
+void EffectManager::GetFiles(EffectAttributes *attr, const std::string& searchStr)
 {
 	std::string searchDir = (g_Globals->Application.GraphicsDirectory / "Effects" / searchStr).string();
 

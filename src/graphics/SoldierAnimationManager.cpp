@@ -6,6 +6,8 @@
 #include <dirent.h>
 #include <string.h>
 #include <string>
+#include <vector>
+#include <algorithm>
 #include <filesystem>
 #include <misc/Color.h>
 #include <misc/Structs.h>
@@ -13,13 +15,6 @@
 #include <application/Globals.h>
 
 using namespace tinyxml2;
-
-// Comparison function for sorting filenames
-static int compareFilenames(const void *a, const void *b) {
-	const char *fa = *(const char **)a;
-	const char *fb = *(const char **)b;
-	return strcmp(fa, fb);
-}
 
 SoldierAnimationManager::SoldierAnimationManager(void)
 {
@@ -106,67 +101,68 @@ SoldierAnimationManager::LoadAnimations(const std::filesystem::path& fileName)
 	}
 	
 	// Replace Windows FindFirstFile with POSIX opendir/readdir
-	Array<char> files;
-	Array<char> masks;
+	std::vector<std::string> files;
+	std::vector<std::string> masks;
 	std::filesystem::path searchPath = g_Globals->Application.GraphicsDirectory / directory / image;
 	std::string searchDirStr = searchPath.string();
-	char searchDir[512];
-	snprintf(searchDir, sizeof(searchDir), "%s", searchDirStr.c_str());
 	
 	// Extract directory portion from search pattern
-	char* lastSlash = strrchr(searchDir, '/');
-	if (lastSlash) {
-		*lastSlash = '\0';
-		char* searchPattern = lastSlash + 1;
+	size_t lastSlashPos = searchDirStr.find_last_of('/');
+	if (lastSlashPos != std::string::npos) {
+		std::string searchDir = searchDirStr.substr(0, lastSlashPos);
 		
-		DIR* dir = opendir(searchDir);
+		DIR* dir = opendir(searchDir.c_str());
 		if (dir) {
 			struct dirent* entry;
 			while ((entry = readdir(dir)) != NULL) {
 				// Skip . and .. entries
 				if (entry->d_name[0] == '.') continue;
 				
-				// Check if filename matches pattern (simplified - check extension match)
-				// The pattern ends with .tga, so we check if file ends with .tga
-				char* fileExt = strrchr(entry->d_name, '.');
-				if (!fileExt) continue;
+				std::string entryName(entry->d_name);
 				
-						// Check for .tga extension (case insensitive)
-						if (strcasecmp(fileExt, ".tga") == 0) {
-							// Check if it starts with 'spr' (sprite files, not 'msk' mask files)
-							if (strncmp(entry->d_name, "spr", 3) == 0) {
-								std::filesystem::path filePath = g_Globals->Application.GraphicsDirectory / directory / entry->d_name;
-								files.Add(strdup(filePath.c_str()));
+				// Check for .tga extension (case insensitive)
+				size_t extPos = entryName.find_last_of('.');
+				if (extPos == std::string::npos) continue;
+				
+				std::string extension = entryName.substr(extPos);
+				// Convert to lowercase for comparison
+				std::transform(extension.begin(), extension.end(), extension.begin(), ::tolower);
+				
+				if (extension == ".tga") {
+					// Check if it starts with 'spr' (sprite files, not 'msk' mask files)
+					if (entryName.substr(0, 3) == "spr") {
+						std::filesystem::path filePath = g_Globals->Application.GraphicsDirectory / directory / entryName;
+						files.push_back(filePath.string());
 
-								// Add mask file (replace first 3 chars 'spr' with 'msk')
-								std::string maskFile = entry->d_name;
-								if (maskFile.length() >= 3) {
-									maskFile[0] = 'm';
-									maskFile[1] = 's';
-									maskFile[2] = 'k';
-								}
-								std::filesystem::path maskPath = g_Globals->Application.GraphicsDirectory / directory / maskFile;
-								masks.Add(strdup(maskPath.c_str()));
-							}
+						// Add mask file (replace first 3 chars 'spr' with 'msk')
+						std::string maskFile = entryName;
+						if (maskFile.length() >= 3) {
+							maskFile[0] = 'm';
+							maskFile[1] = 's';
+							maskFile[2] = 'k';
 						}
+						std::filesystem::path maskPath = g_Globals->Application.GraphicsDirectory / directory / maskFile;
+						masks.push_back(maskPath.string());
+					}
+				}
 			}
 			closedir(dir);
 			
 			// Sort the files array to ensure correct order (readdir doesn't guarantee order)
-			if(files.Count > 0) {
-				qsort(files.Items, files.Count, sizeof(char *), compareFilenames);
-				qsort(masks.Items, masks.Count, sizeof(char *), compareFilenames);
+			if (files.size() > 1) {
+				std::sort(files.begin(), files.end());
+				std::sort(masks.begin(), masks.end());
 			}
 			
 		} else {
-			printf("Failed to open directory: %s\n", searchDir);
+			printf("Failed to open directory: %s\n", searchDir.c_str());
 			assert(0);
 		}
 	}
 
    // Okay, now iterate through all of the animation attributes and create
    // our frames
-	int numFiles = 0;
+	size_t numFiles = 0;
 	for(int i = 0; i < dest.Count; ++i) {
 		Animation *a = new Animation(dest.Items[i]->Name);
 
@@ -178,22 +174,25 @@ SoldierAnimationManager::LoadAnimations(const std::filesystem::path& fileName)
 		for(int j = 0; j < dest.Items[i]->nFrames; ++j) {
 			for(int k = 0; k < dest.Items[i]->nDirections; ++k) {
 				// Create the source tga
-				char *fName = files.Items[numFiles];
-				char *mName = masks.Items[numFiles++];
+				if (numFiles >= files.size()) break;
+				const std::string& fName = files[numFiles];
+				const std::string& mName = masks[numFiles++];
 				TGA *tga = TGA::Create(fName);
 				TGA *mtga = TGA::Create(mName);
 
 				// Let's find the hotspot for this effect. It is encoded in the
-				// filename.
-				char *last = strrchr(fName, '.');
-				*last = '\0';
-				char *second = strrchr(fName, '.');
-				*second = '\0';
-				char *third = strrchr(fName, '.');
-				int x = atoi(third+1);
-				int y = atoi(second+1);
-				tga->SetOrigin(x,y);
-				mtga->SetOrigin(x,y);
+				// filename. Format: spr.XX.YY.tga where XX and YY are coordinates
+				size_t lastDot = fName.find_last_of('.');
+				if (lastDot == std::string::npos) continue;
+				size_t secondDot = fName.find_last_of('.', lastDot - 1);
+				if (secondDot == std::string::npos) continue;
+				size_t thirdDot = fName.find_last_of('.', secondDot - 1);
+				if (thirdDot == std::string::npos) continue;
+				
+				int x = atoi(fName.substr(thirdDot + 1, secondDot - thirdDot - 1).c_str());
+				int y = atoi(fName.substr(secondDot + 1, lastDot - secondDot - 1).c_str());
+				tga->SetOrigin(x, y);
+				mtga->SetOrigin(x, y);
 
 				// Add to our sources
 				_sourceImages.Add(tga);
@@ -205,8 +204,6 @@ SoldierAnimationManager::LoadAnimations(const std::filesystem::path& fileName)
 
 				MaskFrame *frame = new MaskFrame(tga, mtga, dest.Items[i]->Time, tga->GetWidth(), tga->GetHeight(), 0, 0, &c);
 				a->AddFrame(frame, (Direction) (((int)firstDir+k) % NumDirections));
-			
-				delete fName;
 			}
 		}
 		_animations.Add(a);

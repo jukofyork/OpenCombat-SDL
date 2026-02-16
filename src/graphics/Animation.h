@@ -24,7 +24,7 @@ public:
 	void AddFrame(Frame *f, Direction dir);
 
 	// Returns the name of this animation set
-	inline const char *GetName() const { return _name.c_str(); }
+	inline const std::string& GetName() const { return _name; }
 
 	// Clones this object
 	Animation *Clone();

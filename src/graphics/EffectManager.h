@@ -17,7 +17,7 @@ public:
 	void LoadEffects(const std::filesystem::path& fileName);
 	Effect *GetEffect(const std::string &effectName);
 	
-	void GetFiles(EffectAttributes *attr, const char *searchStr);
+	void GetFiles(EffectAttributes *attr, const std::string& searchStr);
 
 protected:
 	// The array of effects

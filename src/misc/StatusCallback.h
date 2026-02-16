@@ -3,5 +3,5 @@
 class StatusCallback
 {
 public:
-	virtual void Status(char *msg) = 0;
+	virtual void Status(const std::string& msg) = 0;
 };

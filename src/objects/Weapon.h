@@ -35,7 +35,7 @@ public:
 
 	// Set and get effects
 	void SetEffect(const std::string &effectName);
-	inline const char *GetEffect(Direction heading) const { return _effects[heading].c_str(); }
+	inline const std::string& GetEffect(Direction heading) const { return _effects[heading]; }
 
 	// Does this weapon cause a big boom?
 	inline bool IsGroundShaker() { return _bGroundShaker; }

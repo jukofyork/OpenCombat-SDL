@@ -431,11 +431,11 @@ Map::GetVictoryLocation(int idx, int *x, int *y, Nationality **nationality)
 	*nationality = g_Globals->World.Nationalities.Items[natIdx];
 }
 
-const char *
+const std::string&
 Map::GetVictoryLocationName(int idx)
 {
 	assert(idx < _victoryLocations.Count);
-	return _victoryLocations.Items[idx]->Name.c_str();
+	return _victoryLocations.Items[idx]->Name;
 }
 
 void

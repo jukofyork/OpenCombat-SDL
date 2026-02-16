@@ -89,7 +89,7 @@ public:
 	void HandleMouseMotion(int x, int y);
 
 	// From StatusCallback
-	virtual void Status(char *msg);
+	virtual void Status(const std::string& msg);
 
 	// Cursor handling
 	void SetGameCursor(int cursorType);

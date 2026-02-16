@@ -35,7 +35,7 @@ public:
 	virtual void Simulate(long dt);
 
 	// Gets the name of this effect
-	inline const char *GetName() const { return _name.c_str(); }
+	inline const std::string& GetName() const { return _name; }
 
 	// Set's the sound for this effect
 	void SetSound(const std::string &name);
