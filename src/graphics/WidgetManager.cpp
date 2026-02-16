@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <string>
+#include <filesystem>
 #include <misc/TGA.h>
 #include <graphics/Widget.h>
 #include <application/Globals.h>
@@ -68,7 +69,7 @@ WidgetManager::LoadWidgets(char *fileName)
 	// our widgets
 	for(int i = 0; i < dest.Count; ++i) {
 		// Create the source TGA file
-		std::string fName = g_Globals->Application.GraphicsDirectory + "/" + dest.Items[i]->GraphicsFile.c_str();
+		std::filesystem::path fName = g_Globals->Application.GraphicsDirectory / dest.Items[i]->GraphicsFile;
 		TGA *tga = TGA::Create(fName.c_str());
 		_sourceImages.Add(tga);
 		Widget *w = new Widget(dest.Items[i]->Name, tga);

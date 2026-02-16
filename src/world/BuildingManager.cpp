@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <string>
+#include <filesystem>
 #include <misc/Structs.h>
 #include <misc/TGA.h>
 #include <world/Building.h>
@@ -68,14 +69,14 @@ BuildingManager::LoadBuildings(const char *fileName, Array<Building> *buildings)
 		// Parse Exterior Graphic
 		tinyxml2::XMLElement* extElem = buildingElem->FirstChildElement("ExteriorGraphic");
 		if (extElem && extElem->GetText()) {
-			std::string path = g_Globals->Application.MapsDirectory + "/" + extElem->GetText();
+			std::filesystem::path path = g_Globals->Application.MapsDirectory / extElem->GetText();
 			building->SetExterior(TGA::Create(path.c_str()));
 		}
 
 		// Parse Interior Graphic
 		tinyxml2::XMLElement* intElem = buildingElem->FirstChildElement("InteriorGraphic");
 		if (intElem && intElem->GetText()) {
-			std::string path = g_Globals->Application.MapsDirectory + "/" + intElem->GetText();
+			std::filesystem::path path = g_Globals->Application.MapsDirectory / intElem->GetText();
 			building->SetInterior(TGA::Create(path.c_str()));
 		}
 		

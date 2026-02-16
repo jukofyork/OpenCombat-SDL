@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <string>
+#include <filesystem>
 #include "../misc/Color.h"
 #include "Screen.h"
 #include "../application/Globals.h"
@@ -27,7 +28,7 @@ TTF_Font*
 FontManager::LoadFont(int pointSize)
 {
 	// Load DejaVu Sans from local project directory
-	std::string fontPath = g_Globals->Application.GraphicsDirectory + "/UI/DejaVuSans.ttf";
+	std::filesystem::path fontPath = g_Globals->Application.GraphicsDirectory / "UI/DejaVuSans.ttf";
 	return TTF_OpenFont(fontPath.c_str(), pointSize);
 }
 

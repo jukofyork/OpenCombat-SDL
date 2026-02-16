@@ -13,6 +13,7 @@
 #include <unistd.h>
 #include <sys/time.h>
 #include <string>
+#include <filesystem>
 
 #include "application/GameApplication.h"
 #include "graphics/Screen.h"
@@ -58,18 +59,13 @@ int main(int argc, char* argv[])
 	Screen::SelfTest();
 
 	// Get the current directory and store it
-	char tempDir[256];
-	if(getcwd(tempDir, sizeof(tempDir)) == NULL) {
-		globals.Application.CurrentDirectory = ".";
-	} else {
-		globals.Application.CurrentDirectory = tempDir;
-	}
-	
+	globals.Application.CurrentDirectory = std::filesystem::current_path();
+
 	// Use portable path separators
-	globals.Application.ConfigDirectory = globals.Application.CurrentDirectory + "/config";
-	globals.Application.GraphicsDirectory = globals.Application.CurrentDirectory + "/graphics";
-	globals.Application.MapsDirectory = globals.Application.CurrentDirectory + "/maps";
-	globals.Application.SoundsDirectory = globals.Application.CurrentDirectory + "/sounds";
+	globals.Application.ConfigDirectory = globals.Application.CurrentDirectory / "config";
+	globals.Application.GraphicsDirectory = globals.Application.CurrentDirectory / "graphics";
+	globals.Application.MapsDirectory = globals.Application.CurrentDirectory / "maps";
+	globals.Application.SoundsDirectory = globals.Application.CurrentDirectory / "sounds";
 
 	// Create and initialize the application
 	CSDLApplication app;
@@ -208,8 +204,8 @@ bool CSDLApplication::CreateWindow()
 	}
 
 	// Load and set window icon
-	std::string iconPath = g_Globals->Application.CurrentDirectory + "/graphics/Resources/app_icon.tga";
-	
+	std::filesystem::path iconPath = g_Globals->Application.CurrentDirectory / "graphics/Resources/app_icon.tga";
+
 	TGA* iconTga = TGA::Create(iconPath.c_str());
 	if(iconTga != NULL) {
 		int width = iconTga->GetWidth();
@@ -887,8 +883,8 @@ bool CSDLApplication::LoadCursors()
 		}
 		
 		// Build full path
-		std::string path = g_Globals->Application.CurrentDirectory + "/" + cursorFiles[i];
-		
+		std::filesystem::path path = g_Globals->Application.CurrentDirectory / cursorFiles[i];
+
 		// Load TGA file
 		TGA* tga = TGA::Create(path.c_str());
 		if(tga == NULL) {

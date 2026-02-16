@@ -2,6 +2,7 @@
 #include "misc/tinyxml2.h"
 
 #include <string>
+#include <filesystem>
 #include <stdio.h>
 #include <math.h>
 #include <misc/TGA.h>
@@ -243,21 +244,21 @@ VehicleManager::GetVehicle(const char *vehicleName)
 
 			// The hull graphics
 			if(_vehicles.Items[i]->Hull.Tga == NULL) {
-				std::string fName = g_Globals->Application.GraphicsDirectory + "/" + _vehicles.Items[i]->Hull.Graphic.c_str();
+				std::filesystem::path fName = g_Globals->Application.GraphicsDirectory / _vehicles.Items[i]->Hull.Graphic;
 				_vehicles.Items[i]->Hull.Tga = TGA::Create(fName.c_str());
 			}
 			v->_hullGraphics = _vehicles.Items[i]->Hull.Tga;
 
 			// The turret graphic
 			if(_vehicles.Items[i]->Turret.Tga == NULL) {
-				std::string fName = g_Globals->Application.GraphicsDirectory + "/" + _vehicles.Items[i]->Turret.Graphic.c_str();
+				std::filesystem::path fName = g_Globals->Application.GraphicsDirectory / _vehicles.Items[i]->Turret.Graphic;
 				_vehicles.Items[i]->Turret.Tga = TGA::Create(fName.c_str());
 			}
 			v->_turretGraphics = _vehicles.Items[i]->Turret.Tga;
 
 			// The wreck graphic
 			if(_vehicles.Items[i]->Wreck.Tga == NULL) {
-				std::string fName = g_Globals->Application.GraphicsDirectory + "/" + _vehicles.Items[i]->Wreck.Graphic.c_str();
+				std::filesystem::path fName = g_Globals->Application.GraphicsDirectory / _vehicles.Items[i]->Wreck.Graphic;
 				_vehicles.Items[i]->Wreck.Tga = TGA::Create(fName.c_str());
 			}
 			v->_wreckGraphics = _vehicles.Items[i]->Wreck.Tga;

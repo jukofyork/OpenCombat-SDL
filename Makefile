@@ -3,8 +3,8 @@
 
 # Compiler
 CXX := g++
-CXXFLAGS := -std=c++11 -Wall -Wextra -O2
-CXXFLAGS_DEBUG := -std=c++11 -Wall -Wextra -g -O0 -DDEBUG
+CXXFLAGS := -std=c++17 -Wall -Wextra -O2
+CXXFLAGS_DEBUG := -std=c++17 -Wall -Wextra -g -O0 -DDEBUG
 
 # SDL2 configuration
 SDL_CFLAGS := $(shell pkg-config --cflags sdl2 SDL2_ttf SDL2_mixer 2>/dev/null || echo "-I/usr/include/SDL2 -D_REENTRANT")

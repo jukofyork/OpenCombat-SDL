@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <string>
+#include <filesystem>
 #include <application/Globals.h>
 
 using namespace tinyxml2;
@@ -55,7 +56,7 @@ Nationality::Load(char *fileName, Array<Nationality> *nationalities)
 		// Load VictoryLocation (flag) image
 		XMLElement* flagElem = natElem->FirstChildElement("VictoryLocation");
 		if (flagElem && flagElem->GetText()) {
-			std::string fullPath = g_Globals->Application.GraphicsDirectory + "/" + flagElem->GetText();
+			std::filesystem::path fullPath = g_Globals->Application.GraphicsDirectory / flagElem->GetText();
 			nationality->VictoryLocation = TGA::Create(fullPath.c_str());
 			if (!nationality->VictoryLocation) {
 				printf("Failed to load victory location image: %s\n", fullPath.c_str());
@@ -65,7 +66,7 @@ Nationality::Load(char *fileName, Array<Nationality> *nationalities)
 		// Load MiniMap icon image
 		XMLElement* miniElem = natElem->FirstChildElement("MiniMap");
 		if (miniElem && miniElem->GetText()) {
-			std::string fullPath = g_Globals->Application.GraphicsDirectory + "/" + miniElem->GetText();
+			std::filesystem::path fullPath = g_Globals->Application.GraphicsDirectory / miniElem->GetText();
 			nationality->MiniMap = TGA::Create(fullPath.c_str());
 			if (!nationality->MiniMap) {
 				printf("Failed to load minimap image: %s\n", fullPath.c_str());

@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>
+#include <filesystem>
 #include <application/CursorInterface.h>
 #include <graphics/Effect.h>
 #include <graphics/Mark.h>
@@ -395,41 +396,41 @@ World::Load(char *fileName, SoldierManager *soldierManager, AnimationManager *an
 	_originY = 0;
 
 	// Initialize the context menu
-	std::string widgetsFile = g_Globals->Application.ConfigDirectory + "/ContextMenuWidgets.xml";
+	std::filesystem::path widgetsFile = g_Globals->Application.ConfigDirectory / "ContextMenuWidgets.xml";
 	_contextMenu->Initialize(const_cast<char*>(widgetsFile.c_str()));
 
 	// Create the element manager
-	widgetsFile = g_Globals->Application.ConfigDirectory + "/Elements.xml";
+	widgetsFile = g_Globals->Application.ConfigDirectory / "Elements.xml";
 	_elementManager = new ElementManager();
 	_elementManager->Load(const_cast<char*>(widgetsFile.c_str()));
 	g_Globals->World.Elements = _elementManager;
 
 	// Create the color manager
-	widgetsFile = g_Globals->Application.ConfigDirectory + "/Colors.xml";
+	widgetsFile = g_Globals->Application.ConfigDirectory / "Colors.xml";
 	_colorManager = new ColorManager();
 	_colorManager->Load(const_cast<char*>(widgetsFile.c_str()));
 
 	// Create the effect manager
 	_effectManager = new EffectManager();
-	widgetsFile = g_Globals->Application.ConfigDirectory + "/Effects.xml";
+	widgetsFile = g_Globals->Application.ConfigDirectory / "Effects.xml";
 	_effectManager->LoadEffects(const_cast<char*>(widgetsFile.c_str()));
 	g_Globals->World.Effects = _effectManager;
 
 	// Create the weapon manager
 	_weaponManager = new WeaponManager();
-	widgetsFile = g_Globals->Application.ConfigDirectory + "/Weapons.xml";
+	widgetsFile = g_Globals->Application.ConfigDirectory / "Weapons.xml";
 	_weaponManager->LoadWeapons(const_cast<char*>(widgetsFile.c_str()));
 	g_Globals->World.Weapons = _weaponManager;
 
 	// Create the vehicle manager
 	// The vehicle manager needs to be created after the weapon manager!
-	widgetsFile = g_Globals->Application.ConfigDirectory + "/Vehicles.xml";
+	widgetsFile = g_Globals->Application.ConfigDirectory / "Vehicles.xml";
 	_vehicleManager = new VehicleManager();
 	_vehicleManager->Load(const_cast<char*>(widgetsFile.c_str()));
 	g_Globals->World.Vehicles = _vehicleManager;
 
 	// Create the squad manager
-	widgetsFile = g_Globals->Application.ConfigDirectory + "/Squads.xml";
+	widgetsFile = g_Globals->Application.ConfigDirectory / "Squads.xml";
 	_squadManager = new SquadManager();
 	_squadManager->LoadSquads(const_cast<char*>(widgetsFile.c_str()));
 	g_Globals->World.Squads = _squadManager;
