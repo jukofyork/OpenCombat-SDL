@@ -51,10 +51,10 @@ public:
 	Element *GetTileElement(int i, int j);
 
 	// Gets the mini map name
-	const char *GetMiniName() { return _miniName.c_str(); }
+	const std::string& GetMiniName() { return _miniName; }
 
 	// Gets the overland name
-	const char *GetOverlandName() { return _overlandName.c_str(); }
+	const std::string& GetOverlandName() { return _overlandName; }
 
 	// Moves an object from one tile to another
 	void MoveObject(Object *object, Point *from, Point *to);

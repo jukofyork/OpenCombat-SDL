@@ -79,10 +79,10 @@ public:
 	inline Bounds *GetMinBounds() { return &_minBounds; }
 
 	// Gets the icon name for this object
-	inline const char *GetIconName() { return _iconName.c_str(); }
+	inline const std::string& GetIconName() { return _iconName; }
 
 	// Gets the name of this object
-	inline const char *GetName() { return _name.c_str(); }
+	inline const std::string& GetName() { return _name; }
 
 	// Gets the unique identifier for this object
 	inline long GetID() { return _id; }

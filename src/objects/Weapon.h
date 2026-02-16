@@ -27,9 +27,9 @@ public:
 	// Simulates this weapon. Updates firing times and stuff like that
 	void Simulate(long dt);
 
-	inline const char *GetName() const { return _name.c_str(); }
+	inline const std::string& GetName() const { return _name; }
 	inline int GetCurrentRounds() { return _numRounds; }
-	inline const char *GetIconName() const { return _iconName.c_str(); }
+	inline const std::string& GetIconName() const { return _iconName; }
 	inline int GetRoundsPerClip() { return _totalRounds; }
 	inline int GetRoundsPerBurst() { return _roundsPerBurst; }
 

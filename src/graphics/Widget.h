@@ -21,7 +21,7 @@ public:
 	virtual void Render(Screen *screen, int x, int y, Color *transparentColor);
 
 	// Retrieves the name of this widget
-	inline const char *GetName() const { return _name.c_str(); }
+	inline const std::string& GetName() const { return _name; }
 
 	// Clone's this widget
 	Widget *Clone();

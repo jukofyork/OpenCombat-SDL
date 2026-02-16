@@ -10,7 +10,7 @@ public:
 	virtual ~Sound(void);
 
 	// Gets the name of this sound
-	inline const char *GetName() const { return _name.c_str(); }
+	inline const std::string& GetName() const { return _name; }
 
 	// Plays this sound
 	void Play();

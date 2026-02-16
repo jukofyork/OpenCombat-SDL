@@ -52,16 +52,16 @@ public:
 	inline void SetSquad(Squad *squad) { _currentSquad = squad; }
 
 	// Gets the personal name of this soldier
-	inline const char *GetPersonalName() { return _personalName.c_str(); }
+	inline const std::string& GetPersonalName() { return _personalName; }
 
 	// Gets the title of this soldier (leader, asst, soldier, etc)
-	inline const char *GetTitle() { return _title.c_str(); }
+	inline const std::string& GetTitle() { return _title; }
 
 	// Set's the title of this soldier
 	void SetTitle(const std::string& title);
 
 	// Sets and gets the rank of this soldier
-	inline const char *GetRank() { return _rank.c_str(); }
+	inline const std::string& GetRank() { return _rank; }
 	void SetRank(const std::string& rank);
 
 	// Sets the camo scheme

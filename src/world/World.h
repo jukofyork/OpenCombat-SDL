@@ -138,10 +138,10 @@ public:
 	InterfaceState State;
 
 	// Gets the name of the mini map for this world
-	const char *GetMiniMapName() { return _currentMap->GetMiniName(); }
+	const std::string& GetMiniMapName() { return _currentMap->GetMiniName(); }
 
 	// Gets the name of the overland map
-	const char *GetOverlandName() { return _currentMap->GetOverlandName(); }
+	const std::string& GetOverlandName() { return _currentMap->GetOverlandName(); }
 
 	// Checks whether or not the tile (i,j) is passable
 	bool IsPassable(int i, int j) { return _currentMap->GetTileElement(i,j)->Passable; }
