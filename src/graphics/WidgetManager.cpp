@@ -27,11 +27,11 @@ WidgetManager::~WidgetManager(void)
 }
 
 void
-WidgetManager::LoadWidgets(char *fileName)
+WidgetManager::LoadWidgets(const std::filesystem::path& fileName)
 {
 	XMLDocument doc;
-	if (doc.LoadFile(fileName) != XML_SUCCESS) {
-		printf("Failed to load widgets file: %s\n", fileName);
+	if (doc.LoadFile(fileName.c_str()) != XML_SUCCESS) {
+		printf("Failed to load widgets file: %s\n", fileName.c_str());
 		return;
 	}
 
@@ -83,10 +83,10 @@ WidgetManager::LoadWidgets(char *fileName)
 }
 
 Widget *
-WidgetManager::GetWidget(char *widgetName)
+WidgetManager::GetWidget(const std::string& widgetName)
 {
 	for(int i = 0; i < _widgets.Count; ++i) {
-		if(strcmp(widgetName, _widgets.Items[i]->GetName()) == 0) {
+		if(widgetName == _widgets.Items[i]->GetName()) {
 			Widget *w = _widgets.Items[i]->Clone();
 			return w;
 		}

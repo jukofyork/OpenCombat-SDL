@@ -1,5 +1,7 @@
 #pragma once
 
+#include <filesystem>
+#include <string>
 #include <misc/Array.h>
 
 class TGA;
@@ -12,10 +14,10 @@ public:
 	virtual ~WidgetManager(void);
 
 	// Loads a group of widgets into this widget manager
-	void LoadWidgets(char *fileName);
+	void LoadWidgets(const std::filesystem::path& fileName);
 
 	// Retrieves a widget from this manager
-	Widget *GetWidget(char *widgetName);
+	Widget *GetWidget(const std::string& widgetName);
 
 	// Retrieves a widget by index
 	Widget *GetWidget(int index);

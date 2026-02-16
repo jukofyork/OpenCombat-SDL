@@ -77,24 +77,24 @@ CombatModule::Initialize(void *app)
 	g_Globals->Application.Status->Status("Loading Combat UI widgets...");
 	_uiManager = new WidgetManager();
 	fileName = g_Globals->Application.ConfigDirectory / "CombatUI.xml";
-	_uiManager->LoadWidgets(const_cast<char*>(fileName.c_str()));
+	_uiManager->LoadWidgets(fileName);
 
 	g_Globals->Application.Status->Status("Loading Combat Icons...");
 	_iconManager = new WidgetManager();
 	fileName = g_Globals->Application.ConfigDirectory / "Icons.xml";
-	_iconManager->LoadWidgets(const_cast<char*>(fileName.c_str()));
+	_iconManager->LoadWidgets(fileName);
 	g_Globals->World.Icons = _iconManager;
 
 	g_Globals->Application.Status->Status("Loading Terrain...");
 	_terrainManager = new WidgetManager();
 	fileName = g_Globals->Application.ConfigDirectory / "Terrain.xml";
-	_terrainManager->LoadWidgets(const_cast<char*>(fileName.c_str()));
+	_terrainManager->LoadWidgets(fileName);
 	g_Globals->World.Terrain = _terrainManager;
 
 	g_Globals->Application.Status->Status("Loading weapon icons...");
 	_weaponIconManager = new WidgetManager();
 	fileName = g_Globals->Application.ConfigDirectory / "WeaponIcons.xml";
-	_weaponIconManager->LoadWidgets(const_cast<char*>(fileName.c_str()));
+	_weaponIconManager->LoadWidgets(fileName);
 
 	Widget *widget = _uiManager->GetWidget("Bottom Background");
 	if(widget) {
@@ -315,7 +315,7 @@ Color white(255,255,255);
 			delete w;
 
 // Do the weapon icon
-			w = _weaponIconManager->GetWidget(const_cast<char*>(_currentWorld->State.SquadStates[_currentWorld->State.SelectedSquad].UnitStates[i].WeaponIcon.c_str()));
+			w = _weaponIconManager->GetWidget(_currentWorld->State.SquadStates[_currentWorld->State.SelectedSquad].UnitStates[i].WeaponIcon);
 			w->Render(screen, x+93, y-dy+18);
 			delete w;
 
@@ -324,7 +324,7 @@ Color white(255,255,255);
 			g_Globals->World.Fonts->Render(screen, rounds.c_str(), x+166, y-dy+18, &white);
 
 // Do the title
-			w = _iconManager->GetWidget(const_cast<char*>(_currentWorld->State.SquadStates[_currentWorld->State.SelectedSquad].UnitStates[i].Title.c_str()));
+			w = _iconManager->GetWidget((_currentWorld->State.SquadStates[_currentWorld->State.SelectedSquad].UnitStates[i].Title.c_str()));
 			w->Render(screen, x+93, y-dy+3);
 			delete w;
 
@@ -360,7 +360,7 @@ Color white(255,255,255);
 
 			// First render the icon
 			// XXX/GWS: This should be done better
-			Widget *w = _iconManager->GetWidget(const_cast<char*>(_currentWorld->State.SquadStates[i].Icon.c_str()));
+			Widget *w = _iconManager->GetWidget((_currentWorld->State.SquadStates[i].Icon.c_str()));
 			w->Render(screen, x+4, y + 3);
 			delete w;
 		
@@ -455,7 +455,7 @@ Color white(255,255,255);
 		_teamBarBlank->GetDepth());
 
 	if(_currentWorld->State.SelectedSquad >= 0) {
-		Widget *w = _iconManager->GetWidget(const_cast<char*>(_currentWorld->State.SquadStates[_currentWorld->State.SelectedSquad].Icon.c_str()));
+		Widget *w = _iconManager->GetWidget((_currentWorld->State.SquadStates[_currentWorld->State.SelectedSquad].Icon.c_str()));
 		w->Render(screen, x+4, y+6);
 		delete w;
 
@@ -488,12 +488,12 @@ Color white(255,255,255);
 
 		// Render the rank
 		Color white(255,255,255);
-		w = _iconManager->GetWidget(const_cast<char*>(_currentWorld->State.SquadStates[_currentWorld->State.SelectedSquad].UnitStates[_currentWorld->State.SquadStates[_currentWorld->State.SelectedSquad].SquadLeaderIdx].Rank.c_str()));
+		w = _iconManager->GetWidget((_currentWorld->State.SquadStates[_currentWorld->State.SelectedSquad].UnitStates[_currentWorld->State.SquadStates[_currentWorld->State.SelectedSquad].SquadLeaderIdx].Rank.c_str()));
 		w->Render(screen, x+47, y+5, &white);
 		delete w;
 
 		// Render the team quality
-		w = _iconManager->GetWidget(const_cast<char*>(_currentWorld->State.SquadStates[_currentWorld->State.SelectedSquad].Quality.c_str()));
+		w = _iconManager->GetWidget((_currentWorld->State.SquadStates[_currentWorld->State.SelectedSquad].Quality.c_str()));
 		w->Render(screen, x+171, y+21);
 		delete w;
 	}

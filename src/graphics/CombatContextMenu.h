@@ -1,5 +1,6 @@
 #pragma once
 
+#include <filesystem>
 #include <misc/Structs.h>
 #include <graphics/WidgetManager.h>
 #include <graphics/Widget.h>
@@ -33,7 +34,7 @@ public:
 	inline bool IsShowing() { return _bShow; }
 
 	// Initializes this context menu
-	void Initialize(char *widgetsFile);
+	void Initialize(const std::filesystem::path& widgetsFile);
 
 	// Set's the state of the context menu choices
 	inline void SetAmbush(bool b) { _canAmbush = b; }

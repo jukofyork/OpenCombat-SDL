@@ -1,5 +1,6 @@
 #include "./CombatContextMenu.h"
 #include <assert.h>
+#include <filesystem>
 #include <graphics/Screen.h>
 
 CombatContextMenu::CombatContextMenu(void)
@@ -21,7 +22,7 @@ CombatContextMenu::~CombatContextMenu(void)
 }
 
 void
-CombatContextMenu::Initialize(char *widgetsFile)
+CombatContextMenu::Initialize(const std::filesystem::path& widgetsFile)
 {
 	_widgetManager->LoadWidgets(widgetsFile);
 

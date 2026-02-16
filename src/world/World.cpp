@@ -397,7 +397,7 @@ World::Load(char *fileName, SoldierManager *soldierManager, AnimationManager *an
 
 	// Initialize the context menu
 	std::filesystem::path widgetsFile = g_Globals->Application.ConfigDirectory / "ContextMenuWidgets.xml";
-	_contextMenu->Initialize(const_cast<char*>(widgetsFile.c_str()));
+	_contextMenu->Initialize(widgetsFile);
 
 	// Create the element manager
 	widgetsFile = g_Globals->Application.ConfigDirectory / "Elements.xml";
