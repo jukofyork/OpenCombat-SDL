@@ -806,13 +806,11 @@ World::Select(int x, int y)
 
 	// Try selecting mobile objects first
 	_currentMap->SelectObjects(x+_originX, y+_originY, &_selectedObjects);
-#if 0
-	for(int i = 0; i < _mobileObjects.Count; ++i) {
-		if(_mobileObjects.Items[i]->Select(x+_originX,y+_originY)) {
-			_selectedObjects.Add(_mobileObjects.Items[i]);
+	for(size_t i = 0; i < _mobileObjects.size(); ++i) {
+		if(_mobileObjects[i]->Select(x+_originX,y+_originY)) {
+			_selectedObjects.push_back(_mobileObjects[i]);
 		}
 	}
-#endif
 }
 
 void
