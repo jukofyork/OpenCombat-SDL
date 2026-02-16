@@ -91,11 +91,15 @@ Vehicle::Simulate(long dt, World *world)
 		Order *order = _orders.front();
 		bool handled = false;
 		switch(order->GetType()) {
-			case Orders::Move:
-				// This is a move order, let's head in that direction
-				_currentAction = Unit::Moving;
-				handled = HandleMoveOrder(dt, (MoveOrder *) order, Moving);
-				break;
+		case Orders::Move:
+		case Orders::MoveFast:
+		case Orders::Sneak:
+			// This is a move order, let's head in that direction
+			// TODO: Move should move tank in reverse (like old Close Combat)
+			// TODO: Sneak should move slower than normal Move
+			_currentAction = Unit::Moving;
+			handled = HandleMoveOrder(dt, (MoveOrder *) order, Moving);
+			break;
 			case Orders::Fire:
 				handled = HandleFireOrder((FireOrder *)order);
 				break;
