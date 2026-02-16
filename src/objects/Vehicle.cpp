@@ -382,16 +382,6 @@ Vehicle::UpdateInterfaceState(InterfaceState *state, int teamIdx, int unitIdx)
 		state->SquadStates[teamIdx].UnitStates[i].NumRounds = _weapons[_crew[i].weaponSlot]->GetCurrentRounds() + _weapons[_crew[i].weaponSlot]->GetRoundsPerClip()*_weaponsNumClips[_crew[i].weaponSlot];
 		state->SquadStates[teamIdx].NumUnits++;
 	}
-
-#if 0
-	strcpy(state->SquadStates[teamIdx].UnitStates[unitIdx].Name, GetPersonalName());
-	state->SquadStates[teamIdx].UnitStates[unitIdx].CurrentAction = GetCurrentAction();
-	state->SquadStates[teamIdx].UnitStates[unitIdx].CurrentStatus = GetCurrentStatus();
-	strcpy(state->SquadStates[teamIdx].UnitStates[unitIdx].WeaponIcon, _primaryWeapon->GetIconName());
-	state->SquadStates[teamIdx].UnitStates[unitIdx].NumRounds = _primaryWeapon->GetCurrentRounds() + _primaryWeapon->GetRoundsPerClip()*_primaryWeaponNumClips;
-	strcpy(state->SquadStates[teamIdx].UnitStates[unitIdx].Title, _title);
-	strcpy(state->SquadStates[teamIdx].UnitStates[unitIdx].Rank, _rank);
-#endif
 }
 
 void 
