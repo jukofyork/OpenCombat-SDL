@@ -527,6 +527,8 @@ World::Load(const std::filesystem::path& fileName, SoldierManager *soldierManage
 	squad = _squadManager->CreateSquad("Panzer IVG", _soldierManager, _vehicleManager, _animationManager, _weaponManager);
 	squad->SetPosition(300, 200);
 	AddObject(squad);
+	squad->SetTeam(g_Globals->World.CurrentPlayer);
+	g_Globals->World.Teams[g_Globals->World.CurrentPlayer].Objects.push_back(squad);
 }
 
 void
