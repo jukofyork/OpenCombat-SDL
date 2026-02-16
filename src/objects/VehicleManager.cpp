@@ -218,61 +218,61 @@ VehicleManager::Load(const std::filesystem::path& fileName)
             }
         }
         
-        _vehicles.Add(vehicle);
+        _vehicles.push_back(vehicle);
     }
 }
 
 Vehicle *
 VehicleManager::GetVehicle(const std::string& vehicleName)
 {
-	for(int i = 0; i < _vehicles.Count; ++i) {
-		if(vehicleName == _vehicles.Items[i]->Name) {
+	for(auto* vehicle : _vehicles) {
+		if(vehicleName == vehicle->Name) {
 			Vehicle *v = new Vehicle();
 		    // Okay, now iterate through all of the widget attributes and create
 		    // our widgets
 			// XXX/GWS: The hardcoded directory here is bad
 
-			v->_name = _vehicles.Items[i]->Name;
-			v->_turretPosition.x = _vehicles.Items[i]->Turret.Position.x;
-			v->_turretPosition.y = _vehicles.Items[i]->Turret.Position.y;
-			v->_turretRotationRate = _vehicles.Items[i]->Turret.RotationRate;
-			v->_hullRotationRate = _vehicles.Items[i]->Hull.RotationRate;
-			v->_muzzlePosition.x = _vehicles.Items[i]->Turret.PrimaryMuzzlePosition.x;
-			v->_muzzlePosition.y = _vehicles.Items[i]->Turret.PrimaryMuzzlePosition.y;
-			v->_maxRoadSpeed = _vehicles.Items[i]->MaxRoadSpeed;
-			v->_acceleration = _vehicles.Items[i]->Acceleration;
+			v->_name = vehicle->Name;
+			v->_turretPosition.x = vehicle->Turret.Position.x;
+			v->_turretPosition.y = vehicle->Turret.Position.y;
+			v->_turretRotationRate = vehicle->Turret.RotationRate;
+			v->_hullRotationRate = vehicle->Hull.RotationRate;
+			v->_muzzlePosition.x = vehicle->Turret.PrimaryMuzzlePosition.x;
+			v->_muzzlePosition.y = vehicle->Turret.PrimaryMuzzlePosition.y;
+			v->_maxRoadSpeed = vehicle->MaxRoadSpeed;
+			v->_acceleration = vehicle->Acceleration;
 
 			// The hull graphics
-			if(_vehicles.Items[i]->Hull.Tga == NULL) {
-				std::filesystem::path fName = g_Globals->Application.GraphicsDirectory / _vehicles.Items[i]->Hull.Graphic;
-				_vehicles.Items[i]->Hull.Tga = TGA::Create(fName);
+			if(vehicle->Hull.Tga == nullptr) {
+				std::filesystem::path fName = g_Globals->Application.GraphicsDirectory / vehicle->Hull.Graphic;
+				vehicle->Hull.Tga = TGA::Create(fName);
 			}
-			v->_hullGraphics = _vehicles.Items[i]->Hull.Tga;
+			v->_hullGraphics = vehicle->Hull.Tga;
 
 			// The turret graphic
-			if(_vehicles.Items[i]->Turret.Tga == NULL) {
-				std::filesystem::path fName = g_Globals->Application.GraphicsDirectory / _vehicles.Items[i]->Turret.Graphic;
-				_vehicles.Items[i]->Turret.Tga = TGA::Create(fName);
+			if(vehicle->Turret.Tga == nullptr) {
+				std::filesystem::path fName = g_Globals->Application.GraphicsDirectory / vehicle->Turret.Graphic;
+				vehicle->Turret.Tga = TGA::Create(fName);
 			}
-			v->_turretGraphics = _vehicles.Items[i]->Turret.Tga;
+			v->_turretGraphics = vehicle->Turret.Tga;
 
 			// The wreck graphic
-			if(_vehicles.Items[i]->Wreck.Tga == NULL) {
-				std::filesystem::path fName = g_Globals->Application.GraphicsDirectory / _vehicles.Items[i]->Wreck.Graphic;
-				_vehicles.Items[i]->Wreck.Tga = TGA::Create(fName);
+			if(vehicle->Wreck.Tga == nullptr) {
+				std::filesystem::path fName = g_Globals->Application.GraphicsDirectory / vehicle->Wreck.Graphic;
+				vehicle->Wreck.Tga = TGA::Create(fName);
 			}
-			v->_wreckGraphics = _vehicles.Items[i]->Wreck.Tga;
+			v->_wreckGraphics = vehicle->Wreck.Tga;
 
 			// Now do all of the weapons
-			for(int j = 0; j < _vehicles.Items[i]->Hull.NumWeapons; ++j)
+			for(int j = 0; j < vehicle->Hull.NumWeapons; ++j)
 			{
-				v->AddWeapon(g_Globals->World.Weapons->GetWeapon(_vehicles.Items[i]->Hull.Weapons[j].Name),
-					_vehicles.Items[i]->Hull.Weapons[j].Slot, _vehicles.Items[i]->Hull.Weapons[j].NumClips, true);
+				v->AddWeapon(g_Globals->World.Weapons->GetWeapon(vehicle->Hull.Weapons[j].Name),
+					vehicle->Hull.Weapons[j].Slot, vehicle->Hull.Weapons[j].NumClips, true);
 			}
-			for(int j = 0; j < _vehicles.Items[i]->Turret.NumWeapons; ++j)
+			for(int j = 0; j < vehicle->Turret.NumWeapons; ++j)
 			{
-				v->AddWeapon(g_Globals->World.Weapons->GetWeapon(_vehicles.Items[i]->Turret.Weapons[j].Name),
-					_vehicles.Items[i]->Turret.Weapons[j].Slot, _vehicles.Items[i]->Turret.Weapons[j].NumClips, false);
+				v->AddWeapon(g_Globals->World.Weapons->GetWeapon(vehicle->Turret.Weapons[j].Name),
+					vehicle->Turret.Weapons[j].Slot, vehicle->Turret.Weapons[j].NumClips, false);
 			}
 
 			// The last weapon is always an empty weapon!!!
@@ -280,5 +280,5 @@ VehicleManager::GetVehicle(const std::string& vehicleName)
 			return v;
 		}
 	}
-	return NULL;
+	return nullptr;
 }

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <filesystem>
-#include <misc/Array.h>
+#include <vector>
 
 class TGA;
 class Vehicle;
@@ -21,6 +21,6 @@ public:
 	Vehicle *GetVehicle(const std::string& vehicleName);
 
 protected:
-	// The array of widgets we are managing
-	Array<VehicleAttributes> _vehicles;
+	// The array of vehicles we are managing
+	std::vector<VehicleAttributes*> _vehicles;
 };
