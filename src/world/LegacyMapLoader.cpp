@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <fstream>
+#include <sstream>
 #include <string>
 #include <filesystem>
 
@@ -68,44 +69,42 @@ LegacyMapLoader::Load(const std::filesystem::path& mapFile)
 	_elevation = (unsigned char *) calloc(_nMacroblocksX*_nMacroblocksY*_nBlocksPerMacroblockX*_nBlocksPerMacroblockY, sizeof(char));
 
 	// Now we are ready to start reading in data
-	for(int j = 0; j < _nMacroblocksY; ++j) 
+	for(int j = 0; j < _nMacroblocksY; ++j)
 	{
 		for(int i = 0; i < _nMacroblocksX; ++i) {
 			// Let's read in this line
 			assert(std::getline(fp, line));
-		
+
 			// Now let's tokenize it based on '\t' characters
 			// and extract all of the elements out first. Our first token
 			// is the index
-			char *buffer = strdup(line.c_str());
-			char *token = strtok(buffer, "\t\r\n");
-			assert(token != NULL);
-			
-			token = strtok(NULL, "\t\r\n");
-			for(int n = 0; n < _nBlocksPerMacroblockY; ++n) 
+			std::stringstream lineStream(line);
+			std::string token;
+
+			// Read and discard the index field
+			assert(std::getline(lineStream, token, '\t'));
+
+			for(int n = 0; n < _nBlocksPerMacroblockY; ++n)
 			{
-				for(int m = 0; m < _nBlocksPerMacroblockX; ++m) 
+				for(int m = 0; m < _nBlocksPerMacroblockX; ++m)
 				{
-					assert(token != NULL);
-					_elements[(n+j*_nBlocksPerMacroblockY)*_nMacroblocksX*_nBlocksPerMacroblockX + m + i*_nBlocksPerMacroblockX] = (unsigned short)atoi(token);
-					token = strtok(NULL, "\t\r\n");
+					assert(std::getline(lineStream, token, '\t'));
+					_elements[(n+j*_nBlocksPerMacroblockY)*_nMacroblocksX*_nBlocksPerMacroblockX + m + i*_nBlocksPerMacroblockX] = (unsigned short)atoi(token.c_str());
 				}
 			}
 
 			// Now read in the elevations
-			for(int n = 0; n < _nBlocksPerMacroblockY; ++n) 
+			for(int n = 0; n < _nBlocksPerMacroblockY; ++n)
 			{
-				for(int m = 0; m < _nBlocksPerMacroblockX; ++m) 
+				for(int m = 0; m < _nBlocksPerMacroblockX; ++m)
 				{
-					assert(token != NULL);
-					_elevation[(n+j*_nBlocksPerMacroblockY)*_nMacroblocksX*_nBlocksPerMacroblockX + m + i*_nBlocksPerMacroblockX] = (unsigned char)atoi(token);
-					token = strtok(NULL, "\t\r\n");
+					assert(std::getline(lineStream, token, '\t'));
+					_elevation[(n+j*_nBlocksPerMacroblockY)*_nMacroblocksX*_nBlocksPerMacroblockX + m + i*_nBlocksPerMacroblockX] = (unsigned char)atoi(token.c_str());
 				}
 			}
 
 			// Now make sure we are at the end of the line
-			assert(token == NULL);
-			free(buffer);
+			assert(!std::getline(lineStream, token, '\t'));
 		}
 	}
 
