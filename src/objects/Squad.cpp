@@ -124,6 +124,8 @@ Squad::Select(int x, int y)
 {
 	for(size_t i = 0; i < _vehicles.size(); ++i) {
 		if(_vehicles[i]->Contains(x,y)) {
+			// Play a sound
+			g_Globals->World.Voices->GetSound("awaiting orders")->Play();
 			_selectedVehicleIdx = static_cast<int>(i);
 			Select(true);
 			return true;

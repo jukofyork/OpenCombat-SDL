@@ -11,6 +11,7 @@
 #include <application/Globals.h>
 #include <orders/DefendOrder.h>
 #include <orders/AmbushOrder.h>
+#include <sound/Sound.h>
 #include <assert.h>
 #include <math.h>
 
@@ -261,7 +262,12 @@ Vehicle::HandleDestinationOrder(MoveOrder *order)
 	dist.x = (float)(Position.x - order->X);
 	dist.y = (float)(Position.y - order->Y);
 
-	if(dist.Magnitude() <= 10.0f) {
+	if(dist.Magnitude() < 5.01f) {
+		// Clear marks and play sound if we're the squad leader (matches infantry behavior)
+		if(IsSquadLeader() && _currentSquad != NULL) {
+			_currentSquad->ClearMarks();
+			g_Globals->World.Voices->GetSound("move completed")->Play();
+		}
 		AddOrder(new StopOrder());
 		return true;
 	}
