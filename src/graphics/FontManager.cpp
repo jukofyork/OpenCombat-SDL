@@ -2,6 +2,7 @@
 #include <SDL2/SDL_ttf.h>
 #include <stdio.h>
 #include <string.h>
+#include <string>
 #include "../misc/Color.h"
 #include "Screen.h"
 #include "../application/Globals.h"
@@ -25,11 +26,9 @@ FontManager::~FontManager(void)
 TTF_Font*
 FontManager::LoadFont(int pointSize)
 {
-	char fontPath[256];
-	
 	// Load DejaVu Sans from local project directory
-	sprintf(fontPath, "%s/UI/DejaVuSans.ttf", g_Globals->Application.GraphicsDirectory);
-	return TTF_OpenFont(fontPath, pointSize);
+	std::string fontPath = g_Globals->Application.GraphicsDirectory + "/UI/DejaVuSans.ttf";
+	return TTF_OpenFont(fontPath.c_str(), pointSize);
 }
 
 void 

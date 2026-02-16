@@ -107,7 +107,7 @@ SoldierAnimationManager::LoadAnimations(char *fileName)
 	Array<char> files;
 	Array<char> masks;
 	char searchDir[512];
-	sprintf(searchDir, "%s/%s/%s", g_Globals->Application.GraphicsDirectory, directory, image);
+	sprintf(searchDir, "%s/%s/%s", g_Globals->Application.GraphicsDirectory.c_str(), directory, image);
 	
 	// Extract directory portion from search pattern
 	char* lastSlash = strrchr(searchDir, '/');
@@ -131,7 +131,7 @@ SoldierAnimationManager::LoadAnimations(char *fileName)
 				if (strcasecmp(fileExt, ".tga") == 0) {
 					// Check if it starts with 'spr' (sprite files, not 'msk' mask files)
 					if (strncmp(entry->d_name, "spr", 3) == 0) {
-						sprintf(searchDir, "%s/%s/%s", g_Globals->Application.GraphicsDirectory, directory, entry->d_name);
+						sprintf(searchDir, "%s/%s/%s", g_Globals->Application.GraphicsDirectory.c_str(), directory, entry->d_name);
 						files.Add(strdup(searchDir));
 						
 						// Add mask file (replace first 3 chars with 'msk')

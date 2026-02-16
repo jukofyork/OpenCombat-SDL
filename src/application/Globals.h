@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 #ifndef UNREFERENCED_PARAMETER
 #define UNREFERENCED_PARAMETER(P) (P)
 #endif
@@ -207,27 +209,27 @@ struct ApplicationGlobals
 	/**
 	 * The current working directory.
 	 */
-	char CurrentDirectory[256];
+	std::string CurrentDirectory;
 
 	/**
 	 * The configuration directory.
 	 */
-	char ConfigDirectory[256];
+	std::string ConfigDirectory;
 
 	/**
 	 * The graphics directory.
 	 */
-	char GraphicsDirectory[256];
+	std::string GraphicsDirectory;
 
 	/**
 	 * The maps directory.
 	 */
-	char MapsDirectory[256];
+	std::string MapsDirectory;
 
 	/**
 	 * The sounds directory.
 	 */
-	char SoundsDirectory[256];
+	std::string SoundsDirectory;
 };
 
 struct Globals

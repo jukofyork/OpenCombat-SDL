@@ -55,7 +55,7 @@ Nationality::Load(char *fileName, Array<Nationality> *nationalities)
 		XMLElement* flagElem = natElem->FirstChildElement("VictoryLocation");
 		if (flagElem && flagElem->GetText()) {
 			char fullPath[256];
-			sprintf(fullPath, "%s/%s", g_Globals->Application.GraphicsDirectory, flagElem->GetText());
+			sprintf(fullPath, "%s/%s", g_Globals->Application.GraphicsDirectory.c_str(), flagElem->GetText());
 			nationality->VictoryLocation = TGA::Create(fullPath);
 			if (!nationality->VictoryLocation) {
 				printf("Failed to load victory location image: %s\n", fullPath);
@@ -66,7 +66,7 @@ Nationality::Load(char *fileName, Array<Nationality> *nationalities)
 		XMLElement* miniElem = natElem->FirstChildElement("MiniMap");
 		if (miniElem && miniElem->GetText()) {
 			char fullPath[256];
-			sprintf(fullPath, "%s/%s", g_Globals->Application.GraphicsDirectory, miniElem->GetText());
+			sprintf(fullPath, "%s/%s", g_Globals->Application.GraphicsDirectory.c_str(), miniElem->GetText());
 			nationality->MiniMap = TGA::Create(fullPath);
 			if (!nationality->MiniMap) {
 				printf("Failed to load minimap image: %s\n", fullPath);

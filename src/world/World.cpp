@@ -398,41 +398,41 @@ World::Load(char *fileName, SoldierManager *soldierManager, AnimationManager *an
 
 	// Initialize the context menu
 	char widgetsFile[256];
-	sprintf(widgetsFile, "%s/ContextMenuWidgets.xml", g_Globals->Application.ConfigDirectory);
+	sprintf(widgetsFile, "%s/ContextMenuWidgets.xml", g_Globals->Application.ConfigDirectory.c_str());
 	_contextMenu->Initialize(widgetsFile);
 
 	// Create the element manager
-	sprintf(widgetsFile, "%s/Elements.xml", g_Globals->Application.ConfigDirectory);
+	sprintf(widgetsFile, "%s/Elements.xml", g_Globals->Application.ConfigDirectory.c_str());
 	_elementManager = new ElementManager();
 	_elementManager->Load(widgetsFile);
 	g_Globals->World.Elements = _elementManager;
 
 	// Create the color manager
-	sprintf(widgetsFile, "%s/Colors.xml", g_Globals->Application.ConfigDirectory);
+	sprintf(widgetsFile, "%s/Colors.xml", g_Globals->Application.ConfigDirectory.c_str());
 	_colorManager = new ColorManager();
 	_colorManager->Load(widgetsFile);
 
 	// Create the effect manager
 	_effectManager = new EffectManager();
-	sprintf(widgetsFile, "%s/Effects.xml", g_Globals->Application.ConfigDirectory);
+	sprintf(widgetsFile, "%s/Effects.xml", g_Globals->Application.ConfigDirectory.c_str());
 	_effectManager->LoadEffects(widgetsFile);
 	g_Globals->World.Effects = _effectManager;
 
 	// Create the weapon manager
 	_weaponManager = new WeaponManager();
-	sprintf(widgetsFile, "%s/Weapons.xml", g_Globals->Application.ConfigDirectory);
+	sprintf(widgetsFile, "%s/Weapons.xml", g_Globals->Application.ConfigDirectory.c_str());
 	_weaponManager->LoadWeapons(widgetsFile);
 	g_Globals->World.Weapons = _weaponManager;
 
 	// Create the vehicle manager
 	// The vehicle manager needs to be created after the weapon manager!
-	sprintf(widgetsFile, "%s/Vehicles.xml", g_Globals->Application.ConfigDirectory);
+	sprintf(widgetsFile, "%s/Vehicles.xml", g_Globals->Application.ConfigDirectory.c_str());
 	_vehicleManager = new VehicleManager();
 	_vehicleManager->Load(widgetsFile);
 	g_Globals->World.Vehicles = _vehicleManager;
 
 	// Create the squad manager
-	sprintf(widgetsFile, "%s/Squads.xml", g_Globals->Application.ConfigDirectory);
+	sprintf(widgetsFile, "%s/Squads.xml", g_Globals->Application.ConfigDirectory.c_str());
 	_squadManager = new SquadManager();
 	_squadManager->LoadSquads(widgetsFile);
 	g_Globals->World.Squads = _squadManager;

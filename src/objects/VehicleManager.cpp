@@ -244,21 +244,21 @@ VehicleManager::GetVehicle(const char *vehicleName)
 
 			// The hull graphics
 			if(_vehicles.Items[i]->Hull.Tga == NULL) {
-				sprintf(fName, "%s/%s", g_Globals->Application.GraphicsDirectory, _vehicles.Items[i]->Hull.Graphic.c_str()); 
+				sprintf(fName, "%s/%s", g_Globals->Application.GraphicsDirectory.c_str(), _vehicles.Items[i]->Hull.Graphic.c_str()); 
 				_vehicles.Items[i]->Hull.Tga = TGA::Create(fName);
 			}
 			v->_hullGraphics = _vehicles.Items[i]->Hull.Tga;
 		
 			// The turret graphic
 			if(_vehicles.Items[i]->Turret.Tga == NULL) {
-				sprintf(fName, "%s/%s", g_Globals->Application.GraphicsDirectory, _vehicles.Items[i]->Turret.Graphic.c_str()); 
+				sprintf(fName, "%s/%s", g_Globals->Application.GraphicsDirectory.c_str(), _vehicles.Items[i]->Turret.Graphic.c_str()); 
 				_vehicles.Items[i]->Turret.Tga = TGA::Create(fName);
 			}
 			v->_turretGraphics = _vehicles.Items[i]->Turret.Tga;
 		
 			// The wreck graphic
 			if(_vehicles.Items[i]->Wreck.Tga == NULL) {
-				sprintf(fName, "%s/%s", g_Globals->Application.GraphicsDirectory, _vehicles.Items[i]->Wreck.Graphic.c_str()); 
+				sprintf(fName, "%s/%s", g_Globals->Application.GraphicsDirectory.c_str(), _vehicles.Items[i]->Wreck.Graphic.c_str()); 
 				_vehicles.Items[i]->Wreck.Tga = TGA::Create(fName);
 			}
 			v->_wreckGraphics = _vehicles.Items[i]->Wreck.Tga;

@@ -12,6 +12,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/time.h>
+#include <string>
 
 #include "application/GameApplication.h"
 #include "graphics/Screen.h"
@@ -57,15 +58,18 @@ int main(int argc, char* argv[])
 	Screen::SelfTest();
 
 	// Get the current directory and store it
-	if(getcwd(globals.Application.CurrentDirectory, 256) == NULL) {
-		strcpy(globals.Application.CurrentDirectory, ".");
+	char tempDir[256];
+	if(getcwd(tempDir, sizeof(tempDir)) == NULL) {
+		globals.Application.CurrentDirectory = ".";
+	} else {
+		globals.Application.CurrentDirectory = tempDir;
 	}
 	
 	// Use portable path separators
-	snprintf(globals.Application.ConfigDirectory, 256, "%s/config", globals.Application.CurrentDirectory);
-	snprintf(globals.Application.GraphicsDirectory, 256, "%s/graphics", globals.Application.CurrentDirectory);
-	snprintf(globals.Application.MapsDirectory, 256, "%s/maps", globals.Application.CurrentDirectory);
-	snprintf(globals.Application.SoundsDirectory, 256, "%s/sounds", globals.Application.CurrentDirectory);
+	globals.Application.ConfigDirectory = globals.Application.CurrentDirectory + "/config";
+	globals.Application.GraphicsDirectory = globals.Application.CurrentDirectory + "/graphics";
+	globals.Application.MapsDirectory = globals.Application.CurrentDirectory + "/maps";
+	globals.Application.SoundsDirectory = globals.Application.CurrentDirectory + "/sounds";
 
 	// Create and initialize the application
 	CSDLApplication app;
@@ -204,11 +208,9 @@ bool CSDLApplication::CreateWindow()
 	}
 
 	// Load and set window icon
-	char iconPath[512];
-	snprintf(iconPath, sizeof(iconPath), "%s/graphics/Resources/app_icon.tga", 
-			g_Globals->Application.CurrentDirectory);
+	std::string iconPath = g_Globals->Application.CurrentDirectory + "/graphics/Resources/app_icon.tga";
 	
-	TGA* iconTga = TGA::Create(iconPath);
+	TGA* iconTga = TGA::Create(iconPath.c_str());
 	if(iconTga != NULL) {
 		int width = iconTga->GetWidth();
 		int height = iconTga->GetHeight();
@@ -886,13 +888,12 @@ bool CSDLApplication::LoadCursors()
 		}
 		
 		// Build full path
-		char path[512];
-		snprintf(path, sizeof(path), "%s/%s", g_Globals->Application.CurrentDirectory, cursorFiles[i]);
+		std::string path = g_Globals->Application.CurrentDirectory + "/" + cursorFiles[i];
 		
 		// Load TGA file
-		TGA* tga = TGA::Create(path);
+		TGA* tga = TGA::Create(path.c_str());
 		if(tga == NULL) {
-			fprintf(stderr, "Failed to load cursor: %s\n", path);
+			fprintf(stderr, "Failed to load cursor: %s\n", path.c_str());
 			_cursors[i] = NULL;
 			continue;
 		}
@@ -900,11 +901,10 @@ bool CSDLApplication::LoadCursors()
 		// Get TGA properties
 		int width = tga->GetWidth();
 		int height = tga->GetHeight();
-		int depth = tga->GetDepth();
 		unsigned char* data = tga->GetData();
 		
 		if(width <= 0 || height <= 0 || data == NULL) {
-			fprintf(stderr, "Invalid cursor data: %s\n", path);
+			fprintf(stderr, "Invalid cursor data: %s\n", path.c_str());
 			delete tga;
 			_cursors[i] = NULL;
 			continue;

@@ -70,7 +70,7 @@ WidgetManager::LoadWidgets(char *fileName)
 
 	for(int i = 0; i < dest.Count; ++i) {
 		// Create the source TGA file
-		sprintf(fName, "%s/%s", g_Globals->Application.GraphicsDirectory, dest.Items[i]->GraphicsFile.c_str()); 
+		sprintf(fName, "%s/%s", g_Globals->Application.GraphicsDirectory.c_str(), dest.Items[i]->GraphicsFile.c_str()); 
 		TGA *tga = TGA::Create(fName);
 		_sourceImages.Add(tga);
 		Widget *w = new Widget(dest.Items[i]->Name, tga);

@@ -68,7 +68,7 @@ BuildingManager::LoadBuildings(const char *fileName, Array<Building> *buildings)
 		tinyxml2::XMLElement* extElem = buildingElem->FirstChildElement("ExteriorGraphic");
 		if (extElem && extElem->GetText()) {
 			char path[256];
-			sprintf(path, "%s/%s", g_Globals->Application.MapsDirectory, extElem->GetText());
+			sprintf(path, "%s/%s", g_Globals->Application.MapsDirectory.c_str(), extElem->GetText());
 			building->SetExterior(TGA::Create(path));
 		}
 		
@@ -76,7 +76,7 @@ BuildingManager::LoadBuildings(const char *fileName, Array<Building> *buildings)
 		tinyxml2::XMLElement* intElem = buildingElem->FirstChildElement("InteriorGraphic");
 		if (intElem && intElem->GetText()) {
 			char path[256];
-			sprintf(path, "%s/%s", g_Globals->Application.MapsDirectory, intElem->GetText());
+			sprintf(path, "%s/%s", g_Globals->Application.MapsDirectory.c_str(), intElem->GetText());
 			building->SetInterior(TGA::Create(path));
 		}
 		
