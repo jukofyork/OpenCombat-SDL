@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <string>
+#include <vector>
 #include <fstream>
 #include <sstream>
 #include <filesystem>
@@ -21,14 +22,14 @@ static std::string trim(const std::string &s)
 }
 
 // Helper to split a string by delimiter
-static void split(const std::string &s, char delim, Array<char> &result)
+static void split(const std::string &s, char delim, std::vector<std::string> &result)
 {
 	std::stringstream ss(s);
 	std::string item;
 	while (std::getline(ss, item, delim)) {
 		std::string trimmed = trim(item);
 		if (!trimmed.empty()) {
-			result.Add(strdup(trimmed.c_str()));
+			result.push_back(trimmed);
 		}
 	}
 }
@@ -37,8 +38,8 @@ void
 SoldierActionLoader::Load(const std::filesystem::path& fileName, ObjectActions *actions)
 {
 	std::string line;
-	Array<char> reqs;
-	Array<char> changes;
+	std::vector<std::string> reqs;
+	std::vector<std::string> changes;
 
 	// We cannot load our actions if we do not already have a bunch of states
 	assert(g_Globals->World.States.Soldiers.NumStates > 0);
@@ -96,22 +97,21 @@ SoldierActionLoader::Load(const std::filesystem::path& fileName, ObjectActions *
 		action->NumSubtracts = 0;
 
 		// Let's get our requirements
-		reqs.Clear();
+		reqs.clear();
 		if (values[3] != "nil") {
 			split(values[3], ',', reqs);
 		}
 		
-		action->NumRequirements = reqs.Count;
+		action->NumRequirements = (int)reqs.size();
 		action->Requirements = (ObjectActions::StateIdx *) calloc(action->NumRequirements, sizeof(ObjectActions::StateIdx));
-		for(i = 0; i < reqs.Count; ++i)
+		for(i = 0; i < (int)reqs.size(); ++i)
 		{
-			action->Requirements[i] = find_state(reqs.Items[i]);
-			free(reqs.Items[i]);
+			action->Requirements[i] = find_state(reqs[i]);
 		}
 
 		// Let's get our changes
 		int nAdds=0,nSubtracts=0;
-		changes.Clear();
+		changes.clear();
 		std::stringstream changesStream(values[4]);
 		while (std::getline(changesStream, token, ','))
 		{
@@ -119,12 +119,12 @@ SoldierActionLoader::Load(const std::filesystem::path& fileName, ObjectActions *
 			if(!trimmed.empty() && trimmed[0] == '+')
 			{
 				++nAdds;
-				changes.Add(strdup(trimmed.c_str()));
-			} 
+				changes.push_back(trimmed);
+			}
 			else if(!trimmed.empty() && trimmed[0] == '-')
 			{
 				++nSubtracts;
-				changes.Add(strdup(trimmed.c_str()));
+				changes.push_back(trimmed);
 			}
 			// Ignore anything else
 		}
@@ -133,22 +133,23 @@ SoldierActionLoader::Load(const std::filesystem::path& fileName, ObjectActions *
 		action->Adds = (ObjectActions::StateIdx *)calloc(nAdds, sizeof(ObjectActions::StateIdx));
 		action->NumSubtracts = 0;
 		action->Subtracts = (ObjectActions::StateIdx *)calloc(nSubtracts, sizeof(ObjectActions::StateIdx));
-		for(i = 0; i < changes.Count; ++i)
+		for(i = 0; i < (int)changes.size(); ++i)
 		{
-			char *p = changes.Items[i];
-			if(*p == '+')
+			const std::string& changeStr = changes[i];
+			char op = changeStr[0];
+			std::string stateName = changeStr.substr(1);
+			if(op == '+')
 			{
-				action->Adds[action->NumAdds++] = find_state(p+1);
+				action->Adds[action->NumAdds++] = find_state(stateName);
 			}
-			else if(*p == '-')
+			else if(op == '-')
 			{
-				action->Subtracts[action->NumSubtracts++] = find_state(p+1);
+				action->Subtracts[action->NumSubtracts++] = find_state(stateName);
 			}
 			else
 			{
 				assert(0);
 			}
-			free(p);
 		}
 	}
 	fp.close();
