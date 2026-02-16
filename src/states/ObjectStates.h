@@ -1,11 +1,13 @@
 #pragma once
 
+#include <string>
+#include <vector>
+
 class ObjectStates
 {
 public:
-	int *States;
-	char **StateNames;
-	int NumStates;
+	std::vector<int> States;
+	std::vector<std::string> StateNames;
 };
 
 // This enum must correspond exactly to the SoldierStates.txt file!

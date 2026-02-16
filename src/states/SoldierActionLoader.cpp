@@ -42,7 +42,7 @@ SoldierActionLoader::Load(const std::filesystem::path& fileName, ObjectActions *
 	std::vector<std::string> changes;
 
 	// We cannot load our actions if we do not already have a bunch of states
-	assert(g_Globals->World.States.Soldiers.NumStates > 0);
+	assert(g_Globals->World.States.Soldiers.StateNames.size() > 0);
 
 	// Let's loop through our input file
 	std::ifstream fp(fileName.c_str());
@@ -157,14 +157,14 @@ SoldierActionLoader::Load(const std::filesystem::path& fileName, ObjectActions *
 	fp.close();
 }
 
-ObjectActions::StateIdx 
+ObjectActions::StateIdx
 find_state(const std::string& stateName)
 {
-	for(int i = 0; i < g_Globals->World.States.Soldiers.NumStates; ++i)
+	for(size_t i = 0; i < g_Globals->World.States.Soldiers.StateNames.size(); ++i)
 	{
 		if(stateName == g_Globals->World.States.Soldiers.StateNames[i])
 		{
-			return i;
+			return (ObjectActions::StateIdx)i;
 		}
 	}
 	assert(0);

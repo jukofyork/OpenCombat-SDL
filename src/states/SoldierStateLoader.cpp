@@ -1,6 +1,6 @@
 #include <states/SoldierStateLoader.h>
-#include <misc/Array.h>
 #include <string>
+#include <vector>
 #include <fstream>
 #include <filesystem>
 
@@ -18,7 +18,6 @@ void
 SoldierStateLoader::Load(const std::filesystem::path& fileName, ObjectStates *states)
 {
 	std::string line;
-	Array<char> stateNames;
 
 	// We need to read in the file and load the states deal thing
 	std::ifstream fp(fileName.c_str());
@@ -26,17 +25,9 @@ SoldierStateLoader::Load(const std::filesystem::path& fileName, ObjectStates *st
 		// Let's trim our string
 		std::string trimmed = trim(line);
 		if(!trimmed.empty()) {
-			stateNames.Add(strdup(trimmed.c_str()));
+			states->StateNames.push_back(trimmed);
+			states->States.push_back((int)states->States.size());
 		}
 	}
 	fp.close();
-
-	// Now go back through the array and add to our dest
-	states->NumStates = stateNames.Count;
-	states->StateNames = (char **) calloc(states->NumStates, sizeof(char *));
-	states->States = (int *) calloc(states->NumStates, sizeof(int));
-	for(int i = 0; i < stateNames.Count; ++i) {
-		states->States[i] = i;
-		states->StateNames[i] = stateNames.Items[i];
-	}
 }
