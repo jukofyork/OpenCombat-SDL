@@ -1,6 +1,6 @@
 #include "ColorManager.h"
 #include "misc/tinyxml2.h"
-#include <misc/Array.h>
+#include <vector>
 #include <stdio.h>
 #include <string>
 #include <filesystem>
@@ -45,7 +45,7 @@ ColorManager::Load(const std::filesystem::path& configFile)
 		return;
 	}
 	
-	Array<ColorAttributes> dest;
+	std::vector<ColorAttributes> dest;
 	
 	XMLElement* root = doc.FirstChildElement("Colors");
 	if (!root) return;
@@ -54,44 +54,43 @@ ColorManager::Load(const std::filesystem::path& configFile)
 		 colorElem != nullptr; 
 		 colorElem = colorElem->NextSiblingElement("Color")) 
 	{
-		ColorAttributes* attr = new ColorAttributes();
-		attr->a = attr->r = attr->g = attr->b = 0;
+		ColorAttributes attr;
+		attr.a = attr.r = attr.g = attr.b = 0;
 		
 		XMLElement* nameElem = colorElem->FirstChildElement("Name");
 		if (nameElem && nameElem->GetText()) {
-			attr->Name = nameElem->GetText();
+			attr.Name = nameElem->GetText();
 		}
 		
 		XMLElement* alphaElem = colorElem->FirstChildElement("Alpha");
 		if (alphaElem && alphaElem->GetText()) {
-			attr->a = atoi(alphaElem->GetText());
+			attr.a = atoi(alphaElem->GetText());
 		}
 		
 		XMLElement* redElem = colorElem->FirstChildElement("Red");
 		if (redElem && redElem->GetText()) {
-			attr->r = atoi(redElem->GetText());
+			attr.r = atoi(redElem->GetText());
 		}
 		
 		XMLElement* greenElem = colorElem->FirstChildElement("Green");
 		if (greenElem && greenElem->GetText()) {
-			attr->g = atoi(greenElem->GetText());
+			attr.g = atoi(greenElem->GetText());
 		}
 		
 		XMLElement* blueElem = colorElem->FirstChildElement("Blue");
 		if (blueElem && blueElem->GetText()) {
-			attr->b = atoi(blueElem->GetText());
+			attr.b = atoi(blueElem->GetText());
 		}
 		
-		dest.Add(attr);
+		dest.push_back(attr);
 	}
 	
-	for(int i = 0; i < dest.Count; ++i) {
-		ColorAttributes *attr = dest.Items[i];
-		_colors[_nColors].alpha = (unsigned char)attr->a;
-		_colors[_nColors].red = (unsigned char)attr->r;
-		_colors[_nColors].green = (unsigned char)attr->g;
-		_colors[_nColors].blue = (unsigned char)attr->b;
-		_names[_nColors++] = attr->Name;
-		delete attr;
+	for(size_t i = 0; i < dest.size(); ++i) {
+		const ColorAttributes &attr = dest[i];
+		_colors[_nColors].alpha = (unsigned char)attr.a;
+		_colors[_nColors].red = (unsigned char)attr.r;
+		_colors[_nColors].green = (unsigned char)attr.g;
+		_colors[_nColors].blue = (unsigned char)attr.b;
+		_names[_nColors++] = attr.Name;
 	}
 }
