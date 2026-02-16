@@ -35,7 +35,7 @@ WidgetManager::LoadWidgets(const std::filesystem::path& fileName)
 		return;
 	}
 
-	Array<WidgetAttributes> dest;
+	std::vector<WidgetAttributes> dest;
 
 	XMLElement* root = doc.FirstChildElement("Widgets");
 	if (!root) return;
@@ -44,54 +44,53 @@ WidgetManager::LoadWidgets(const std::filesystem::path& fileName)
 		 widgetElem != nullptr; 
 		 widgetElem = widgetElem->NextSiblingElement("Widget")) 
 	{
-		WidgetAttributes* attr = new WidgetAttributes();
-		attr->Index = -1;
+		WidgetAttributes attr;
+		attr.Index = -1;
 
 		XMLElement* nameElem = widgetElem->FirstChildElement("Name");
 		if (nameElem && nameElem->GetText()) {
-			attr->Name = nameElem->GetText();
+			attr.Name = nameElem->GetText();
 		}
 
 		XMLElement* graphicElem = widgetElem->FirstChildElement("Graphic");
 		if (graphicElem && graphicElem->GetText()) {
-			attr->GraphicsFile = graphicElem->GetText();
+			attr.GraphicsFile = graphicElem->GetText();
 		}
 
 		XMLElement* indexElem = widgetElem->FirstChildElement("Index");
 		if (indexElem && indexElem->GetText()) {
-			attr->Index = atoi(indexElem->GetText());
+			attr.Index = atoi(indexElem->GetText());
 		}
 
-		dest.Add(attr);
+		dest.push_back(attr);
 	}
 
 	// Okay, now iterate through all of the widget attributes and create
 	// our widgets
-	for(int i = 0; i < dest.Count; ++i) {
+	for(size_t i = 0; i < dest.size(); ++i) {
 		// Create the source TGA file
-		std::filesystem::path fName = g_Globals->Application.GraphicsDirectory / dest.Items[i]->GraphicsFile;
+		std::filesystem::path fName = g_Globals->Application.GraphicsDirectory / dest[i].GraphicsFile;
 		TGA *tga = TGA::Create(fName.c_str());
-		_sourceImages.Add(tga);
-		Widget *w = new Widget(dest.Items[i]->Name, tga);
-		if(dest.Items[i]->Index == -1) {
-			w->SetIndex(i);
+		_sourceImages.push_back(tga);
+		Widget *w = new Widget(dest[i].Name, tga);
+		if(dest[i].Index == -1) {
+			w->SetIndex(static_cast<int>(i));
 		} else {
-			w->SetIndex(dest.Items[i]->Index);
+			w->SetIndex(dest[i].Index);
 		}
-		_widgets.Add(w);
+		_widgets.push_back(w);
 	}
 }
 
 Widget *
 WidgetManager::GetWidget(const std::string& widgetName)
 {
-	for(int i = 0; i < _widgets.Count; ++i) {
-		if(widgetName == _widgets.Items[i]->GetName()) {
-			Widget *w = _widgets.Items[i]->Clone();
-			return w;
+	for(auto* widget : _widgets) {
+		if(widgetName == widget->GetName()) {
+			return widget->Clone();
 		}
 	}
-	return NULL;
+	return nullptr;
 }
 
 Widget *
@@ -103,15 +102,14 @@ WidgetManager::GetWidget(int index)
 Widget *
 WidgetManager::GetWidget(int index, bool clone)
 {
-	for(int i = 0; i < _widgets.Count; ++i) {
-		if(index == _widgets.Items[i]->GetIndex()) {
+	for(auto* widget : _widgets) {
+		if(index == widget->GetIndex()) {
 			if(clone) {
-				Widget *w = _widgets.Items[i]->Clone();
-				return w;
+				return widget->Clone();
 			} else {
-				return _widgets.Items[i];
+				return widget;
 			}
 		}
 	}
-	return NULL;
+	return nullptr;
 }

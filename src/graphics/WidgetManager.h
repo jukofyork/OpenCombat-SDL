@@ -2,7 +2,7 @@
 
 #include <filesystem>
 #include <string>
-#include <misc/Array.h>
+#include <vector>
 
 class TGA;
 class Widget;
@@ -25,8 +25,8 @@ public:
 
 protected:
 	// The array of widgets we are managing
-	Array<Widget> _widgets;
+	std::vector<Widget*> _widgets;
 
 	// The array of source images for these widgets
-	Array<TGA> _sourceImages;
+	std::vector<TGA*> _sourceImages;
 };
