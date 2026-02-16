@@ -284,19 +284,16 @@ World::Render(Screen *screen, Rect *clip)
 				c.blue = 0;
 				c.green = 255;
 				screen->DrawLine(_rangerX, _rangerY, screen->GetCursorX(), screen->GetCursorY(), 3, &c);
-			char msg[64];
 			Vector2 v;
 			v.x = (float)(screen->GetCursorX()-_rangerX);
 			v.y = (float)(screen->GetCursorY()- _rangerX);
-			sprintf(msg, "%dm", (int)v.Magnitude()/g_Globals->World.Constants.PixelsPerMeter);
+			std::string msg = std::to_string((int)v.Magnitude()/g_Globals->World.Constants.PixelsPerMeter) + "m";
 			// Position text just outside SE corner of 32x32 cursor
 			// Cursor is 32x32 centered on hotspot, so corners are at +/-16
 			// Text goes at (16+2, 16+2) = (18, 18) from center for small margin
 			const int textOffset = 10;
-			g_Globals->World.Fonts->Render(screen, msg, screen->GetCursorX() + textOffset, screen->GetCursorY() + textOffset, &white);
+			g_Globals->World.Fonts->Render(screen, msg.c_str(), screen->GetCursorX() + textOffset, screen->GetCursorY() + textOffset, &white);
 		} else {
-			char msg[64];
-
 			// Find the distance to the blocked element
 			Vector2 vb;
 			vb.x = (float)((ox*10+5)-x0*10);
@@ -313,18 +310,18 @@ World::Render(Screen *screen, Rect *clip)
 			Vector2 v;
 			v.x = (float)(bx-_rangerX);
 			v.y = (float)(by-_rangerY);
-			sprintf(msg, "%dm", (int)v.Magnitude()/g_Globals->World.Constants.PixelsPerMeter);
+			std::string msg = std::to_string((int)v.Magnitude()/g_Globals->World.Constants.PixelsPerMeter) + "m";
 			// Position text at SE corner of blocked line end
 			const int textOffset = 10;
-			g_Globals->World.Fonts->Render(screen, msg, bx + textOffset, by + textOffset, &white);
+			g_Globals->World.Fonts->Render(screen, msg.c_str(), bx + textOffset, by + textOffset, &white);
 				c.red = 0;
 				c.blue = 0;
 				c.green = 255;
 				screen->DrawLine(_rangerX, _rangerY, bx, by, 3, &c);
 				v.x = (float)(screen->GetCursorX()-_rangerX);
 				v.y = (float)(screen->GetCursorY()- _rangerX);
-				sprintf(msg, "%dm", (int)v.Magnitude()/g_Globals->World.Constants.PixelsPerMeter);
-				g_Globals->World.Fonts->Render(screen, msg, screen->GetCursorX() + textOffset, screen->GetCursorY() + textOffset, &white);
+				msg = std::to_string((int)v.Magnitude()/g_Globals->World.Constants.PixelsPerMeter) + "m";
+				g_Globals->World.Fonts->Render(screen, msg.c_str(), screen->GetCursorX() + textOffset, screen->GetCursorY() + textOffset, &white);
 				c.red = 255;
 				c.blue = 0;
 				c.green = 0;
