@@ -150,7 +150,7 @@ SoldierActionHandlers::ProneFireActionHandler(Soldier *soldier, Action *action, 
 
 		soldier->_weapons[soldier->_currentWeaponIdx]->Fire();
 		soldier->_currentAction = Unit::Firing;
-		soldier->_effects.Add(g_Globals->World.Effects->GetEffect(soldier->_weapons[soldier->_currentWeaponIdx]->GetEffect(soldier->_currentHeading)));
+		soldier->_effects.push_back(std::unique_ptr<Effect>(g_Globals->World.Effects->GetEffect(soldier->_weapons[soldier->_currentWeaponIdx]->GetEffect(soldier->_currentHeading))));
 	} 
 	else if(soldier->_weapons[soldier->_currentWeaponIdx]->IsEmpty()) 
 	{

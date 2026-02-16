@@ -53,20 +53,19 @@ Vehicle::Render(Screen *screen, Rect *clip)
 		_turretGraphics->GetOriginX(), _turretGraphics->GetOriginY(), _currentTurretAngle);
 
 	// Render any effects
-	for(int i = 0; i < _effects.Count; ++i) {
-		Effect *e = _effects.Items[i];
-		if(e->IsDynamic()) {
+	for(auto& effect : _effects) {
+		if(effect->IsDynamic()) {
 			// Set the positions
-			if(e->IsPlaceOnTurret()) {
+			if(effect->IsPlaceOnTurret()) {
 				// Find out my turret position
 				Point p;
 				Utilities::Rotate(&p, &_muzzlePosition, _currentTurretAngle);
-				e->SetPosition(Position.x-screen->Origin.x-p.x, Position.y- screen->Origin.x-p.y);
+				effect->SetPosition(Position.x-screen->Origin.x-p.x, Position.y- screen->Origin.x-p.y);
 			} else {
-				e->SetPosition(Position.x, Position.y);
+				effect->SetPosition(Position.x, Position.y);
 			}
 		}
-		_effects.Items[i]->Render(screen);
+		effect->Render(screen);
 	}
 
 	if(IsHighlighted()) {
@@ -142,12 +141,13 @@ Vehicle::Simulate(long dt, World *world)
 	// Let's do our movement
 	PlanMovement(dt);
 
-	// Update any effects
-	for(int i = 0; i < _effects.Count; ++i) {
-		_effects.Items[i]->Simulate(dt);
-		if(_effects.Items[i]->IsCompleted()) {
-			delete _effects.RemoveAt(i);
-			--i;
+	// Update any effects (erase-remove idiom for unique_ptr)
+	for(auto it = _effects.begin(); it != _effects.end(); ) {
+		(*it)->Simulate(dt);
+		if((*it)->IsCompleted()) {
+			it = _effects.erase(it);
+		} else {
+			++it;
 		}
 	}
 
@@ -397,12 +397,12 @@ Vehicle::Shoot(Weapon *weapon, Object *target, Target::Type targetType, int targ
 			
 	_currentState = State::Firing;
 	_currentAction = Unit::Firing;
-	_effects.Add(g_Globals->World.Effects->GetEffect(weapon->GetEffect(effectHeading)));
+	_effects.push_back(std::unique_ptr<Effect>(g_Globals->World.Effects->GetEffect(weapon->GetEffect(effectHeading))));
 
 	if(weapon->IsGroundShaker()) {
 		Effect *e = g_Globals->World.Effects->GetEffect("Dust Cloud");
 		e->SetPosition(Position.x, Position.y);
-		_effects.Add(e);
+		_effects.push_back(std::unique_ptr<Effect>(e));
 	}
 }
 

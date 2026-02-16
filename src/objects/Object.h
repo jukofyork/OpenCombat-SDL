@@ -1,9 +1,10 @@
 #pragma once
 
 #include <deque>
+#include <memory>
 #include <string>
+#include <vector>
 
-#include <misc/Array.h>
 #include <misc/Structs.h>
 #include <objects/Status.h>
 #include <objects/Target.h>
@@ -11,12 +12,12 @@
 #include <states/Action.h>
 #include <objects/Formation.h>
 #include <world/Element.h>
+#include <graphics/Effect.h>
 
 class Screen;
 class Order;
 class World;
 class InterfaceState;
-class Effect;
 class Squad;
 struct Action;
 
@@ -168,8 +169,8 @@ protected:
 	// A unique ID for this object
 	long _id;
 
-	// All effects on this object
-	Array<Effect> _effects;
+	// All effects on this object (owned by Object)
+	std::vector<std::unique_ptr<Effect>> _effects;
 
 	// The target type of this object
 	Target::Type _type;

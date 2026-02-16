@@ -81,13 +81,12 @@ Soldier::Render(Screen *screen, Rect *clip)
 	}
 
 	// Render any effects
-	for(int i = 0; i < _effects.Count; ++i) {
-		Effect *e = _effects.Items[i];
-		if(e->IsDynamic()) {
+	for(auto& effect : _effects) {
+		if(effect->IsDynamic()) {
 			// Set the positions
-			e->SetPosition(Position.x, Position.y);
+			effect->SetPosition(Position.x, Position.y);
 		}
-		_effects.Items[i]->Render(screen);
+		effect->Render(screen);
 	}
 }
 
@@ -198,12 +197,13 @@ Soldier::Simulate(long dt, World *world)
 		}
 	}
 
-	// Update any effects
-	for(int i = 0; i < _effects.Count; ++i) {
-		_effects.Items[i]->Simulate(dt);
-		if(_effects.Items[i]->IsCompleted()) {
-			delete _effects.RemoveAt(i);
-			--i;
+	// Update any effects (erase-remove idiom for unique_ptr)
+	for(auto it = _effects.begin(); it != _effects.end(); ) {
+		(*it)->Simulate(dt);
+		if((*it)->IsCompleted()) {
+			it = _effects.erase(it);
+		} else {
+			++it;
 		}
 	}
 }
@@ -533,7 +533,7 @@ Soldier::Shoot(Weapon *weapon, Object *target, Target::Type targetType, int targ
 	weapon->Fire();
 	_currentState.Set(SoldierState::Firing);
 	_currentAction = Unit::Firing;
-	_effects.Add(g_Globals->World.Effects->GetEffect(weapon->GetEffect(_currentHeading)));
+	_effects.push_back(std::unique_ptr<Effect>(g_Globals->World.Effects->GetEffect(weapon->GetEffect(_currentHeading))));
 }
 
 // Let's calculate a shot fired at us
