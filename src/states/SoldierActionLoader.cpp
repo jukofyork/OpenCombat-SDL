@@ -75,19 +75,21 @@ SoldierActionLoader::Load(const std::filesystem::path& fileName, ObjectActions *
 		}
 
 		// Now we need to create a new action based on our values
-		ObjectActions::Action *action;
-		if(actions->NumActions == 0)
-		{
-			actions->NumActions++;
-			actions->Actions = (ObjectActions::Action *)calloc(1, sizeof(ObjectActions::Action));
-			action = &(actions->Actions[0]);
+		// Allocate new array with proper C++ construction
+		ObjectActions::Action *newActions = new ObjectActions::Action[actions->NumActions + 1];
+		
+		// Copy existing actions (if any)
+		for(int j = 0; j < actions->NumActions; ++j) {
+			newActions[j] = actions->Actions[j];
 		}
-		else
-		{
-			actions->NumActions++;
-			actions->Actions = (ObjectActions::Action *)realloc(actions->Actions, actions->NumActions*sizeof(ObjectActions::Action));
-			action = &(actions->Actions[actions->NumActions-1]);
-		}
+		
+		// Free old array
+		delete[] actions->Actions;
+		
+		// Update to new array
+		actions->Actions = newActions;
+		actions->NumActions++;
+		ObjectActions::Action *action = &(actions->Actions[actions->NumActions-1]);
 
 		action->Name = values[0];
 		action->Group = values[1];
