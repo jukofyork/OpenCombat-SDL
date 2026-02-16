@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <states/State.h>
 
 class ObjectActions
@@ -10,8 +11,8 @@ public:
 
 	struct Action
 	{
-		char *Name;
-		char *Group;
+		std::string Name;
+		std::string Group;
 		long Time;
 		StateIdx *Requirements;
 		int NumRequirements;

@@ -88,8 +88,8 @@ SoldierActionLoader::Load(const std::filesystem::path& fileName, ObjectActions *
 			action = &(actions->Actions[actions->NumActions-1]);
 		}
 
-		action->Name = strdup(values[0].c_str());
-		action->Group = strdup(values[1].c_str());
+		action->Name = values[0];
+		action->Group = values[1];
 		action->Time = atol(values[2].c_str());
 		action->NumRequirements = 0;
 		action->NumAdds = 0;
