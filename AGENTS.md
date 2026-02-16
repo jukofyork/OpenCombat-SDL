@@ -203,3 +203,46 @@ convert graphics/Vehicles/panzer_IVG_wreck.11.21.tga /tmp/view.png
 4. **Build frequently** - Run `make` after each change
 5. **No smart pointers** - Keep raw pointer style for consistency
 6. **Forward slashes** - Use `/` in all paths (not `\`)
+
+---
+
+## Important Design Patterns
+
+### Object Ownership and Selection
+
+**CRITICAL: Never add the same Order pointer to multiple objects**
+
+The codebase uses reference counting for orders (`Order::IncrementRefCount()` / `Order::Release()`). Adding the same order to multiple objects causes double-free crashes when all objects process and release the order.
+
+**The Infantry Firing Bug (Commit 996b9cb)**
+
+This bug occurred when adding vehicle squads (tanks) to the game:
+
+**What went wrong:**
+1. Tank squad was added to both `_mobileObjects` (via `AddObject()`) AND team objects list
+2. Selection code iterated both `_currentMap->SelectObjects()` AND `_mobileObjects` loop
+3. When clicking near both infantry squad and tank, BOTH got selected
+4. `IssueOrder()` added the SAME order pointer to both selected objects
+5. Both objects processed the order and called `Release()` → **double-free crash**
+
+**The fix:**
+```cpp
+// In World::Select() - only iterate mobile objects if map finds nothing
+_currentMap->SelectObjects(x+_originX, y+_originY, &_selectedObjects);
+
+if(_selectedObjects.empty()) {  // <-- GUARD: skip if already found
+    for(size_t i = 0; i < _mobileObjects.size(); ++i) {
+        if(_mobileObjects[i]->Select(x+_originX,y+_originY)) {
+            _selectedObjects.push_back(_mobileObjects[i]);
+            break;  // <-- Only select one object
+        }
+    }
+}
+```
+
+**Lessons learned:**
+- Always check if selection already found something before iterating alternatives
+- Vehicle squads should only be in `_mobileObjects`, NOT in team objects list
+- Team objects list (`g_Globals->World.Teams[...].Objects`) is for UI display only
+- The original author intentionally kept tanks out of team objects (see `#if 0` block)
+- When you see `#if 0` in original code, investigate WHY before enabling it
