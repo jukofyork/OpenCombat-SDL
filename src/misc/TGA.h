@@ -1,5 +1,6 @@
 #pragma once
 
+#include <filesystem>
 #include <misc/Color.h>
 
 class TGA
@@ -18,7 +19,7 @@ public:
 	inline void SetTransparentColor(unsigned char r, unsigned char g, unsigned char b) { _transparentColor.red=r;_transparentColor.green=g;_transparentColor.blue=b; }
 	inline Color *GetTransparentColor() { return &_transparentColor; }
 
-	static TGA *Create(const char *fileName);
+	static TGA *Create(const std::filesystem::path& fileName);
 
 private:
 	unsigned char *_data;

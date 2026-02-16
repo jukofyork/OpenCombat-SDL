@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <string>
+#include <filesystem>
 #include <assert.h>
 
 /**
@@ -41,7 +42,7 @@ TGA::~TGA(void)
 }
 
 TGA *
-TGA::Create(const char *fileName)
+TGA::Create(const std::filesystem::path& fileName)
 {
 	HEADER header;
 	FILE *fptr;
@@ -54,7 +55,7 @@ TGA::Create(const char *fileName)
 	int w=0, h=0;
 
 	// Open the file
-    if ((fptr = fopen(fileName,"rb")) == NULL) {
+    if ((fptr = fopen(fileName.c_str(),"rb")) == NULL) {
        return NULL;
     }
 
@@ -150,15 +151,15 @@ TGA::Create(const char *fileName)
 
 	// Let's find our origin, if it is embedded in the filename.
 	// An origin exists if there are 3 or more '.' in the filename
+	std::string fName = fileName.string();
 	int count = 0;
-	for(int i = 0; fileName[i] != '\0'; ++i) {
-		if(fileName[i] == '.') {
+	for(size_t i = 0; i < fName.length(); ++i) {
+		if(fName[i] == '.') {
 			++count;
 		}
 	}
 
 	if(count >= 3) {
-		std::string fName = fileName;
 		size_t last = fName.find_last_of('.');
 		if (last != std::string::npos) {
 			size_t second = fName.find_last_of('.', last - 1);
