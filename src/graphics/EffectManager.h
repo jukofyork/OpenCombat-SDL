@@ -2,7 +2,7 @@
 
 #include <filesystem>
 #include <string>
-#include <misc/Array.h>
+#include <vector>
 
 class Effect;
 class TGA;
@@ -21,8 +21,8 @@ public:
 
 protected:
 	// The array of effects
-	Array<Effect> _effects;
+	std::vector<Effect*> _effects;
 
 	// The array of source images for these widgets
-	Array<TGA> _sourceImages;
+	std::vector<TGA*> _sourceImages;
 };

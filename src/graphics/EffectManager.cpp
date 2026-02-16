@@ -41,7 +41,7 @@ EffectManager::LoadEffects(const std::filesystem::path& fileName)
 		return;
 	}
 
-	Array<EffectAttributes> dest;
+	std::vector<EffectAttributes> dest;
 
 	XMLElement* root = doc.FirstChildElement("Effects");
 	if (!root) return;
@@ -50,28 +50,27 @@ EffectManager::LoadEffects(const std::filesystem::path& fileName)
 		 effectElem != nullptr;
 		 effectElem = effectElem->NextSiblingElement("Effect"))
 	{
-		EffectAttributes* attr = new EffectAttributes();
-		attr->Sound[0] = '\0';
+		EffectAttributes attr;
 
 		// Get attributes from <Effect> element
 		const char* typeAttr = effectElem->Attribute("type");
 		if (typeAttr && strcmp(typeAttr, "dynamic") == 0) {
-			attr->Dynamic = true;
+			attr.Dynamic = true;
 		}
 
 		const char* placeAttr = effectElem->Attribute("place");
 		if (placeAttr && std::string(placeAttr) == "turret") {
-			attr->PlaceOnTurret = true;
+			attr.PlaceOnTurret = true;
 		}
 
 		XMLElement* nameElem = effectElem->FirstChildElement("Name");
 		if (nameElem && nameElem->GetText()) {
-			attr->Name = nameElem->GetText();
+			attr.Name = nameElem->GetText();
 		}
 
 		XMLElement* soundElem = effectElem->FirstChildElement("Sound");
 		if (soundElem && soundElem->GetText()) {
-			attr->Sound = soundElem->GetText();
+			attr.Sound = soundElem->GetText();
 		}
 
 		// Parse <Graphic> elements
@@ -80,39 +79,39 @@ EffectManager::LoadEffects(const std::filesystem::path& fileName)
 			 graphicElem = graphicElem->NextSiblingElement("Graphic"))
 		{
 		if (graphicElem->GetText()) {
-			attr->GraphicsFile.push_back((g_Globals->Application.GraphicsDirectory / "Effects" / graphicElem->GetText()).string());
+			attr.GraphicsFile.push_back((g_Globals->Application.GraphicsDirectory / "Effects" / graphicElem->GetText()).string());
 		}
 		}
 
 		// Parse <Graphics> element with file pattern
 		XMLElement* graphicsElem = effectElem->FirstChildElement("Graphics");
 		if (graphicsElem && graphicsElem->GetText()) {
-			GetFiles(attr, graphicsElem->GetText());
+			GetFiles(&attr, graphicsElem->GetText());
 		}
 
 		XMLElement* frameElem = effectElem->FirstChildElement("FrameHold");
 		if (frameElem && frameElem->GetText()) {
-			attr->FrameHold = atoi(frameElem->GetText());
+			attr.FrameHold = atoi(frameElem->GetText());
 		}
 
-		dest.Add(attr);
+		dest.push_back(attr);
 	}
 
-	for(int i = 0; i < dest.Count; ++i) {
+	for(size_t i = 0; i < dest.size(); ++i) {
 		// Create the source TGA file
-		Effect *e = new Effect(dest.Items[i]->Name);
-		e->SetSound(dest.Items[i]->Sound);
-		e->SetDynamic(dest.Items[i]->Dynamic);
-		e->SetPlaceOnTurret(dest.Items[i]->PlaceOnTurret);
+		Effect *e = new Effect(dest[i].Name);
+		e->SetSound(dest[i].Sound);
+		e->SetDynamic(dest[i].Dynamic);
+		e->SetPlaceOnTurret(dest[i].PlaceOnTurret);
 
-		for(size_t j = 0; j < dest.Items[i]->GraphicsFile.size(); ++j) {
-			TGA *tga = TGA::Create(dest.Items[i]->GraphicsFile[j]);
+		for(size_t j = 0; j < dest[i].GraphicsFile.size(); ++j) {
+			TGA *tga = TGA::Create(dest[i].GraphicsFile[j]);
 			tga->SetTransparentColor(0,0,0);
-			_sourceImages.Add(tga);
+			_sourceImages.push_back(tga);
 
 			// Let's find the hotspot for this effect. It is encoded in the
 			// filename (format: name.x.y.tga)
-			std::string fName = dest.Items[i]->GraphicsFile[j];
+			std::string fName = dest[i].GraphicsFile[j];
 			size_t lastDot = fName.rfind('.');
 			if (lastDot != std::string::npos) {
 				std::string yStr = fName.substr(lastDot + 1);
@@ -125,9 +124,9 @@ EffectManager::LoadEffects(const std::filesystem::path& fileName)
 					tga->SetOrigin(x,y);
 				}
 			}
-			e->AddFrame(tga, dest.Items[i]->FrameHold);
+			e->AddFrame(tga, dest[i].FrameHold);
 	    }
-		_effects.Add(e);
+		_effects.push_back(e);
    }
 }
 
@@ -169,11 +168,10 @@ void EffectManager::GetFiles(EffectAttributes *attr, const std::string& searchSt
 Effect *
 EffectManager::GetEffect(const std::string &effectName)
 {
-	for(int i = 0; i < _effects.Count; ++i) {
-		if(effectName == _effects.Items[i]->GetName()) {
-			Effect *e = _effects.Items[i]->Clone();
-			return e;
+	for(auto* effect : _effects) {
+		if(effectName == effect->GetName()) {
+			return effect->Clone();
 		}
 	}
-	return NULL;
+	return nullptr;
 }
