@@ -1,6 +1,8 @@
 #pragma once
 
 #include <filesystem>
+#include <string>
+#include <vector>
 #include <objects/Soldier.h>
 
 class AnimationManager;
@@ -27,7 +29,7 @@ protected:
 	Array<SoldierTemplate> _soldiers;
 
 	// A list of soldier names that we can choose from
-	Array<char> _soldierNames;
+	std::vector<std::string> _soldierNames;
 
 	// Retrieves an animation from the animation manager by name
 	Animation *GetAnimation(AnimationManager *animationManager, const std::string& name, SoldierTemplate *tplate);

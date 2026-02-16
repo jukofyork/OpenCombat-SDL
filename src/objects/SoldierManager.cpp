@@ -199,7 +199,7 @@ SoldierManager::LoadSoldiers(const std::filesystem::path& fileName, const std::f
 		}
 
 		assert(line.length() < 32);
-		_soldierNames.Add(strdup(line.c_str()));
+		_soldierNames.push_back(line);
 	}
 	fp.close();
 }
@@ -215,7 +215,7 @@ SoldierManager::CreateSoldier(const std::string& soldierType, AnimationManager *
 			s->_name = soldierType;
 
 			// Give this soldier a personal name
-			s->_personalName = _soldierNames.Items[rand()%_soldierNames.Count];
+			s->_personalName = _soldierNames[rand()%_soldierNames.size()];
 
 			// Get the primary weapon
 			s->_weapons[0] = weaponManager->GetWeapon(t->PrimaryWeapon);
