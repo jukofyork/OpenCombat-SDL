@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 class Element
 {
 public:
@@ -10,7 +12,7 @@ public:
 
 	int Index;
 	int Height;
-	char Name[32];
+	std::string Name;
 	bool BlocksHeight;
 	bool Passable;
 	unsigned char Cover[4];

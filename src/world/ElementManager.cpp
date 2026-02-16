@@ -39,7 +39,7 @@ ElementManager::Load(char *configFile)
         
         XMLElement* nameElem = elem->FirstChildElement("Name");
         if (nameElem && nameElem->GetText()) {
-            strcpy(element->Name, nameElem->GetText());
+            element->Name = nameElem->GetText();
         }
         
         XMLElement* heightElem = elem->FirstChildElement("Height");
