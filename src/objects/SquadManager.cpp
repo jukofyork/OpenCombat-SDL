@@ -164,7 +164,7 @@ SquadManager::LoadSquads(const std::filesystem::path& fileName)
 			squad->NumVehicles++;
 		}
 		
-		_squads.Add(squad);
+		_squads.push_back(squad);
 	}
 }
 
@@ -172,24 +172,24 @@ SquadManager::LoadSquads(const std::filesystem::path& fileName)
 Squad *
 SquadManager::CreateSquad(const std::string& squadType, SoldierManager *soldierManager, VehicleManager *vehicleManager, AnimationManager *animationManager, WeaponManager *weaponManager)
 {
-	for(int i = 0; i < _squads.Count; ++i) {
-		if(squadType == _squads.Items[i]->Name) {
+	for(auto* squadTemplate : _squads) {
+		if(squadType == squadTemplate->Name) {
 			Squad *squad = new Squad();
-			squad->_iconName = _squads.Items[i]->IconName;
+			squad->_iconName = squadTemplate->IconName;
 			squad->_name = squadType;
 			// XXX/GWS: Fix this random team quality thing here!
 			squad->_quality = (Squad::Quality) (rand() % Squad::NumQuality);
 
 			// Add all of the soldiers
-			for(int j = 0; j < _squads.Items[i]->NumSoldiers; ++j) {
-				Soldier *s = soldierManager->CreateSoldier(_squads.Items[i]->Soldiers[j].Type, animationManager, weaponManager);
-				s->SetTitle(_squads.Items[i]->Soldiers[j].Title);
-				s->SetRank(_squads.Items[i]->Soldiers[j].Rank);
-				s->SetCamouflage(_squads.Items[i]->Soldiers[j].Camo);
+			for(int j = 0; j < squadTemplate->NumSoldiers; ++j) {
+				Soldier *s = soldierManager->CreateSoldier(squadTemplate->Soldiers[j].Type, animationManager, weaponManager);
+				s->SetTitle(squadTemplate->Soldiers[j].Title);
+				s->SetRank(squadTemplate->Soldiers[j].Rank);
+				s->SetCamouflage(squadTemplate->Soldiers[j].Camo);
 				s->SetFormationPosition(j);
 				// XXX/GWS: Need better determination of the squad leader
-				if(strcasecmp(_squads.Items[i]->Soldiers[j].Title.c_str(), "Leader") == 0
-					|| strcasecmp(_squads.Items[i]->Soldiers[j].Title.c_str(), "Gunner") == 0)
+				if(strcasecmp(squadTemplate->Soldiers[j].Title.c_str(), "Leader") == 0
+					|| strcasecmp(squadTemplate->Soldiers[j].Title.c_str(), "Gunner") == 0)
 				{
 					s->SetSquadLeader(true);
 				}
@@ -198,26 +198,26 @@ SquadManager::CreateSquad(const std::string& squadType, SoldierManager *soldierM
 			}
 
 			// Add all of the vehicles
-			for(int j = 0; j < _squads.Items[i]->NumVehicles; ++j)
+			for(int j = 0; j < squadTemplate->NumVehicles; ++j)
 			{
-				Vehicle *v = vehicleManager->GetVehicle(_squads.Items[i]->Vehicles[j].Type);
+				Vehicle *v = vehicleManager->GetVehicle(squadTemplate->Vehicles[j].Type);
 				v->SetSquadLeader(true); // XXX/GWS: Better determination here
 
 				// Now add soldiers to this vehicle
-				for(int k = 0; k < _squads.Items[i]->Vehicles[j].NumSoldiers; ++k) {
-					Soldier *s = soldierManager->CreateSoldier(_squads.Items[i]->Vehicles[j].Soldiers[k].Type.c_str(), animationManager, weaponManager);
-					s->SetTitle(_squads.Items[i]->Vehicles[j].Soldiers[k].Title);
-					s->SetRank(_squads.Items[i]->Vehicles[j].Soldiers[k].Rank);
-					s->SetCamouflage(_squads.Items[i]->Vehicles[j].Soldiers[k].Camo);
+				for(int k = 0; k < squadTemplate->Vehicles[j].NumSoldiers; ++k) {
+					Soldier *s = soldierManager->CreateSoldier(squadTemplate->Vehicles[j].Soldiers[k].Type.c_str(), animationManager, weaponManager);
+					s->SetTitle(squadTemplate->Vehicles[j].Soldiers[k].Title);
+					s->SetRank(squadTemplate->Vehicles[j].Soldiers[k].Rank);
+					s->SetCamouflage(squadTemplate->Vehicles[j].Soldiers[k].Camo);
 					// XXX/GWS: Need better determination of the squad leader
-					if(strcasecmp(_squads.Items[i]->Vehicles[j].Soldiers[k].Title.c_str(), "Leader") == 0
-						|| strcasecmp(_squads.Items[i]->Vehicles[j].Soldiers[k].Title.c_str(), "Gunner") == 0)
+					if(strcasecmp(squadTemplate->Vehicles[j].Soldiers[k].Title.c_str(), "Leader") == 0
+						|| strcasecmp(squadTemplate->Vehicles[j].Soldiers[k].Title.c_str(), "Gunner") == 0)
 					{
 						s->SetSquadLeader(true);
 					}
 					s->SetSquad(squad);
 					s->SetInVechicle(true);
-					v->AddCrew(s, _squads.Items[i]->Vehicles[j].Soldiers[k].Slot);
+					v->AddCrew(s, squadTemplate->Vehicles[j].Soldiers[k].Slot);
 				}
 				squad->_vehicles.Add(v);
 				v->SetSquad(squad);
@@ -226,5 +226,5 @@ SquadManager::CreateSquad(const std::string& squadType, SoldierManager *soldierM
 			return squad;
 		}
 	}
-	return NULL;
+	return nullptr;
 }

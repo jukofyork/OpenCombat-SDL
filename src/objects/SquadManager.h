@@ -1,7 +1,7 @@
 #pragma once
 
 #include <filesystem>
-#include <misc/Array.h>
+#include <vector>
 
 class AnimationManager;
 class SoldierManager;
@@ -24,5 +24,5 @@ public:
 
 protected:
 	// The list of squad templates that we are managing
-	Array<SquadTemplate> _squads;
+	std::vector<SquadTemplate*> _squads;
 };
