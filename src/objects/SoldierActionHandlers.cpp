@@ -892,19 +892,19 @@ SoldierActionHandlers::MoveSoldier(Soldier *soldier, long dt)
 void
 SoldierActionHandlers::CalculateSeparationForce(Soldier *soldier, Vector2 *force)
 {
-	Array<Soldier> *soldiers = soldier->_currentSquad->GetSoldiers();
+	std::vector<Soldier*> *soldiers = soldier->_currentSquad->GetSoldiers();
 
 	// Find the average position of all our soldiers
 	Vector2 pos;
 	pos.x = 0.0f;
 	pos.y = 0.0f;
 	int nPos = 0;
-	for(int i = 0; i < soldiers->Count; ++i)
+	for(auto* s : *soldiers)
 	{
-		if(!soldiers->Items[i]->IsDead() && soldiers->Items[i]->GetID() != soldier->GetID())
+		if(!s->IsDead() && s->GetID() != soldier->GetID())
 		{
-			pos.x += soldiers->Items[i]->Position.x;
-			pos.y += soldiers->Items[i]->Position.y;
+			pos.x += s->Position.x;
+			pos.y += s->Position.y;
 			++nPos;
 		}
 	}
@@ -923,19 +923,19 @@ SoldierActionHandlers::CalculateSeparationForce(Soldier *soldier, Vector2 *force
 void
 SoldierActionHandlers::CalculateCohesionForce(Soldier *soldier, Vector2 *force)
 {
-	Array<Soldier> *soldiers = soldier->_currentSquad->GetSoldiers();
+	std::vector<Soldier*> *soldiers = soldier->_currentSquad->GetSoldiers();
 
 	// Find the average position of all our soldiers
 	Vector2 pos;
 	pos.x = 0.0f;
 	pos.y = 0.0f;
 	int nPos = 0;
-	for(int i = 0; i < soldiers->Count; ++i)
+	for(auto* s : *soldiers)
 	{
-		if(!soldiers->Items[i]->IsDead() && soldiers->Items[i]->GetID() != soldier->GetID())
+		if(!s->IsDead() && s->GetID() != soldier->GetID())
 		{
-			pos.x += soldiers->Items[i]->Position.x;
-			pos.y += soldiers->Items[i]->Position.y;
+			pos.x += s->Position.x;
+			pos.y += s->Position.y;
 			++nPos;
 		}
 	}

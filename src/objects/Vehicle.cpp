@@ -414,9 +414,9 @@ Vehicle::FindTarget(Squad *squad)
 	}
 
 	bool anyAlive = false;
-	Array<Soldier> *soldiers = squad->GetSoldiers();
-	for(int i = soldiers->Count-1; i >= 0 ; --i) {
-		if(!soldiers->Items[i]->IsDead())
+	std::vector<Soldier*> *soldiers = squad->GetSoldiers();
+	for(int i = static_cast<int>(soldiers->size())-1; i >= 0 ; --i) {
+		if(!(*soldiers)[i]->IsDead())
 		{
 			anyAlive = true;
 			break;
@@ -426,7 +426,7 @@ Vehicle::FindTarget(Squad *squad)
 		Soldier *o;
 		for(;;)
 		{
-			if(!((o = soldiers->Items[rand()%soldiers->Count])->IsDead())) {
+			if(!((o = (*soldiers)[rand()%static_cast<int>(soldiers->size())])->IsDead())) {
 				return o;
 			}
 		}

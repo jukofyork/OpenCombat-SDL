@@ -193,7 +193,7 @@ SquadManager::CreateSquad(const std::string& squadType, SoldierManager *soldierM
 				{
 					s->SetSquadLeader(true);
 				}
-				squad->_soldiers.Add(s);
+				squad->_soldiers.push_back(s);
 				s->SetSquad(squad);
 			}
 
@@ -219,7 +219,7 @@ SquadManager::CreateSquad(const std::string& squadType, SoldierManager *soldierM
 					s->SetInVechicle(true);
 					v->AddCrew(s, squadTemplate->Vehicles[j].Soldiers[k].Slot);
 				}
-				squad->_vehicles.Add(v);
+				squad->_vehicles.push_back(v);
 				v->SetSquad(squad);
 			}
 

@@ -1,6 +1,7 @@
 #pragma once
+
 #include <string>
-#include <misc/Array.h>
+#include <vector>
 #include <objects/Object.h>
 #include <objects/Soldier.h>
 #include <objects/Vehicle.h>
@@ -51,7 +52,7 @@ public:
 	Object *GetPointMan();
 
 	// Gets the soldiers in this squad
-	inline Array<Soldier> *GetSoldiers() { return &_soldiers; }
+	inline std::vector<Soldier*> *GetSoldiers() { return &_soldiers; }
 
 	// Gets the description of the team strength
 	const std::string& GetQualityDesc();
@@ -77,11 +78,11 @@ protected:
 	void HandleAmbushOrder(AmbushOrder *order);
 	void HandleDefendOrder(DefendOrder *order);
 
-	// This is the array of soldiers in this squad
-	Array<Soldier> _soldiers;
+	// This is the array of soldiers in this squad (non-owning - SquadManager owns them)
+	std::vector<Soldier*> _soldiers;
 
-	// The array of vehicles
-	Array<Vehicle> _vehicles;
+	// The array of vehicles (non-owning - VehicleManager owns them)
+	std::vector<Vehicle*> _vehicles;
 
 	// The strength of this squad
 	Quality _quality;

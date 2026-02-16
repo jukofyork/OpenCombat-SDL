@@ -446,16 +446,16 @@ World::Load(const std::filesystem::path& fileName, SoldierManager *soldierManage
 
 	// XXX/GWS: The following is temporary, just to populate this world
 	//			with some stuff
-	Array<Soldier> *soldiers;
+	std::vector<Soldier*> *soldiers;
 	State.NumSquads = 0;
 	for(int i = 0; i < 1; ++i) {
 		Squad *s = _squadManager->CreateSquad("BAR Rifle", _soldierManager, _vehicleManager, _animationManager, _weaponManager);
 		soldiers = s->GetSoldiers();
-		for(int j = 0; j < soldiers->Count; ++j)
+		for(size_t j = 0; j < soldiers->size(); ++j)
 		{
 			// Let's place this object on the map
-			_currentMap->PlaceObject(soldiers->Items[j], &soldiers->Items[j]->Position);
-			soldiers->Items[j]->SetTeam(g_Globals->World.CurrentPlayer);
+			_currentMap->PlaceObject((*soldiers)[j], &(*soldiers)[j]->Position);
+			(*soldiers)[j]->SetTeam(g_Globals->World.CurrentPlayer);
 		}
 
 		s->SetPosition((i+1)*200, 100);
@@ -466,11 +466,11 @@ World::Load(const std::filesystem::path& fileName, SoldierManager *soldierManage
 
 	Squad *squad = _squadManager->CreateSquad("Bazooka", _soldierManager, _vehicleManager, _animationManager, _weaponManager);
 	soldiers = squad->GetSoldiers();
-	for(int i = 0; i < soldiers->Count; ++i)
+	for(size_t i = 0; i < soldiers->size(); ++i)
 	{
 		// Let's place this object on the map
-		_currentMap->PlaceObject(soldiers->Items[i], &soldiers->Items[i]->Position);
-		soldiers->Items[i]->SetTeam(g_Globals->World.CurrentPlayer);
+		_currentMap->PlaceObject((*soldiers)[i], &(*soldiers)[i]->Position);
+		(*soldiers)[i]->SetTeam(g_Globals->World.CurrentPlayer);
 	}
 	squad->SetPosition(748, 604);
 	AddObject(squad);
@@ -479,11 +479,11 @@ World::Load(const std::filesystem::path& fileName, SoldierManager *soldierManage
 
 	squad = _squadManager->CreateSquad(".30 Cal MG", _soldierManager, _vehicleManager, _animationManager, _weaponManager);
 	soldiers = squad->GetSoldiers();
-	for(int i = 0; i < soldiers->Count; ++i)
+	for(size_t i = 0; i < soldiers->size(); ++i)
 	{
 		// Let's place this object on the map
-		_currentMap->PlaceObject(soldiers->Items[i], &soldiers->Items[i]->Position);
-		soldiers->Items[i]->SetTeam(g_Globals->World.CurrentPlayer);
+		_currentMap->PlaceObject((*soldiers)[i], &(*soldiers)[i]->Position);
+		(*soldiers)[i]->SetTeam(g_Globals->World.CurrentPlayer);
 	}
 	squad->SetPosition(200, 200);
 	AddObject(squad);
@@ -494,11 +494,11 @@ World::Load(const std::filesystem::path& fileName, SoldierManager *soldierManage
 	for(int i = 0; i < 1; ++i) {
 		Squad *s = _squadManager->CreateSquad("BAR Rifle", _soldierManager, _vehicleManager, _animationManager, _weaponManager);
 		soldiers = s->GetSoldiers();
-		for(int j = 0; j < soldiers->Count; ++j)
+		for(size_t j = 0; j < soldiers->size(); ++j)
 		{
 			// Let's place this object on the map
-			_currentMap->PlaceObject(soldiers->Items[j], &soldiers->Items[j]->Position);
-			soldiers->Items[j]->SetTeam(1);
+			_currentMap->PlaceObject((*soldiers)[j], &(*soldiers)[j]->Position);
+			(*soldiers)[j]->SetTeam(1);
 		}
 
 		s->SetPosition((i)*100+1700, 1800);
@@ -511,11 +511,11 @@ World::Load(const std::filesystem::path& fileName, SoldierManager *soldierManage
 	for(int i = 0; i < 1; ++i) {
 		Squad *s = _squadManager->CreateSquad("BAR Rifle", _soldierManager, _vehicleManager, _animationManager, _weaponManager);
 		soldiers = s->GetSoldiers();
-		for(int j = 0; j < soldiers->Count; ++j)
+		for(size_t j = 0; j < soldiers->size(); ++j)
 		{
 			// Let's place this object on the map
-			_currentMap->PlaceObject(soldiers->Items[j], &soldiers->Items[j]->Position);
-			soldiers->Items[j]->SetTeam(2);
+			_currentMap->PlaceObject((*soldiers)[j], &(*soldiers)[j]->Position);
+			(*soldiers)[j]->SetTeam(2);
 		}
 
 		s->SetPosition((i)*100+1800, 200);

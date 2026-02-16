@@ -75,16 +75,16 @@ Squad::Render(Screen *screen, Rect *clip)
 		}
 	}
 
-	for(int i = 0; i < _vehicles.Count; ++i) {
-		_vehicles.Items[i]->Render(screen, clip);
+	for(auto* vehicle : _vehicles) {
+		vehicle->Render(screen, clip);
 	}
 
-	for(int i = 0; i < _soldiers.Count; ++i) {
-		_soldiers.Items[i]->Render(screen, clip);
-		if(_selectedSoldierIdx == i && IsSelected()) {
+	for(size_t i = 0; i < _soldiers.size(); ++i) {
+		_soldiers[i]->Render(screen, clip);
+		if(_selectedSoldierIdx == static_cast<int>(i) && IsSelected()) {
 			Color white(255,255,255);
 			Widget *w = g_Globals->World.Icons->GetWidget("Unit Selected Bracket");
-			w->Render(screen, _soldiers.Items[i]->Position.x - screen->Origin.x, _soldiers.Items[i]->Position.y-screen->Origin.y, &white);
+			w->Render(screen, _soldiers[i]->Position.x - screen->Origin.x, _soldiers[i]->Position.y-screen->Origin.y, &white);
 			delete w;
 		}
 	}
@@ -103,13 +103,13 @@ void
 Squad::Simulate(long dt, World *world)
 {
 	// Simulate any vehicles
-	for(int i = 0; i < _vehicles.Count; ++i) {
-		_vehicles.Items[i]->Simulate(dt, world);
+	for(auto* vehicle : _vehicles) {
+		vehicle->Simulate(dt, world);
 	}
 
 	// XXX/GWS: Make sure the squad leader always moves first!!!
-	for(int i = 0; i < _soldiers.Count; ++i) {
-		_soldiers.Items[i]->Simulate(dt, world);
+	for(auto* soldier : _soldiers) {
+		soldier->Simulate(dt, world);
 	}
 
 	// Now update the position of the squad. Use the position of the
@@ -122,20 +122,20 @@ Squad::Simulate(long dt, World *world)
 bool
 Squad::Select(int x, int y)
 {
-	for(int i = 0; i < _vehicles.Count; ++i) {
-		if(_vehicles.Items[i]->Contains(x,y)) {
-			_selectedVehicleIdx = i;
+	for(size_t i = 0; i < _vehicles.size(); ++i) {
+		if(_vehicles[i]->Contains(x,y)) {
+			_selectedVehicleIdx = static_cast<int>(i);
 			Select(true);
 			return true;
 		}
 	}
 
-	for(int i = 0; i < _soldiers.Count; ++i) {
-		if(_soldiers.Items[i]->Contains(x,y)) {
+	for(size_t i = 0; i < _soldiers.size(); ++i) {
+		if(_soldiers[i]->Contains(x,y)) {
 			// Play a sound
 			g_Globals->World.Voices->GetSound("awaiting orders")->Play();
 			Select(true);
-			_selectedSoldierIdx = i;
+			_selectedSoldierIdx = static_cast<int>(i);
 			return true;
 		}
 	}
@@ -147,14 +147,14 @@ Squad::Select(int x, int y)
 bool 
 Squad::IsSelected()
 {
-	for(int i = 0; i < _vehicles.Count; ++i) {
-		if(	_vehicles.Items[i]->IsSelected()) {
+	for(auto* vehicle : _vehicles) {
+		if(vehicle->IsSelected()) {
 			return true;
 		}
 	}
 
-	for(int i = 0; i < _soldiers.Count; ++i) {
-		if(_soldiers.Items[i]->IsSelected()) {
+	for(auto* soldier : _soldiers) {
+		if(soldier->IsSelected()) {
 			return true;
 		}
 	}
@@ -170,37 +170,37 @@ Squad::SetPosition(int x, int y)
 	// Let's set our soldier positions based on the current formation
 	// XXX/GWS: Need smarter formation setting here....cover, etc
 	int j = 1;
-	for(int i = 0; i < _soldiers.Count; ++i) {
-		if(i != _currentPointManIdx)
+	for(size_t i = 0; i < _soldiers.size(); ++i) {
+		if(static_cast<int>(i) != _currentPointManIdx)
 		{
-			Direction heading = _soldiers.Items[_currentPointManIdx]->GetHeading();
+			Direction heading = _soldiers[_currentPointManIdx]->GetHeading();
 			Formation::GetFormationPosition(_currentFormation, j++, _currentFormationSpread, &Position,
 				heading, &sx, &sy);
-			_soldiers.Items[i]->SetPosition(sx, sy);
+			_soldiers[i]->SetPosition(sx, sy);
 		}
 		else
 		{
-			Direction heading = _soldiers.Items[_currentPointManIdx]->GetHeading();
+			Direction heading = _soldiers[_currentPointManIdx]->GetHeading();
 			Formation::GetFormationPosition(_currentFormation, 0, _currentFormationSpread, &Position,
 				heading, &sx, &sy);
-			_soldiers.Items[i]->SetPosition(sx, sy);
+			_soldiers[i]->SetPosition(sx, sy);
 		}
 	}
 
-	for(int i = 0; i < _vehicles.Count; ++i) {
-		_vehicles.Items[i]->SetPosition(x+i*20, y);
+	for(size_t i = 0; i < _vehicles.size(); ++i) {
+		_vehicles[i]->SetPosition(x+static_cast<int>(i)*20, y);
 	}
 }
 
 void 
 Squad::Select(bool s)
 {
-	for(int i = 0; i < _vehicles.Count; ++i) {
-		_vehicles.Items[i]->Select(s);
+	for(auto* vehicle : _vehicles) {
+		vehicle->Select(s);
 	}
 
-	for(int i = 0; i < _soldiers.Count; ++i) {
-		((Object *)_soldiers.Items[i])->Select(s);
+	for(auto* soldier : _soldiers) {
+		soldier->Object::Select(s);
 	}
 }
 
@@ -246,12 +246,12 @@ Squad::AddOrder(Order *o)
 			return;
 	}
 
-	for(int i = 0; i < _vehicles.Count; ++i) {
-		_vehicles.Items[i]->AddOrder(o);
+	for(auto* vehicle : _vehicles) {
+		vehicle->AddOrder(o);
 	}
 
-	for(int i = 0; i < _soldiers.Count; ++i) {
-		_soldiers.Items[i]->AddOrder(o);
+	for(auto* soldier : _soldiers) {
+		soldier->AddOrder(o);
 	}
 }
 
@@ -310,16 +310,16 @@ Squad::HandleMoveOrder(MoveOrder *order, SoldierAction::Action movementStyle, Ma
 	//
 	// XXX/GWS: What happens if our point man is dead?
 	j = 1;
-	for(i = 0; i < _soldiers.Count; ++i) {
-		if(i == _currentPointManIdx)
+	for(size_t idx = 0; idx < _soldiers.size(); ++idx) {
+		if(static_cast<int>(idx) == _currentPointManIdx)
 		{
 			// Order this soldier to walk/run/crawl to the destination
-			_soldiers.Items[i]->FollowPath(_currentPath, movementStyle);
+			_soldiers[idx]->FollowPath(_currentPath, movementStyle);
 		}
-		else if(!_soldiers.Items[i]->IsDead())
+		else if(!_soldiers[idx]->IsDead())
 		{
 			// Order this soldier to follow our point man
-			_soldiers.Items[i]->Follow(_soldiers.Items[_currentPointManIdx], _currentFormation, _currentFormationSpread, j++, movementStyle);
+			_soldiers[idx]->Follow(_soldiers[_currentPointManIdx], _currentFormation, _currentFormationSpread, j++, movementStyle);
 		}
 	}
 }
@@ -328,9 +328,9 @@ void
 Squad::HandleAmbushOrder(AmbushOrder *order)
 {
 	_currentAction = Team::Ambushing;
-	for(int i = 0; i < _soldiers.Count; ++i)
+	for(auto* soldier : _soldiers)
 	{
-		_soldiers.Items[i]->Ambush(order->Heading);
+		soldier->Ambush(order->Heading);
 	}
 }
 
@@ -338,20 +338,20 @@ void
 Squad::HandleDefendOrder(DefendOrder *order)
 {
 	_currentAction = Team::Defending;
-		for(int i = 0; i < _soldiers.Count; ++i)
+	for(auto* soldier : _soldiers)
 	{
-		_soldiers.Items[i]->Defend(order->Heading);
+		soldier->Defend(order->Heading);
 	}
 }
 
 void
 Squad::ClearOrders()
 {
-	for(int i = 0; i < _soldiers.Count; ++i) {
-		_soldiers.Items[i]->ClearOrders();
+	for(auto* soldier : _soldiers) {
+		soldier->ClearOrders();
 	}
-	for(int i = 0; i < _vehicles.Count; ++i) {
-		_vehicles.Items[0]->ClearOrders();
+	for(auto* vehicle : _vehicles) {
+		vehicle->ClearOrders();
 	}
 }
 
@@ -359,24 +359,24 @@ Object *
 Squad::GetSquadLeader()
 {
 	// XXX/GWS: This needs to work with vehicles too
-	for(int i = 0; i < _soldiers.Count; ++i) {
-		if(_soldiers.Items[i]->IsSquadLeader()) {
-			return _soldiers.Items[i];
+	for(auto* soldier : _soldiers) {
+		if(soldier->IsSquadLeader()) {
+			return soldier;
 		}
 	}
-	for(int i = 0; i < _vehicles.Count; ++i) {
-		if(_vehicles.Items[i]->IsSquadLeader()) {
-			return _vehicles.Items[i];
+	for(auto* vehicle : _vehicles) {
+		if(vehicle->IsSquadLeader()) {
+			return vehicle;
 		}
 	}
 	assert(false);
-	return NULL;
+	return nullptr;
 }
 
 Object *
 Squad::GetPointMan()
 {
-	return _soldiers.Items[_currentPointManIdx];
+	return _soldiers[_currentPointManIdx];
 }
 
 const std::string&
@@ -391,21 +391,21 @@ Squad::UpdateInterfaceState(InterfaceState *state, int teamIdx, int unitIdx)
 	UNREFERENCED_PARAMETER(unitIdx);
 	state->SquadStates[teamIdx].Name = GetName();
 	state->SquadStates[teamIdx].Icon = GetIconName();
-	state->SquadStates[teamIdx].NumUnits = GetSoldiers()->Count;
+	state->SquadStates[teamIdx].NumUnits = static_cast<int>(GetSoldiers()->size());
 	state->SquadStates[teamIdx].ID = GetID();
 	state->SquadStates[teamIdx].CurrentAction = _currentAction;
 	state->SquadStates[teamIdx].Quality = GetQualityDesc();
 	state->SquadStates[teamIdx].SelectedSoldierIdx = _selectedSoldierIdx;
-	for(int j = 0; j < GetSoldiers()->Count; ++j) {
-		GetSoldiers()->Items[j]->UpdateInterfaceState(state, teamIdx, j);
-		if(GetSquadLeader()->GetID() == GetSoldiers()->Items[j]->GetID()) {
-			state->SquadStates[teamIdx].SquadLeaderIdx = j;
+	for(size_t j = 0; j < GetSoldiers()->size(); ++j) {
+		(*GetSoldiers())[j]->UpdateInterfaceState(state, teamIdx, static_cast<int>(j));
+		if(GetSquadLeader()->GetID() == (*GetSoldiers())[j]->GetID()) {
+			state->SquadStates[teamIdx].SquadLeaderIdx = static_cast<int>(j);
 		}
 	}
-	for(int j = 0; j < _vehicles.Count; ++j) {
-		_vehicles.Items[j]->UpdateInterfaceState(state, teamIdx, j);
-		if(GetSquadLeader()->GetID() == _vehicles.Items[j]->GetID()) {
-			state->SquadStates[teamIdx].SquadLeaderIdx = j;
+	for(size_t j = 0; j < _vehicles.size(); ++j) {
+		_vehicles[j]->UpdateInterfaceState(state, teamIdx, static_cast<int>(j));
+		if(GetSquadLeader()->GetID() == _vehicles[j]->GetID()) {
+			state->SquadStates[teamIdx].SquadLeaderIdx = static_cast<int>(j);
 		}
 	}
 }
@@ -415,21 +415,21 @@ Squad::Kill()
 {
 	// XXX/GWS: This is supposed to kill this squad, but for now,
 	// just kill a random soldier in it
-	int i = rand() % _soldiers.Count;
-	_soldiers.Items[i]->Kill();
+	int i = rand() % static_cast<int>(_soldiers.size());
+	_soldiers[i]->Kill();
 }
 
 bool 
 Squad::Contains(int x, int y)
 {
-	for(int i = 0; i < _soldiers.Count; ++i) {
-		if(_soldiers.Items[i]->Contains(x, y)) {
+	for(auto* soldier : _soldiers) {
+		if(soldier->Contains(x, y)) {
 			return true;
 		}
 	}
 
-	for(int i = 0; i < _vehicles.Count; ++i) {
-		if(_vehicles.Items[i]->Contains(x, y)) {
+	for(auto* vehicle : _vehicles) {
+		if(vehicle->Contains(x, y)) {
 			return true;
 		}
 	}
@@ -441,8 +441,8 @@ bool
 Squad::IsActive()
 {
 	// XXX/GWS: Needs to work with vehicles
-	for(int i = 0; i < _soldiers.Count; ++i) {
-		if(!_soldiers.Items[i]->IsDead()) {
+	for(auto* soldier : _soldiers) {
+		if(!soldier->IsDead()) {
 			return true;
 		}
 	}
@@ -453,11 +453,11 @@ void
 Squad::Highlight(Color *color)
 {
 	Object::Highlight(color);
-	for(int i = 0; i < _soldiers.Count; ++i) {
-		_soldiers.Items[i]->Highlight(color);
+	for(auto* soldier : _soldiers) {
+		soldier->Highlight(color);
 	}
-	for(int i = 0; i < _vehicles.Count; ++i) {
-		_vehicles.Items[i]->Highlight(color);
+	for(auto* vehicle : _vehicles) {
+		vehicle->Highlight(color);
 	}
 
 }
@@ -466,10 +466,10 @@ void
 Squad::UnHighlight()
 {
 	Object::UnHighlight();
-	for(int i = 0; i < _soldiers.Count; ++i) {
-		_soldiers.Items[i]->UnHighlight();
+	for(auto* soldier : _soldiers) {
+		soldier->UnHighlight();
 	}
-	for(int i = 0; i < _vehicles.Count; ++i) {
-		_vehicles.Items[i]->UnHighlight();
+	for(auto* vehicle : _vehicles) {
+		vehicle->UnHighlight();
 	}
 }
