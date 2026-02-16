@@ -1,7 +1,7 @@
 #pragma once
 
 #include <filesystem>
-#include <misc/Array.h>
+#include <vector>
 
 class TGA;
 class Element;
@@ -19,6 +19,6 @@ public:
 	Element *GetElement(int index);
 
 protected:
-	// The array of widgets we are managing
-	Array<Element> _elements;
+	// The array of elements we are managing
+	std::vector<Element*> _elements;
 };

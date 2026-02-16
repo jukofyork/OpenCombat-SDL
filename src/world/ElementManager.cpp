@@ -148,16 +148,16 @@ ElementManager::Load(const std::filesystem::path& configFile)
             element->Movement[2] = (float)atof(moveStand->GetText());
         }
         
-        _elements.Add(element);
+        _elements.push_back(element);
     }
 }
 
 Element *
 ElementManager::GetElement(int index)
 {
-    if (index < 0 || index >= _elements.Count) {
-        printf("ERROR: GetElement(%d) - index out of bounds (0-%d)\n", index, _elements.Count-1);
+    if (index < 0 || index >= static_cast<int>(_elements.size())) {
+        printf("ERROR: GetElement(%d) - index out of bounds (size=%zu)\n", index, _elements.size());
         return nullptr;
     }
-    return _elements.Items[index];
+    return _elements[index];
 }
