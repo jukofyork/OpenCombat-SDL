@@ -1,7 +1,9 @@
 #pragma once
 
+#include <array>
+#include <memory>
 #include <string>
-#include <misc/Array.h>
+#include <vector>
 #include <misc/Color.h>
 #include <misc/Structs.h>
 #include <graphics/Frame.h>
@@ -51,8 +53,8 @@ public:
 
 protected:
 	// The list of frames in this animation. This includes the different directions
-	// of each frame as well
-	Array<Frame> _frames[NumDirections];
+	// of each frame as well (owned by Animation)
+	std::array<std::vector<std::unique_ptr<Frame>>, NumDirections> _frames;
 
 	// The name of this animation set
 	std::string _name;
