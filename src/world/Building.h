@@ -1,7 +1,7 @@
 #pragma once
 
 #include <misc/Structs.h>
-#include <misc/Array.h>
+#include <vector>
 class TGA;
 
 class Building
@@ -14,14 +14,14 @@ public:
 	Point Position;
 
 	// An array of boundary points
-	Array<Point> BoundaryPoints;
+	std::vector<Point> BoundaryPoints;
 
 	// An array of tile indices that this building resides on
 	int *Tiles;
 	int NumTiles;
 
 	// Adds a point to the boundary
-	void AddBoundaryPoint(Point *p) { BoundaryPoints.Add(p); }
+	void AddBoundaryPoint(Point *p) { BoundaryPoints.push_back(*p); }
 
 	// Sets the interior graphic
 	void SetInterior(TGA *tga) { _interiorGraphic = tga; }

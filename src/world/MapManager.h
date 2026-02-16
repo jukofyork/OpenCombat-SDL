@@ -2,9 +2,9 @@
 
 #include <filesystem>
 #include <string>
+#include <vector>
 #include <misc/Structs.h>
 #include <world/VictoryLocation.h>
-#include <misc/Array.h>
 
 struct MapAttributes
 {
@@ -14,7 +14,7 @@ struct MapAttributes
 	std::string Mini;
 	std::string Elements;
 	std::string Buildings;
-	Array<VictoryLocation> VictoryLocations;
+	std::vector<VictoryLocation*> VictoryLocations;
 };
 
 class MapManager

@@ -79,7 +79,7 @@ typedef int PlayerID;
 struct TeamAttributes
 {
 	// The objects that belong to this team
-	Array<Object> Objects;
+	std::vector<Object*> Objects;
 
 	// Is this team computer or player controlled?
 	TeamController Controller;
@@ -94,13 +94,13 @@ struct TeamAttributes
 	PlayerID Player;
 
 	// Which teams are allies of this team?
-	Array<PlayerID> Allies;
+	std::vector<PlayerID> Allies;
 
 	// Which teams are enemies of this team?
 	// We keep track of enemies and allies separately because
 	// we want to allow neutral teams as well. A neutral team is
 	// someone who is neither an enemy or an ally
-	Array<PlayerID> Enemies;
+	std::vector<PlayerID> Enemies;
 };
 
 struct WorldGlobals
@@ -180,7 +180,7 @@ struct WorldGlobals
 	/**
 	 * The nationalities that are possible in this world.
 	 */
-	Array<Nationality> Nationalities;
+	std::vector<Nationality*> Nationalities;
 
 	/**
 	 * A structure to hold all of our action and state and state transition

@@ -602,14 +602,14 @@ Screen::PointInRegion(int x, int y, int rx, int ry, int rw, int rh)
 }
 
 bool
-Screen::PointInRegion(int x, int y, Array<Point> *points)
+Screen::PointInRegion(int x, int y, std::vector<Point> *points)
 {
 	bool c = false;
-	int i, j;
-    for (i = 0, j = points->Count-1; i < points->Count; j = i++) {
-		if ((((points->Items[i]->y <= y) && (y < points->Items[j]->y)) ||
-             ((points->Items[j]->y <= y) && (y < points->Items[i]->y))) &&
-            (x < (points->Items[j]->x - points->Items[i]->x) * (y - points->Items[i]->y) / (points->Items[j]->y - points->Items[i]->y) + points->Items[i]->x))
+	size_t i, j;
+    for (i = 0, j = points->size()-1; i < points->size(); j = i++) {
+		if (((((*points)[i].y <= y) && (y < (*points)[j].y)) ||
+             (((*points)[j].y <= y) && (y < (*points)[i].y))) &&
+            (x < ((*points)[j].x - (*points)[i].x) * (y - (*points)[i].y) / ((*points)[j].y - (*points)[i].y) + (*points)[i].x))
 		{
 			c = !c;
 		}
@@ -703,11 +703,11 @@ Screen::SelfTest()
 {
 	// Let's test the PointInRegion functionality.
 	// First, let's make a rhomboid type thing
-	Array<Point> points;
-	points.Add(new Point(0,0));
-	points.Add(new Point(100,0));
-	points.Add(new Point(200, 100));
-	points.Add(new Point(100, 100));
+	std::vector<Point> points;
+	points.push_back(Point(0,0));
+	points.push_back(Point(100,0));
+	points.push_back(Point(200, 100));
+	points.push_back(Point(100, 100));
 	assert(!PointInRegion(0,50,&points));
 	assert(PointInRegion(100,50,&points));
 	return true;

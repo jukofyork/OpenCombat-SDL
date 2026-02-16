@@ -48,22 +48,22 @@ CombatModule::Initialize(void *app)
 
 	// Setup our team information for the game.
 	// XXX/GWS: This is just temporay. Setup two teams, one user controlled,
-	//			and one computer controlled
+	//          and one computer controlled
 	g_Globals->World.NumTeams = 3;
 	g_Globals->World.Teams[0].Controller = PlayerControlled;
 	g_Globals->World.Teams[0].Player = 0;
-	g_Globals->World.Teams[0].Enemies.Add(new int(1));
-	g_Globals->World.Teams[0].Allies.Add(new int(2));
+	g_Globals->World.Teams[0].Enemies.push_back(1);
+	g_Globals->World.Teams[0].Allies.push_back(2);
 	g_Globals->World.Teams[0].Nationality = 0;
 	g_Globals->World.Teams[1].Controller = ComputerControlled;
 	g_Globals->World.Teams[1].Player = 1;
-	g_Globals->World.Teams[1].Enemies.Add(new int(0));
-	g_Globals->World.Teams[1].Enemies.Add(new int(2));
+	g_Globals->World.Teams[1].Enemies.push_back(0);
+	g_Globals->World.Teams[1].Enemies.push_back(2);
 	g_Globals->World.Teams[1].Nationality = 1;
 	g_Globals->World.Teams[2].Controller = ComputerControlled;
 	g_Globals->World.Teams[2].Player = 2;
-	g_Globals->World.Teams[2].Enemies.Add(new int(1));
-	g_Globals->World.Teams[2].Allies.Add(new int(0));
+	g_Globals->World.Teams[2].Enemies.push_back(1);
+	g_Globals->World.Teams[2].Allies.push_back(0);
 	g_Globals->World.Teams[2].Nationality = 2;
 
 	g_Globals->World.CurrentPlayer = 0;

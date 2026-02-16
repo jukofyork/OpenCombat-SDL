@@ -2,7 +2,7 @@
 
 #include <filesystem>
 #include <string>
-#include <misc/Array.h>
+#include <vector>
 
 class TGA;
 
@@ -16,7 +16,7 @@ public:
 	virtual ~Nationality(void);
 
 	// Load nationalities from XML file
-	static void Load(const std::filesystem::path& fileName, Array<Nationality> *nationalities);
+	static void Load(const std::filesystem::path& fileName, std::vector<Nationality*> *nationalities);
 
 	std::string Name;
 	TGA *VictoryLocation;

@@ -1,8 +1,8 @@
 #pragma once
 
 #include <SDL2/SDL.h>
+#include <vector>
 #include "../misc/Structs.h"
-#include "../misc/Array.h"
 
 class Color;
 struct Region;
@@ -70,7 +70,7 @@ public:
 	// A utility function to test if a point lies in a polygonal region
 	static bool PointInRegion(int x, int y, Region *r);
 	static bool PointInRegion(int x, int y, int rx, int ry, int rw, int rh);
-	static bool PointInRegion(int x, int y, Array<Point> *points);
+	static bool PointInRegion(int x, int y, std::vector<Point> *points);
 
 	// A self test function
 	static bool SelfTest();

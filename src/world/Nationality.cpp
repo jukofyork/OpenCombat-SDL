@@ -28,31 +28,31 @@ Nationality::~Nationality(void)
 }
 
 void
-Nationality::Load(const std::filesystem::path& fileName, Array<Nationality> *nationalities)
+Nationality::Load(const std::filesystem::path& fileName, std::vector<Nationality*> *nationalities)
 {
 	XMLDocument doc;
 	if (doc.LoadFile(fileName.c_str()) != XML_SUCCESS) {
 		printf("Failed to load nationalities file: %s\n", fileName.c_str());
 		return;
 	}
-	
+
 	XMLElement* root = doc.FirstChildElement("Nationalities");
 	if (!root) {
 		printf("No Nationalities element found in %s\n", fileName);
 		return;
 	}
-	
+
 	for (XMLElement* natElem = root->FirstChildElement("Nationality");
 		 natElem != nullptr;
 		 natElem = natElem->NextSiblingElement("Nationality"))
 	{
 		Nationality* nationality = new Nationality();
-		
+
 		XMLElement* nameElem = natElem->FirstChildElement("Name");
 		if (nameElem && nameElem->GetText()) {
 			nationality->Name = nameElem->GetText();
 		}
-		
+
 		// Load VictoryLocation (flag) image
 		XMLElement* flagElem = natElem->FirstChildElement("VictoryLocation");
 		if (flagElem && flagElem->GetText()) {
@@ -72,7 +72,7 @@ Nationality::Load(const std::filesystem::path& fileName, Array<Nationality> *nat
 				printf("Failed to load minimap image: %s\n", fullPath.c_str());
 			}
 		}
-		
-		nationalities->Add(nationality);
+
+		nationalities->push_back(nationality);
 	}
 }

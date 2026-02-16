@@ -57,38 +57,38 @@ MiniMap::Render(Screen *screen)
 	// of the current player as blue, allied objects in green,
 	// and enemy objects in red.
 	Color blue(0,0,255);
-	Array<Object> *objs = &g_Globals->World.Teams[g_Globals->World.CurrentPlayer].Objects;
-	for(int i = 0; i < objs->Count; ++i) {
+	auto& objs = g_Globals->World.Teams[g_Globals->World.CurrentPlayer].Objects;
+	for(size_t i = 0; i < objs.size(); ++i) {
 		// Draw a small circle
-		float xpct = ((float) objs->Items[i]->Position.x / (float) _parentWorld->GetWidth());
-		float ypct = ((float) objs->Items[i]->Position.y / (float) _parentWorld->GetHeight());
+		float xpct = ((float) objs[i]->Position.x / (float) _parentWorld->GetWidth());
+		float ypct = ((float) objs[i]->Position.y / (float) _parentWorld->GetHeight());
 		screen->FillRect(Position.x + 2 + (int)(xpct*(float)_tga->GetWidth()), Position.y + 2 + (int)(ypct*(float)_tga->GetHeight()), 5, 5, &blue);
 	}
 
 	// Now allied objects
 	Color green(0,255,0);
-	for(int j = 0; j < g_Globals->World.Teams[g_Globals->World.CurrentPlayer].Allies.Count; ++j)
+	for(size_t j = 0; j < g_Globals->World.Teams[g_Globals->World.CurrentPlayer].Allies.size(); ++j)
 	{
-		PlayerID id = *g_Globals->World.Teams[g_Globals->World.CurrentPlayer].Allies.Items[j];
-		objs = &g_Globals->World.Teams[id].Objects;
-		for(int i = 0; i < objs->Count; ++i) {
+		PlayerID id = g_Globals->World.Teams[g_Globals->World.CurrentPlayer].Allies[j];
+		auto& teamObjs = g_Globals->World.Teams[id].Objects;
+		for(size_t i = 0; i < teamObjs.size(); ++i) {
 			// Draw a small circle
-			float xpct = ((float) objs->Items[i]->Position.x / (float) _parentWorld->GetWidth());
-			float ypct = ((float) objs->Items[i]->Position.y / (float) _parentWorld->GetHeight());
+			float xpct = ((float) teamObjs[i]->Position.x / (float) _parentWorld->GetWidth());
+			float ypct = ((float) teamObjs[i]->Position.y / (float) _parentWorld->GetHeight());
 			screen->FillRect(Position.x + 2 + (int)(xpct*(float)_tga->GetWidth()), Position.y + 2 + (int)(ypct*(float)_tga->GetHeight()), 5, 5, &green);
 		}
 	}
 
 	// Now enemy objects
 	Color red(255,0,0);
-	for(int j = 0; j < g_Globals->World.Teams[g_Globals->World.CurrentPlayer].Enemies.Count; ++j)
+	for(size_t j = 0; j < g_Globals->World.Teams[g_Globals->World.CurrentPlayer].Enemies.size(); ++j)
 	{
-		PlayerID id = *g_Globals->World.Teams[g_Globals->World.CurrentPlayer].Enemies.Items[j];
-		objs = &g_Globals->World.Teams[id].Objects;
-		for(int i = 0; i < objs->Count; ++i) {
+		PlayerID id = g_Globals->World.Teams[g_Globals->World.CurrentPlayer].Enemies[j];
+		auto& teamObjs = g_Globals->World.Teams[id].Objects;
+		for(size_t i = 0; i < teamObjs.size(); ++i) {
 			// Draw a small circle
-			float xpct = ((float) objs->Items[i]->Position.x / (float) _parentWorld->GetWidth());
-			float ypct = ((float) objs->Items[i]->Position.y / (float) _parentWorld->GetHeight());
+			float xpct = ((float) teamObjs[i]->Position.x / (float) _parentWorld->GetWidth());
+			float ypct = ((float) teamObjs[i]->Position.y / (float) _parentWorld->GetHeight());
 			screen->FillRect(Position.x + 2 + (int)(xpct*(float)_tga->GetWidth()), Position.y + 2 + (int)(ypct*(float)_tga->GetHeight()), 5, 5, &red);
 		}
 	}

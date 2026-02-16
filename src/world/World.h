@@ -19,7 +19,6 @@ class VehicleManager;
 class WeaponManager;
 class MiniMap;
 
-#include <misc/Array.h>
 #include <misc/Color.h>
 #include <graphics/CombatContextMenu.h>
 #include <graphics/Mark.h>

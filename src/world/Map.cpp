@@ -152,11 +152,11 @@ Map::Render(Screen *screen, Rect *clip)
 			if(x > _originX && (x < (_originX+clip->w))
 				&& (y > _originY) && (y < (_originY+clip->h)))
 			{
-				if(_victoryLocations[i]->ControllingTeam >= 0)
-				{
-				TGA *tga = g_Globals->World.Nationalities.Items[g_Globals->World.Teams[_victoryLocations[i]->ControllingTeam].Nationality]->VictoryLocation;
-					screen->Blit(tga->GetData(), x-_originX-tga->GetWidth()/2, y-_originY-tga->GetHeight()/2, tga->GetWidth(), tga->GetHeight(), 0, 0, tga->GetWidth(), tga->GetHeight(), tga->GetDepth(), true, true);
-				}
+			if(_victoryLocations[i]->ControllingTeam >= 0)
+			{
+			TGA *tga = g_Globals->World.Nationalities[g_Globals->World.Teams[_victoryLocations[i]->ControllingTeam].Nationality]->VictoryLocation;
+				screen->Blit(tga->GetData(), x-_originX-tga->GetWidth()/2, y-_originY-tga->GetHeight()/2, tga->GetWidth(), tga->GetHeight(), 0, 0, tga->GetWidth(), tga->GetHeight(), tga->GetDepth(), true, true);
+			}
 				else
 				{
 					assert(0);
@@ -219,9 +219,8 @@ Map::Create(const std::filesystem::path& fileName)
 	// Copy the victory locations
 	// XXX/GWS: I am doing some temporary controlling team setting here
 	int j = 0;
-	for(int i = 0; i < attr->VictoryLocations.Count; ++i)
+	for(auto* vl : attr->VictoryLocations)
 	{
-		VictoryLocation *vl = attr->VictoryLocations.Items[i];
 		vl->ControllingTeam = j;
 		j = (j+1) % 2;
 		m->_victoryLocations.push_back(vl);
@@ -379,9 +378,9 @@ Map::PopulateBuildingsIndices()
 		{
 			for(int m = si; m <= (si+ni); ++m)
 			{
-				if(Screen::PointInRegion(m*_nPixelsPerBlockX+_nPixelsPerBlockX/2,
-										 n*_nPixelsPerBlockY+_nPixelsPerBlockY/2,
-										 &(building->BoundaryPoints)))
+			if(Screen::PointInRegion(m*_nPixelsPerBlockX+_nPixelsPerBlockX/2,
+									 n*_nPixelsPerBlockY+_nPixelsPerBlockY/2,
+									 &(building->BoundaryPoints)))
 				{
 					_buildingIndices[n*_nBlocksX+m] = (unsigned short)i+1;
 					// Now add this tile index into the building
@@ -420,15 +419,15 @@ Map::GetVictoryLocation(int idx, int *x, int *y, Nationality **nationality)
 	
 	// Get the nationality index for this team
 	int natIdx = g_Globals->World.Teams[_victoryLocations[idx]->ControllingTeam].Nationality;
-	
+
 	// Bounds check for nationality index
-	if(natIdx < 0 || natIdx >= g_Globals->World.Nationalities.Count) {
+	if(natIdx < 0 || natIdx >= static_cast<int>(g_Globals->World.Nationalities.size())) {
 		*nationality = nullptr;
 		return;
 	}
-	
+
 	// Return pointer to the Nationality object
-	*nationality = g_Globals->World.Nationalities.Items[natIdx];
+	*nationality = g_Globals->World.Nationalities[natIdx];
 }
 
 const std::string&
@@ -456,7 +455,7 @@ Map::RenderVictoryLocationText(Screen *screen, Rect *clip)
 		
 		if(_victoryLocations[i]->ControllingTeam >= 0)
 		{
-			TGA *tga = g_Globals->World.Nationalities.Items[g_Globals->World.Teams[_victoryLocations[i]->ControllingTeam].Nationality]->VictoryLocation;
+			TGA *tga = g_Globals->World.Nationalities[g_Globals->World.Teams[_victoryLocations[i]->ControllingTeam].Nationality]->VictoryLocation;
 			
 			Color white(255, 255, 255);
 			int textW, textH;

@@ -461,7 +461,7 @@ World::Load(const std::filesystem::path& fileName, SoldierManager *soldierManage
 		s->SetPosition((i+1)*200, 100);
 		AddObject(s);
 		s->SetTeam(g_Globals->World.CurrentPlayer);
-		g_Globals->World.Teams[g_Globals->World.CurrentPlayer].Objects.Add(s);
+		g_Globals->World.Teams[g_Globals->World.CurrentPlayer].Objects.push_back(s);
 	}
 
 	Squad *squad = _squadManager->CreateSquad("Bazooka", _soldierManager, _vehicleManager, _animationManager, _weaponManager);
@@ -474,7 +474,7 @@ World::Load(const std::filesystem::path& fileName, SoldierManager *soldierManage
 	}
 	squad->SetPosition(748, 604);
 	AddObject(squad);
-	g_Globals->World.Teams[g_Globals->World.CurrentPlayer].Objects.Add(squad);
+	g_Globals->World.Teams[g_Globals->World.CurrentPlayer].Objects.push_back(squad);
 	squad->SetTeam(g_Globals->World.CurrentPlayer);
 
 	squad = _squadManager->CreateSquad(".30 Cal MG", _soldierManager, _vehicleManager, _animationManager, _weaponManager);
@@ -487,7 +487,7 @@ World::Load(const std::filesystem::path& fileName, SoldierManager *soldierManage
 	}
 	squad->SetPosition(200, 200);
 	AddObject(squad);
-	g_Globals->World.Teams[g_Globals->World.CurrentPlayer].Objects.Add(squad);
+	g_Globals->World.Teams[g_Globals->World.CurrentPlayer].Objects.push_back(squad);
 	squad->SetTeam(g_Globals->World.CurrentPlayer);
 
 	// Create a couple of enemy teams
@@ -504,7 +504,7 @@ World::Load(const std::filesystem::path& fileName, SoldierManager *soldierManage
 		s->SetPosition((i)*100+1700, 1800);
 		AddObject(s);
 		s->SetTeam(1);
-		g_Globals->World.Teams[1].Objects.Add(s);
+		g_Globals->World.Teams[1].Objects.push_back(s);
 	}
 
 	// And now an allied team
@@ -521,7 +521,7 @@ World::Load(const std::filesystem::path& fileName, SoldierManager *soldierManage
 		s->SetPosition((i)*100+1800, 200);
 		AddObject(s);
 		s->SetTeam(2);
-		g_Globals->World.Teams[2].Objects.Add(s);
+		g_Globals->World.Teams[2].Objects.push_back(s);
 	}
 
 #if 0
@@ -534,10 +534,10 @@ World::Load(const std::filesystem::path& fileName, SoldierManager *soldierManage
 void
 World::UpdateState()
 {
-	State.NumSquads = g_Globals->World.Teams[g_Globals->World.CurrentPlayer].Objects.Count;
-	for(int i = 0; i < g_Globals->World.Teams[g_Globals->World.CurrentPlayer].Objects.Count; ++i) {
-		Object *o = g_Globals->World.Teams[g_Globals->World.CurrentPlayer].Objects.Items[i];
-		o->UpdateInterfaceState(&State, i, 0);
+	State.NumSquads = static_cast<int>(g_Globals->World.Teams[g_Globals->World.CurrentPlayer].Objects.size());
+	for(size_t i = 0; i < g_Globals->World.Teams[g_Globals->World.CurrentPlayer].Objects.size(); ++i) {
+		Object *o = g_Globals->World.Teams[g_Globals->World.CurrentPlayer].Objects[i];
+		o->UpdateInterfaceState(&State, static_cast<int>(i), 0);
 	}
 
 	// Update the state of any selected objects

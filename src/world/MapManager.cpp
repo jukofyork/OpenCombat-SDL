@@ -111,7 +111,7 @@ MapManager::Parse(const std::filesystem::path& fileName)
                 }
             }
             
-            attr->VictoryLocations.Add(vl);
+            attr->VictoryLocations.push_back(vl);
         }
     }
     
