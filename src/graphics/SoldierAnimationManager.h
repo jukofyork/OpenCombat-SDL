@@ -8,6 +8,6 @@ public:
 	SoldierAnimationManager(void);
 	virtual ~SoldierAnimationManager(void);
 
-	virtual void LoadAnimations(char *fileName);
+	virtual void LoadAnimations(const std::filesystem::path& fileName);
 
 };

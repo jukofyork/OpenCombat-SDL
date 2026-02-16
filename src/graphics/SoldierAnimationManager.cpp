@@ -30,7 +30,7 @@ SoldierAnimationManager::~SoldierAnimationManager(void)
 }
 
 void
-SoldierAnimationManager::LoadAnimations(char *fileName)
+SoldierAnimationManager::LoadAnimations(const std::filesystem::path& fileName)
 {
 	struct AnimationAttributes {
 		std::string Name;
@@ -42,8 +42,8 @@ SoldierAnimationManager::LoadAnimations(char *fileName)
 	};
 
 	XMLDocument doc;
-	if (doc.LoadFile(fileName) != XML_SUCCESS) {
-		printf("Failed to load animations file: %s\n", fileName);
+	if (doc.LoadFile(fileName.c_str()) != XML_SUCCESS) {
+		printf("Failed to load animations file: %s\n", fileName.c_str());
 		return;
 	}
 	

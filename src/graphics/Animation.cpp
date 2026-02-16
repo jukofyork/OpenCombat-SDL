@@ -79,6 +79,14 @@ Animation::Update(long dt)
 void
 Animation::GetExtents(Direction heading, int x, int y, Region *r)
 {
+	if (_frames[heading].Count == 0) {
+		// Safety check - no frames loaded
+		r->points[0].x = r->points[0].y = 0;
+		r->points[1].x = r->points[1].y = 0;
+		r->points[2].x = r->points[2].y = 0;
+		r->points[3].x = r->points[3].y = 0;
+		return;
+	}
 	_frames[heading].Items[_currentFrameNums[heading]]->GetExtents(x, y, r);
 }
 
