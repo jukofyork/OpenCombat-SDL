@@ -9,6 +9,8 @@
 #include <graphics/Effect.h>
 #include <graphics/Widget.h>
 #include <application/Globals.h>
+#include <orders/DefendOrder.h>
+#include <orders/AmbushOrder.h>
 #include <assert.h>
 #include <math.h>
 
@@ -106,9 +108,15 @@ Vehicle::Simulate(long dt, World *world)
 			case Orders::Destination:
 				handled = HandleDestinationOrder((MoveOrder *)order);
 				break;
-			case Orders::Stop:
-				handled = HandleStopOrder();
-				break;
+		case Orders::Stop:
+			handled = HandleStopOrder();
+			break;
+		case Orders::Defend:
+			handled = HandleDefendOrder((DefendOrder *)order);
+			break;
+		case Orders::Ambush:
+			handled = HandleAmbushOrder((AmbushOrder *)order);
+			break;
 			default:
 				handled = true;
 				break;
@@ -268,6 +276,38 @@ Vehicle::HandleStopOrder()
 	_currentAction = Unit::Defending;
 	_velocity.x = 0; // Stop moving!
 	_velocity.y = 0;
+	return true;
+}
+
+bool
+Vehicle::HandleDefendOrder(DefendOrder *order)
+{
+	// Stop the tank
+	_moving = false;
+	_currentState = Stopped;
+	_currentAction = Unit::Defending;
+	_velocity.x = 0;
+	_velocity.y = 0;
+	
+	// Rotate hull and turret to face the specified direction
+	AimTurret(order->Heading);
+	
+	return true;
+}
+
+bool
+Vehicle::HandleAmbushOrder(AmbushOrder *order)
+{
+	// Stop the tank
+	_moving = false;
+	_currentState = Stopped;
+	_currentAction = Unit::Ambushing;
+	_velocity.x = 0;
+	_velocity.y = 0;
+	
+	// Rotate hull and turret to face the specified direction
+	AimTurret(order->Heading);
+	
 	return true;
 }
 
@@ -479,3 +519,28 @@ Vehicle::AimTurret(int x, int y)
 	ta2 = NORMALIZE_ANGLE(ta2);
 	_hullRotationDirection = (ta1 < ta2) ? -1.0f : 1.0f;
 }
+
+void
+Vehicle::AimTurret(Direction dir)
+{
+	_hullRotating = true;
+	_turretRotating = true;
+	
+	// Convert Direction enum to radians (0 = South, going clockwise)
+	float targetAngle = (float)(dir * 2.0f * M_PI / 8.0f);
+	_hullTargetAngle = targetAngle;
+	_turretTargetAngle = targetAngle;
+	
+	// Calculate hull rotation direction (shortest path)
+	float hullDiff = _hullTargetAngle - _currentHullAngle;
+	while(hullDiff > M_PI) hullDiff -= 2.0f * M_PI;
+	while(hullDiff < -M_PI) hullDiff += 2.0f * M_PI;
+	_hullRotationDirection = (hullDiff > 0) ? 1.0f : -1.0f;
+	
+	// Calculate turret rotation direction (shortest path)
+	float turretDiff = _turretTargetAngle - _currentTurretAngle;
+	while(turretDiff > M_PI) turretDiff -= 2.0f * M_PI;
+	while(turretDiff < -M_PI) turretDiff += 2.0f * M_PI;
+	_turretRotationDirection = (turretDiff > 0) ? 1.0f : -1.0f;
+}
+

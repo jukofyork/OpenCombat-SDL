@@ -211,9 +211,15 @@ Squad::AddOrder(Order *o)
 	switch(o->GetType()) {
 		case Orders::Ambush:
 			HandleAmbushOrder((AmbushOrder *)o);
+			for(auto* vehicle : _vehicles) {
+				vehicle->AddOrder(o);
+			}
 			return;
 		case Orders::Defend:
 			HandleDefendOrder((DefendOrder *)o);
+			for(auto* vehicle : _vehicles) {
+				vehicle->AddOrder(o);
+			}
 			return;
 		case Orders::Fire:
 			{

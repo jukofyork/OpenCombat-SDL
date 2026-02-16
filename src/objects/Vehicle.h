@@ -11,6 +11,8 @@ class Squad;
 class TGA;
 class Weapon;
 class World;
+class DefendOrder;
+class AmbushOrder;
 
 #define MAX_WEAPONS_PER_VEHICLE	8
 #define MAX_CREW	8
@@ -65,12 +67,15 @@ protected:
 	bool HandleFireOrder(FireOrder *order);
 	bool HandleDestinationOrder(MoveOrder *order);
 	bool HandleStopOrder();
+	bool HandleDefendOrder(DefendOrder *order);
+	bool HandleAmbushOrder(AmbushOrder *order);
 
 	// Shoots my weapons
 	void Shoot(Weapon *weapon, Object *target, Target::Type targetType, int targetX, int targetY);
 
 	// Aims the turret
 	void AimTurret(int x, int y);
+	void AimTurret(Direction dir);
 
 	// Finds my next target
 	Soldier *FindTarget(Squad *squad);
