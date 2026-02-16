@@ -237,12 +237,21 @@ Squad::AddOrder(Order *o)
 			break;
 		case Orders::Move:
 			HandleMoveOrder((MoveOrder *)o, SoldierAction::WalkTo, Mark::Blue);
+			for(auto* vehicle : _vehicles) {
+				vehicle->AddOrder(o);
+			}
 			return;
 		case Orders::MoveFast:
 			HandleMoveOrder((MoveOrder *)o, SoldierAction::RunTo, Mark::Purple);
+			for(auto* vehicle : _vehicles) {
+				vehicle->AddOrder(o);
+			}
 			return;
 		case Orders::Sneak:
 			HandleMoveOrder((MoveOrder *)o, SoldierAction::CrawlTo, Mark::Yellow);
+			for(auto* vehicle : _vehicles) {
+				vehicle->AddOrder(o);
+			}
 			return;
 	}
 
@@ -440,7 +449,11 @@ Squad::Contains(int x, int y)
 bool
 Squad::IsActive()
 {
-	// XXX/GWS: Needs to work with vehicles
+	for(auto* vehicle : _vehicles) {
+		if(!vehicle->IsDestroyed() && !vehicle->IsAbandoned()) {
+			return true;
+		}
+	}
 	for(auto* soldier : _soldiers) {
 		if(!soldier->IsDead()) {
 			return true;
