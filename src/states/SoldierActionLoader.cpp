@@ -1,5 +1,6 @@
 #include <states/SoldierActionLoader.h>
 #include <application/Globals.h>
+#include <misc/StringUtils.h>
 #include <assert.h>
 #include <stdio.h>
 #include <string.h>
@@ -11,23 +12,13 @@
 
 static ObjectActions::StateIdx find_state(const std::string& stateName);
 
-// Helper function to trim whitespace from both ends of a string
-static std::string trim(const std::string &s)
-{
-	const std::string ws = " \t\n\r\f\v";
-	size_t start = s.find_first_not_of(ws);
-	if (start == std::string::npos) return "";
-	size_t end = s.find_last_not_of(ws);
-	return s.substr(start, end - start + 1);
-}
-
 // Helper to split a string by delimiter
 static void split(const std::string &s, char delim, std::vector<std::string> &result)
 {
 	std::stringstream ss(s);
 	std::string item;
 	while (std::getline(ss, item, delim)) {
-		std::string trimmed = trim(item);
+		std::string trimmed = StringUtils::trim(item);
 		if (!trimmed.empty()) {
 			result.push_back(trimmed);
 		}
@@ -62,7 +53,7 @@ SoldierActionLoader::Load(const std::filesystem::path& fileName, ObjectActions *
 		std::string token;
 		while (std::getline(linestream, token, '\t') && i < 5)
 		{
-			std::string trimmed = trim(token);
+			std::string trimmed = StringUtils::trim(token);
 			if (!trimmed.empty()) {
 				values[i++] = trimmed;
 			}
@@ -117,7 +108,7 @@ SoldierActionLoader::Load(const std::filesystem::path& fileName, ObjectActions *
 		std::stringstream changesStream(values[4]);
 		while (std::getline(changesStream, token, ','))
 		{
-			std::string trimmed = trim(token);
+			std::string trimmed = StringUtils::trim(token);
 			if(!trimmed.empty() && trimmed[0] == '+')
 			{
 				++nAdds;
