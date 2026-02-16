@@ -2,7 +2,7 @@
 
 #include <filesystem>
 #include <string>
-#include "misc/Array.h"
+#include <vector>
 
 class Sound;
 
@@ -20,5 +20,5 @@ public:
 
 protected:
 	// The array of sounds we are managing
-	Array<Sound> _sounds;
+	std::vector<Sound*> _sounds;
 };
