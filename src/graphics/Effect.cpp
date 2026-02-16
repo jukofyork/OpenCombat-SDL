@@ -28,7 +28,7 @@ void
 Effect::AddFrame(TGA *tga, long frameHoldTime)
 {
 	_frameHoldTime = frameHoldTime;
-	_frames.Add(tga);
+	_frames.push_back(tga);
 }
 
 // Clone's this effect
@@ -40,8 +40,8 @@ Effect::Clone()
 	e->_dynamic = _dynamic;
 	e->_bPlaceOnTurret = _bPlaceOnTurret;
 
-	for(int i = 0; i < _frames.Count; ++i) {
-		e->AddFrame(_frames.Items[i], _frameHoldTime);
+	for(auto* frame : _frames) {
+		e->AddFrame(frame, _frameHoldTime);
 	}
 	return e;
 }
@@ -50,7 +50,7 @@ void
 Effect::Simulate(long dt)
 {
 	if(_totalTime == 0 && !_sound.empty()) {
-		g_Globals->World.SoundEffects->GetSound(_sound)->Play();	
+		g_Globals->World.SoundEffects->GetSound(_sound)->Play();
 	}
 
 	_totalTime += dt;
@@ -59,7 +59,7 @@ Effect::Simulate(long dt)
 		_incrementalTime = 0;
 		_currentFrameNumber++;
 
-		if(_currentFrameNumber >= _frames.Count) {
+		if(_currentFrameNumber >= static_cast<int>(_frames.size())) {
 			_completed = true;
 		}
 	}
@@ -68,13 +68,13 @@ Effect::Simulate(long dt)
 void
 Effect::Render(Screen *screen)
 {
-	if(_completed) {
+	if(_completed || _frames.empty()) {
 		return;
 	}
 
-	TGA *tga = _frames.Items[_currentFrameNumber];
+	TGA *tga = _frames[_currentFrameNumber];
 	screen->Blit(tga->GetData(),
-		Position.x-tga->GetOriginX()-screen->Origin.x, 
+		Position.x-tga->GetOriginX()-screen->Origin.x,
 		Position.y - tga->GetOriginY()-screen->Origin.y,
 		tga->GetWidth(), tga->GetHeight(), 0, 0, tga->GetWidth(), tga->GetHeight(), tga->GetDepth(), true);
 }

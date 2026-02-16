@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include <misc/Array.h>
+#include <vector>
 #include <misc/Structs.h>
 
 class Screen;
@@ -67,8 +67,8 @@ protected:
 	// A flag that tells whether or not this effect is completed
 	bool _completed;
 
-	// The list of frames in this effect
-	Array<TGA> _frames;
+	// The list of frames in this effect (shared pointers - not owned by Effect)
+	std::vector<TGA*> _frames;
 
 	// The current frame number
 	int _currentFrameNumber;
