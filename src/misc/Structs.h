@@ -2,10 +2,6 @@
 
 #include <math.h>
 
-#ifndef MAX_NAME
-#define MAX_NAME	256
-#endif
-
 enum Direction {
 	South=0,
 	SouthWest,

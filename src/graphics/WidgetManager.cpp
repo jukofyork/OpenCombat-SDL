@@ -3,16 +3,17 @@
 
 #include <stdio.h>
 #include <math.h>
+#include <string>
 #include <misc/TGA.h>
 #include <graphics/Widget.h>
 #include <application/Globals.h>
 
 using namespace tinyxml2;
 
-struct WidgetAttributes 
+struct WidgetAttributes
 {
-	char Name[MAX_NAME];
-	char GraphicsFile[MAX_NAME];
+	std::string Name;
+	std::string GraphicsFile;
 	int Index;
 };
 
@@ -47,12 +48,12 @@ WidgetManager::LoadWidgets(char *fileName)
 
 		XMLElement* nameElem = widgetElem->FirstChildElement("Name");
 		if (nameElem && nameElem->GetText()) {
-			strcpy(attr->Name, nameElem->GetText());
+			attr->Name = nameElem->GetText();
 		}
 
 		XMLElement* graphicElem = widgetElem->FirstChildElement("Graphic");
 		if (graphicElem && graphicElem->GetText()) {
-			sprintf(attr->GraphicsFile, "%s", graphicElem->GetText());
+			attr->GraphicsFile = graphicElem->GetText();
 		}
 
 		XMLElement* indexElem = widgetElem->FirstChildElement("Index");
@@ -69,7 +70,7 @@ WidgetManager::LoadWidgets(char *fileName)
 
 	for(int i = 0; i < dest.Count; ++i) {
 		// Create the source TGA file
-		sprintf(fName, "%s/%s", g_Globals->Application.GraphicsDirectory, dest.Items[i]->GraphicsFile); 
+		sprintf(fName, "%s/%s", g_Globals->Application.GraphicsDirectory, dest.Items[i]->GraphicsFile.c_str()); 
 		TGA *tga = TGA::Create(fName);
 		_sourceImages.Add(tga);
 		Widget *w = new Widget(dest.Items[i]->Name, tga);

@@ -2,6 +2,7 @@
 #include "misc/tinyxml2.h"
 #include <misc/Array.h>
 #include <stdio.h>
+#include <string>
 
 using namespace tinyxml2;
 
@@ -15,13 +16,13 @@ ColorManager::~ColorManager()
 	// XXX/GWS: Todo
 }
 
-void 
+void
 ColorManager::CopyColor(char *name, Color *dest)
 {
 	for(int i = 0; i < _nColors; ++i) {
-		if(strcmp(name, _names[i]) == 0) {
+		if(_names[i] == name) {
 			dest->alpha = _colors[i].alpha;
-			dest->red = _colors[i].red;	
+			dest->red = _colors[i].red;
 			dest->green = _colors[i].green;
 			dest->blue = _colors[i].blue;
 			return;
@@ -33,7 +34,7 @@ void
 ColorManager::Load(char *configFile)
 {
 	struct ColorAttributes {
-		char Name[32];
+		std::string Name;
 		int a, r, g, b;
 	};
 	
@@ -57,7 +58,7 @@ ColorManager::Load(char *configFile)
 		
 		XMLElement* nameElem = colorElem->FirstChildElement("Name");
 		if (nameElem && nameElem->GetText()) {
-			strcpy(attr->Name, nameElem->GetText());
+			attr->Name = nameElem->GetText();
 		}
 		
 		XMLElement* alphaElem = colorElem->FirstChildElement("Alpha");
@@ -89,7 +90,7 @@ ColorManager::Load(char *configFile)
 		_colors[_nColors].red = (unsigned char)attr->r;
 		_colors[_nColors].green = (unsigned char)attr->g;
 		_colors[_nColors].blue = (unsigned char)attr->b;
-		strcpy(_names[_nColors++], attr->Name);
+		_names[_nColors++] = attr->Name;
 		delete attr;
 	}
 }

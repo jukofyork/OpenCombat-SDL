@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <misc/Color.h>
 
 #define MAX_COLORS 1024
@@ -15,6 +16,6 @@ public:
 
 private:
 	Color _colors[MAX_COLORS];
-	char _names[MAX_COLORS][32];
+	std::string _names[MAX_COLORS];
 	int _nColors;
 };

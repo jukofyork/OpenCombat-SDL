@@ -36,7 +36,7 @@ ColorModifierManager::Load(char *configFile)
 		// Parse Name
 		tinyxml2::XMLElement* nameElem = modElem->FirstChildElement("Name");
 		if (nameElem && nameElem->GetText()) {
-			strcpy(g_ColorModifiers[g_NumColorModifiers].Name, nameElem->GetText());
+			g_ColorModifiers[g_NumColorModifiers].Name = nameElem->GetText();
 		}
 		
 		// Parse Body RGB

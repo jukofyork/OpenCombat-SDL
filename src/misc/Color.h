@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 struct ColorModifier {
 	int Red;
 	int Green;
@@ -7,7 +9,7 @@ struct ColorModifier {
 };
 
 struct ColorModifiers {
-	char Name[256];
+	std::string Name;
 	ColorModifier Body;
 	ColorModifier Legs;
 	ColorModifier Head;
