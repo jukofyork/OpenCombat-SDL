@@ -131,24 +131,24 @@ SoldierAnimationManager::LoadAnimations(char *fileName)
 				char* fileExt = strrchr(entry->d_name, '.');
 				if (!fileExt) continue;
 				
-					// Check for .tga extension (case insensitive)
-					if (strcasecmp(fileExt, ".tga") == 0) {
-						// Check if it starts with 'spr' (sprite files, not 'msk' mask files)
-						if (strncmp(entry->d_name, "spr", 3) == 0) {
-							std::filesystem::path filePath = g_Globals->Application.GraphicsDirectory / directory / entry->d_name;
-							files.Add(strdup(filePath.c_str()));
+						// Check for .tga extension (case insensitive)
+						if (strcasecmp(fileExt, ".tga") == 0) {
+							// Check if it starts with 'spr' (sprite files, not 'msk' mask files)
+							if (strncmp(entry->d_name, "spr", 3) == 0) {
+								std::filesystem::path filePath = g_Globals->Application.GraphicsDirectory / directory / entry->d_name;
+								files.Add(strdup(filePath.c_str()));
 
-							// Add mask file (replace first 3 chars with 'msk')
-							std::string maskPath = searchDir;
-							size_t lastSlash = maskPath.find_last_of('/');
-							if (lastSlash != std::string::npos && lastSlash + 3 < maskPath.length()) {
-								maskPath[lastSlash + 1] = 'm';
-								maskPath[lastSlash + 2] = 's';
-								maskPath[lastSlash + 3] = 'k';
+								// Add mask file (replace first 3 chars 'spr' with 'msk')
+								std::string maskFile = entry->d_name;
+								if (maskFile.length() >= 3) {
+									maskFile[0] = 'm';
+									maskFile[1] = 's';
+									maskFile[2] = 'k';
+								}
+								std::filesystem::path maskPath = g_Globals->Application.GraphicsDirectory / directory / maskFile;
+								masks.Add(strdup(maskPath.c_str()));
 							}
-							masks.Add(strdup(maskPath.c_str()));
 						}
-					}
 			}
 			closedir(dir);
 			
