@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 #include <misc/Array.h>
 #include <objects/Object.h>
 #include <objects/Soldier.h>
@@ -53,7 +54,7 @@ public:
 	inline Array<Soldier> *GetSoldiers() { return &_soldiers; }
 
 	// Gets the description of the team strength
-	char *GetQualityDesc();
+	const std::string& GetQualityDesc();
 
 	// Kills this squad
 	virtual void Kill();

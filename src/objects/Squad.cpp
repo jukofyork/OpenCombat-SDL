@@ -2,6 +2,8 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <string>
+#include <vector>
 #include <assert.h>
 #include <world/World.h>
 #include <graphics/Mark.h>
@@ -10,7 +12,7 @@
 #include <sound/Sound.h>
 #include <application/Globals.h>
 
-static char *_squadQualityIcons[] = { "Team Quality Useless", "Team Quality Fragile", "Team Quality Weak", "Team Quality Average", "Team Quality Good", "Team Quality Strong" };
+static const std::vector<std::string> _squadQualityIcons = { "Team Quality Useless", "Team Quality Fragile", "Team Quality Weak", "Team Quality Average", "Team Quality Good", "Team Quality Strong" };
 
 Squad::Squad() : Object()
 {
@@ -377,7 +379,7 @@ Squad::GetPointMan()
 	return _soldiers.Items[_currentPointManIdx];
 }
 
-char *
+const std::string&
 Squad::GetQualityDesc()
 {
 	return _squadQualityIcons[_quality];
