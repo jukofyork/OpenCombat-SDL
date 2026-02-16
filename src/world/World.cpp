@@ -527,8 +527,6 @@ World::Load(const std::filesystem::path& fileName, SoldierManager *soldierManage
 	squad = _squadManager->CreateSquad("Panzer IVG", _soldierManager, _vehicleManager, _animationManager, _weaponManager);
 	squad->SetPosition(300, 200);
 	AddObject(squad);
-	squad->SetTeam(g_Globals->World.CurrentPlayer);
-	g_Globals->World.Teams[g_Globals->World.CurrentPlayer].Objects.push_back(squad);
 }
 
 void
@@ -808,9 +806,14 @@ World::Select(int x, int y)
 
 	// Try selecting mobile objects first
 	_currentMap->SelectObjects(x+_originX, y+_originY, &_selectedObjects);
-	for(size_t i = 0; i < _mobileObjects.size(); ++i) {
-		if(_mobileObjects[i]->Select(x+_originX,y+_originY)) {
-			_selectedObjects.push_back(_mobileObjects[i]);
+	
+	// Only check mobile objects directly if map selection didn't find anything
+	if(_selectedObjects.empty()) {
+		for(size_t i = 0; i < _mobileObjects.size(); ++i) {
+			if(_mobileObjects[i]->Select(x+_originX,y+_originY)) {
+				_selectedObjects.push_back(_mobileObjects[i]);
+				break;
+			}
 		}
 	}
 }
