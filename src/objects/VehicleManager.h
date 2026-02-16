@@ -1,5 +1,6 @@
 #pragma once
 
+#include <filesystem>
 #include <misc/Array.h>
 
 class TGA;
@@ -14,10 +15,10 @@ public:
 	virtual ~VehicleManager(void);
 
 	// Loads a group of widgets into this widget manager
-	void Load(char *fileName);
+	void Load(const std::filesystem::path& fileName);
 
 	// Retrieves a Vehicle from this manager
-	Vehicle *GetVehicle(const char *vehicleName);
+	Vehicle *GetVehicle(const std::string& vehicleName);
 
 protected:
 	// The array of widgets we are managing

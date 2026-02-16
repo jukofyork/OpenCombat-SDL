@@ -10,11 +10,11 @@
 #include <application/Globals.h>
 
 void
-BuildingManager::LoadBuildings(const char *fileName, Array<Building> *buildings)
+BuildingManager::LoadBuildings(const std::filesystem::path& fileName, Array<Building> *buildings)
 {
 	tinyxml2::XMLDocument doc;
-	if (doc.LoadFile(fileName) != tinyxml2::XML_SUCCESS) {
-		printf("Failed to load buildings file: %s\n", fileName);
+	if (doc.LoadFile(fileName.c_str()) != tinyxml2::XML_SUCCESS) {
+		printf("Failed to load buildings file: %s\n", fileName.c_str());
 		return;
 	}
 	

@@ -33,11 +33,11 @@ EffectManager::~EffectManager(void)
 }
 
 void
-EffectManager::LoadEffects(char *fileName)
+EffectManager::LoadEffects(const std::filesystem::path& fileName)
 {
 	XMLDocument doc;
-	if (doc.LoadFile(fileName) != XML_SUCCESS) {
-		printf("Failed to load effects file: %s\n", fileName);
+	if (doc.LoadFile(fileName.c_str()) != XML_SUCCESS) {
+		printf("Failed to load effects file: %s\n", fileName.c_str());
 		return;
 	}
 

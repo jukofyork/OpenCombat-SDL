@@ -4,6 +4,7 @@
 #include <string.h>
 #include <fstream>
 #include <string>
+#include <filesystem>
 
 /**
  * Legacy maps are defined in the Close Combat txt files. 
@@ -29,9 +30,9 @@ LegacyMapLoader::~LegacyMapLoader(void)
  * Load a legacy map file.
  */
 void
-LegacyMapLoader::Load(const char *mapFile)
+LegacyMapLoader::Load(const std::filesystem::path& mapFile)
 {
-	std::ifstream fp(mapFile);
+	std::ifstream fp(mapFile.c_str());
 	assert(fp.is_open());
 
 	std::string line;

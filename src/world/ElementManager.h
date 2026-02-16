@@ -1,5 +1,6 @@
 #pragma once
 
+#include <filesystem>
 #include <misc/Array.h>
 
 class TGA;
@@ -12,7 +13,7 @@ public:
 	virtual ~ElementManager(void);
 
 	// Loads a group of elements from an XML file
-	void Load(char *configFile);
+	void Load(const std::filesystem::path& configFile);
 
 	// Retrieves a widget by index
 	Element *GetElement(int index);

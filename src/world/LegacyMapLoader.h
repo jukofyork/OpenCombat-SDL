@@ -1,5 +1,7 @@
 #pragma once
 
+#include <filesystem>
+
 class LegacyMapLoader
 {
 public:
@@ -7,7 +9,7 @@ public:
 	virtual ~LegacyMapLoader(void);
 
 	/* Loads a legacy map file */
-	virtual void Load(const char *mapFile);
+	virtual void Load(const std::filesystem::path& mapFile);
 
 	/* Retrieves the elements array */
 	virtual unsigned short *GetElements() { return _elements; }

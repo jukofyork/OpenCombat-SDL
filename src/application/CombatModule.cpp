@@ -71,7 +71,7 @@ CombatModule::Initialize(void *app)
 	// Load the nationalities
 	g_Globals->Application.Status->Status("Loading Nationalities...");
 	std::filesystem::path fileName = g_Globals->Application.ConfigDirectory / "Nationalities.xml";
-	Nationality::Load(const_cast<char*>(fileName.c_str()), &(g_Globals->World.Nationalities));
+	Nationality::Load(fileName, &(g_Globals->World.Nationalities));
 
 	// Load the UI graphical elements
 	g_Globals->Application.Status->Status("Loading Combat UI widgets...");
@@ -122,39 +122,39 @@ CombatModule::Initialize(void *app)
 	// Load all of our soldier states and stuff
 	g_Globals->Application.Status->Status("Loading soldier states...");
 	fileName = g_Globals->Application.ConfigDirectory / "SoldierStates.txt";
-	SoldierStateLoader::Load(const_cast<char*>(fileName.c_str()), &(g_Globals->World.States.Soldiers));
+	SoldierStateLoader::Load(fileName, &(g_Globals->World.States.Soldiers));
 
 	// Soldier actions
 	g_Globals->Application.Status->Status("Loading soldier actions...");
 	fileName = g_Globals->Application.ConfigDirectory / "SoldierActions.txt";
-	SoldierActionLoader::Load(const_cast<char*>(fileName.c_str()), &(g_Globals->World.Actions.Soldiers));
+	SoldierActionLoader::Load(fileName, &(g_Globals->World.Actions.Soldiers));
 
 	// Load the color modifier
 	g_Globals->Application.Status->Status("Loading color modifiers...");
 	_colorModifierManager = new ColorModifierManager();
 	fileName = g_Globals->Application.ConfigDirectory / "ColorModifiers.xml";
-	_colorModifierManager->Load(const_cast<char*>(fileName.c_str()));
+	_colorModifierManager->Load(fileName);
 
 	// Load the current set of animations
 	g_Globals->Application.Status->Status("Loading soldier animations...");
 	_animationManager = (AnimationManager *) new SoldierAnimationManager();
 	fileName = g_Globals->Application.ConfigDirectory / "SoldierAnimations.xml";
-	_animationManager->LoadAnimations(const_cast<char*>(fileName.c_str()));
+	_animationManager->LoadAnimations(fileName);
 	fileName = g_Globals->Application.ConfigDirectory / "SoldierDeaths.xml";
-	_animationManager->LoadAnimations(const_cast<char*>(fileName.c_str()));
+	_animationManager->LoadAnimations(fileName);
 	fileName = g_Globals->Application.ConfigDirectory / "SoldierDead.xml";
-	_animationManager->LoadAnimations(const_cast<char*>(fileName.c_str()));
+	_animationManager->LoadAnimations(fileName);
 	fileName = g_Globals->Application.ConfigDirectory / "BazookaAnimations.xml";
-	_animationManager->LoadAnimations(const_cast<char*>(fileName.c_str()));
+	_animationManager->LoadAnimations(fileName);
 	fileName = g_Globals->Application.ConfigDirectory / "MachineGunAnimations.xml";
-	_animationManager->LoadAnimations(const_cast<char*>(fileName.c_str()));
+	_animationManager->LoadAnimations(fileName);
 
 	// Load all of the soldier templates
 	g_Globals->Application.Status->Status("Loading soldiers...");
 	_soldierManager = new SoldierManager();
 	fileName = g_Globals->Application.ConfigDirectory / "Soldiers.xml";
 	std::filesystem::path fileName2 = g_Globals->Application.ConfigDirectory / "USNames.txt";
-	_soldierManager->LoadSoldiers(const_cast<char*>(fileName.c_str()), const_cast<char*>(fileName2.c_str()));
+	_soldierManager->LoadSoldiers(fileName, fileName2);
 	g_Globals->World.Soldiers = _soldierManager;
 
 	// Create the current world
@@ -163,7 +163,7 @@ CombatModule::Initialize(void *app)
 	_currentWorld = new World();
 	g_Globals->World.CurrentWorld = _currentWorld;
 	fileName = g_Globals->Application.MapsDirectory / "Acqueville/Acqueville.xml";
-	_currentWorld->Load(const_cast<char*>(fileName.c_str()), _soldierManager, _animationManager);
+	_currentWorld->Load(fileName, _soldierManager, _animationManager);
 
 	// Set maximum window size to prevent exceeding map dimensions
 	// This prevents assertion failures when window is larger than map
@@ -186,13 +186,13 @@ CombatModule::Initialize(void *app)
 	g_Globals->Application.Status->Status("Loading soldier voices...");
 	_soundManager = new SoundManager();
 	fileName = g_Globals->Application.ConfigDirectory / "EnglishVoices.xml";
-	_soundManager->LoadSounds(const_cast<char*>(fileName.c_str()));
+	_soundManager->LoadSounds(fileName);
 	g_Globals->World.Voices = _soundManager;
 
 	g_Globals->Application.Status->Status("Loading sound effects...");
 	_soundEffectsManager = new SoundManager();
 	fileName = g_Globals->Application.ConfigDirectory / "SoundEffects.xml";
-	_soundEffectsManager->LoadSounds(const_cast<char*>(fileName.c_str()));
+	_soundEffectsManager->LoadSounds(fileName);
 	g_Globals->World.SoundEffects = _soundEffectsManager;
 
 	_marks = new Mark();

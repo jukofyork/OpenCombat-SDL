@@ -16,7 +16,7 @@ SoundManager::~SoundManager(void)
 }
 
 void
-SoundManager::LoadSounds(char *fileName)
+SoundManager::LoadSounds(const std::filesystem::path& fileName)
 {
 	struct SoundAttributes {
 		std::string Name;
@@ -26,8 +26,8 @@ SoundManager::LoadSounds(char *fileName)
 	using namespace tinyxml2;
 
 	XMLDocument doc;
-	if (doc.LoadFile(fileName) != XML_SUCCESS) {
-		printf("Failed to load sounds file: %s\n", fileName);
+	if (doc.LoadFile(fileName.c_str()) != XML_SUCCESS) {
+		printf("Failed to load sounds file: %s\n", fileName.c_str());
 		return;
 	}
 	

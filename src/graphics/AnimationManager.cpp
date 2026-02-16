@@ -2,6 +2,7 @@
 #include "misc/tinyxml2.h"
 #include <misc/Color.h>
 #include <string>
+#include <filesystem>
 
 using namespace tinyxml2;
 
@@ -14,7 +15,7 @@ AnimationManager::~AnimationManager(void)
 }
 
 void
-AnimationManager::LoadAnimations(char *fileName)
+AnimationManager::LoadAnimations(const std::filesystem::path& fileName)
 {
     struct AnimationAttributes {
         std::string Name;
@@ -28,8 +29,8 @@ AnimationManager::LoadAnimations(char *fileName)
     };
 
     XMLDocument doc;
-    if (doc.LoadFile(fileName) != XML_SUCCESS) {
-        printf("Failed to load animations file: %s\n", fileName);
+    if (doc.LoadFile(fileName.c_str()) != XML_SUCCESS) {
+        printf("Failed to load animations file: %s\n", fileName.c_str());
         return;
     }
     
@@ -99,7 +100,7 @@ AnimationManager::LoadAnimations(char *fileName)
         Animation *a = new Animation(dest.Items[i]->Name);
 
         // Create the source TGA file
-        TGA *tga = TGA::Create((char*)dest.Items[i]->GraphicsFile.c_str());
+        TGA *tga = TGA::Create(dest.Items[i]->GraphicsFile);
         _sourceImages.Add(tga);
 
         // Parse the transparent color
@@ -119,10 +120,10 @@ AnimationManager::LoadAnimations(char *fileName)
 }
 
 Animation *
-AnimationManager::GetAnimation(char *animationName)
+AnimationManager::GetAnimation(const std::string& animationName)
 {
     for(int i = 0; i < _animations.Count; ++i) {
-        if(strcmp(animationName, _animations.Items[i]->GetName()) == 0) {
+        if(animationName == _animations.Items[i]->GetName()) {
             Animation *a = _animations.Items[i]->Clone();
             return a;
         }

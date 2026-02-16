@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
+#include <filesystem>
 #include <misc/TGA.h>
 #include <world/Element.h>
 
@@ -18,11 +19,11 @@ ElementManager::~ElementManager(void)
 }
 
 void
-ElementManager::Load(char *configFile)
+ElementManager::Load(const std::filesystem::path& configFile)
 {
     XMLDocument doc;
-    if (doc.LoadFile(configFile) != XML_SUCCESS) {
-        printf("Failed to load elements file: %s\n", configFile);
+    if (doc.LoadFile(configFile.c_str()) != XML_SUCCESS) {
+        printf("Failed to load elements file: %s\n", configFile.c_str());
         return;
     }
     

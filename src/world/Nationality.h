@@ -1,5 +1,6 @@
 #pragma once
 
+#include <filesystem>
 #include <string>
 #include <misc/Array.h>
 
@@ -15,7 +16,7 @@ public:
 	virtual ~Nationality(void);
 
 	// Load nationalities from XML file
-	static void Load(char *fileName, Array<Nationality> *nationalities);
+	static void Load(const std::filesystem::path& fileName, Array<Nationality> *nationalities);
 
 	std::string Name;
 	TGA *VictoryLocation;

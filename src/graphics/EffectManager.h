@@ -1,5 +1,6 @@
 #pragma once
 
+#include <filesystem>
 #include <string>
 #include <misc/Array.h>
 
@@ -13,7 +14,7 @@ public:
 	EffectManager(void);
 	virtual ~EffectManager(void);
 
-	void LoadEffects(char *fileName);
+	void LoadEffects(const std::filesystem::path& fileName);
 	Effect *GetEffect(const std::string &effectName);
 	
 	void GetFiles(EffectAttributes *attr, const char *searchStr);

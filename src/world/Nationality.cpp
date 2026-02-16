@@ -28,11 +28,11 @@ Nationality::~Nationality(void)
 }
 
 void
-Nationality::Load(char *fileName, Array<Nationality> *nationalities)
+Nationality::Load(const std::filesystem::path& fileName, Array<Nationality> *nationalities)
 {
 	XMLDocument doc;
-	if (doc.LoadFile(fileName) != XML_SUCCESS) {
-		printf("Failed to load nationalities file: %s\n", fileName);
+	if (doc.LoadFile(fileName.c_str()) != XML_SUCCESS) {
+		printf("Failed to load nationalities file: %s\n", fileName.c_str());
 		return;
 	}
 	

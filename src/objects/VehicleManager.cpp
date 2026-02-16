@@ -66,12 +66,12 @@ VehicleManager::~VehicleManager(void)
 }
 
 void
-VehicleManager::Load(char *fileName)
+VehicleManager::Load(const std::filesystem::path& fileName)
 {
 
     XMLDocument doc;
-    if (doc.LoadFile(fileName) != XML_SUCCESS) {
-        printf("Failed to load vehicles file: %s\n", fileName);
+    if (doc.LoadFile(fileName.c_str()) != XML_SUCCESS) {
+        printf("Failed to load vehicles file: %s\n", fileName.c_str());
         return;
     }
     
@@ -223,10 +223,10 @@ VehicleManager::Load(char *fileName)
 }
 
 Vehicle *
-VehicleManager::GetVehicle(const char *vehicleName)
+VehicleManager::GetVehicle(const std::string& vehicleName)
 {
 	for(int i = 0; i < _vehicles.Count; ++i) {
-		if(strcmp(vehicleName, _vehicles.Items[i]->Name.c_str()) == 0) {
+		if(vehicleName == _vehicles.Items[i]->Name) {
 			Vehicle *v = new Vehicle();
 		    // Okay, now iterate through all of the widget attributes and create
 		    // our widgets
@@ -266,12 +266,12 @@ VehicleManager::GetVehicle(const char *vehicleName)
 			// Now do all of the weapons
 			for(int j = 0; j < _vehicles.Items[i]->Hull.NumWeapons; ++j)
 			{
-				v->AddWeapon(g_Globals->World.Weapons->GetWeapon(_vehicles.Items[i]->Hull.Weapons[j].Name.c_str()),
+				v->AddWeapon(g_Globals->World.Weapons->GetWeapon(_vehicles.Items[i]->Hull.Weapons[j].Name),
 					_vehicles.Items[i]->Hull.Weapons[j].Slot, _vehicles.Items[i]->Hull.Weapons[j].NumClips, true);
 			}
 			for(int j = 0; j < _vehicles.Items[i]->Turret.NumWeapons; ++j)
 			{
-				v->AddWeapon(g_Globals->World.Weapons->GetWeapon(_vehicles.Items[i]->Turret.Weapons[j].Name.c_str()),
+				v->AddWeapon(g_Globals->World.Weapons->GetWeapon(_vehicles.Items[i]->Turret.Weapons[j].Name),
 					_vehicles.Items[i]->Turret.Weapons[j].Slot, _vehicles.Items[i]->Turret.Weapons[j].NumClips, false);
 			}
 

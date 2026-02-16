@@ -1,5 +1,6 @@
 #pragma once
 
+#include <filesystem>
 #include <string>
 
 struct Rect;
@@ -88,7 +89,7 @@ public:
 	virtual void Render(Screen *screen, Rect *clip);
 
 	// Loads a world from a file
-	virtual void Load(char *fileName, SoldierManager *soldierManager, AnimationManager *animationManager);
+	virtual void Load(const std::filesystem::path& fileName, SoldierManager *soldierManager, AnimationManager *animationManager);
 
 	// Adds an object to this world
 	virtual void AddObject(Object *o);

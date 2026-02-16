@@ -1,5 +1,6 @@
 #pragma once
 
+#include <filesystem>
 #include <string>
 #include <misc/Array.h>
 
@@ -27,10 +28,10 @@ public:
 	virtual ~WeaponManager(void);
 
 	// Loads weapons from an XML file
-	void LoadWeapons(char *fileName);
+	void LoadWeapons(const std::filesystem::path& fileName);
 
 	// Retrieves a weapon by name
-	Weapon *GetWeapon(const char *weaponName);
+	Weapon *GetWeapon(const std::string& weaponName);
 
 protected:
 	// The array of weapon templates

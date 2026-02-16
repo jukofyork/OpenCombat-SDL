@@ -387,7 +387,7 @@ World::Simulate(long dt)
 }
 
 void
-World::Load(char *fileName, SoldierManager *soldierManager, AnimationManager *animationManager)
+World::Load(const std::filesystem::path& fileName, SoldierManager *soldierManager, AnimationManager *animationManager)
 {
 	_soldierManager = soldierManager;
 	_animationManager = animationManager;
@@ -402,37 +402,37 @@ World::Load(char *fileName, SoldierManager *soldierManager, AnimationManager *an
 	// Create the element manager
 	widgetsFile = g_Globals->Application.ConfigDirectory / "Elements.xml";
 	_elementManager = new ElementManager();
-	_elementManager->Load(const_cast<char*>(widgetsFile.c_str()));
+	_elementManager->Load(widgetsFile);
 	g_Globals->World.Elements = _elementManager;
 
 	// Create the color manager
 	widgetsFile = g_Globals->Application.ConfigDirectory / "Colors.xml";
 	_colorManager = new ColorManager();
-	_colorManager->Load(const_cast<char*>(widgetsFile.c_str()));
+	_colorManager->Load(widgetsFile);
 
 	// Create the effect manager
 	_effectManager = new EffectManager();
 	widgetsFile = g_Globals->Application.ConfigDirectory / "Effects.xml";
-	_effectManager->LoadEffects(const_cast<char*>(widgetsFile.c_str()));
+	_effectManager->LoadEffects(widgetsFile);
 	g_Globals->World.Effects = _effectManager;
 
 	// Create the weapon manager
 	_weaponManager = new WeaponManager();
 	widgetsFile = g_Globals->Application.ConfigDirectory / "Weapons.xml";
-	_weaponManager->LoadWeapons(const_cast<char*>(widgetsFile.c_str()));
+	_weaponManager->LoadWeapons(widgetsFile);
 	g_Globals->World.Weapons = _weaponManager;
 
 	// Create the vehicle manager
 	// The vehicle manager needs to be created after the weapon manager!
 	widgetsFile = g_Globals->Application.ConfigDirectory / "Vehicles.xml";
 	_vehicleManager = new VehicleManager();
-	_vehicleManager->Load(const_cast<char*>(widgetsFile.c_str()));
+	_vehicleManager->Load(widgetsFile);
 	g_Globals->World.Vehicles = _vehicleManager;
 
 	// Create the squad manager
 	widgetsFile = g_Globals->Application.ConfigDirectory / "Squads.xml";
 	_squadManager = new SquadManager();
-	_squadManager->LoadSquads(const_cast<char*>(widgetsFile.c_str()));
+	_squadManager->LoadSquads(widgetsFile);
 	g_Globals->World.Squads = _squadManager;
 
 	// XXX/GWS: Load the current map. This is hard coded for now

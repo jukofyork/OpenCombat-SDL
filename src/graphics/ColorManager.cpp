@@ -3,6 +3,7 @@
 #include <misc/Array.h>
 #include <stdio.h>
 #include <string>
+#include <filesystem>
 
 using namespace tinyxml2;
 
@@ -17,7 +18,7 @@ ColorManager::~ColorManager()
 }
 
 void
-ColorManager::CopyColor(char *name, Color *dest)
+ColorManager::CopyColor(const std::string& name, Color *dest)
 {
 	for(int i = 0; i < _nColors; ++i) {
 		if(_names[i] == name) {
@@ -31,7 +32,7 @@ ColorManager::CopyColor(char *name, Color *dest)
 }
 
 void
-ColorManager::Load(char *configFile)
+ColorManager::Load(const std::filesystem::path& configFile)
 {
 	struct ColorAttributes {
 		std::string Name;
@@ -39,8 +40,8 @@ ColorManager::Load(char *configFile)
 	};
 	
 	XMLDocument doc;
-	if (doc.LoadFile(configFile) != XML_SUCCESS) {
-		printf("Failed to load color file: %s\n", configFile);
+	if (doc.LoadFile(configFile.c_str()) != XML_SUCCESS) {
+		printf("Failed to load color file: %s\n", configFile.c_str());
 		return;
 	}
 	

@@ -9,6 +9,8 @@
 
 using namespace tinyxml2;
 
+using namespace tinyxml2;
+
 MapManager::MapManager(void)
 {
 }
@@ -18,11 +20,11 @@ MapManager::~MapManager(void)
 }
 
 MapAttributes *
-MapManager::Parse(char *fileName)
+MapManager::Parse(const std::filesystem::path& fileName)
 {
     XMLDocument doc;
-    if (doc.LoadFile(fileName) != XML_SUCCESS) {
-        printf("Failed to load map file: %s\n", fileName);
+    if (doc.LoadFile(fileName.c_str()) != XML_SUCCESS) {
+        printf("Failed to load map file: %s\n", fileName.c_str());
         return nullptr;
     }
     

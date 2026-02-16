@@ -1,5 +1,7 @@
 #pragma once
 
+#include <filesystem>
+#include <string>
 #include <graphics/Animation.h>
 
 /**
@@ -12,10 +14,10 @@ public:
 	virtual ~AnimationManager(void);
 
 	// Loads a group of animations from a configuration file
-	virtual void LoadAnimations(char *fileName);
+	virtual void LoadAnimations(const std::filesystem::path& fileName);
 
 	// Retrieves a copy of an animation for use by an object
-	virtual Animation *GetAnimation(char *animationName);
+	virtual Animation *GetAnimation(const std::string& animationName);
 
 protected:
 	// The list of animations that we are managing

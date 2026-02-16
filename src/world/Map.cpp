@@ -191,7 +191,7 @@ Map::RenderElements(Screen *screen, Rect *clip)
 }
 
 Map *
-Map::Create(char *fileName)
+Map::Create(const std::filesystem::path& fileName)
 {
 	Map *m = new Map();
 	
@@ -199,10 +199,10 @@ Map::Create(char *fileName)
 
 	m->_miniName = attr->Mini;
 	m->_overlandName = attr->Overland;
-	m->_mapImage = TGA::Create(attr->Background.c_str());
+	m->_mapImage = TGA::Create(attr->Background);
 	
 	LegacyMapLoader *l = new LegacyMapLoader();
-	l->Load(attr->Elements.c_str());
+	l->Load(attr->Elements);
 	m->_elements = l->GetElements();
 	m->_elevations = l->GetElevations();
 	l->GetNumPixelsPerBlock(&(m->_nPixelsPerBlockX), &(m->_nPixelsPerBlockY));
@@ -211,7 +211,7 @@ Map::Create(char *fileName)
 	m->_buildingIndices = (unsigned short *) calloc(m->_nBlocksX*m->_nBlocksY, sizeof(short));
 
 	// Load the buildings into this map.
-	BuildingManager::LoadBuildings(attr->Buildings.c_str(), &m->_buildings);
+	BuildingManager::LoadBuildings(attr->Buildings, &m->_buildings);
 	
 	// Populate the building indices array
 	m->PopulateBuildingsIndices();

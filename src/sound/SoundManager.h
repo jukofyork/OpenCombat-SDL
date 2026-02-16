@@ -1,5 +1,6 @@
 #pragma once
 
+#include <filesystem>
 #include <string>
 #include "misc/Array.h"
 
@@ -12,7 +13,7 @@ public:
 	virtual ~SoundManager(void);
 
 	// Loads a group of sounds into this sound manager
-	virtual void LoadSounds(char *fileName);
+	virtual void LoadSounds(const std::filesystem::path& fileName);
 
 	// Retrieves a sound from this manager
 	virtual Sound *GetSound(const std::string &soundName);

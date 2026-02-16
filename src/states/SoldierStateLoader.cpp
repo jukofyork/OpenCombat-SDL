@@ -2,6 +2,7 @@
 #include <misc/Array.h>
 #include <string>
 #include <fstream>
+#include <filesystem>
 
 // Helper function to trim whitespace from both ends of a string
 static std::string trim(const std::string &s)
@@ -14,13 +15,13 @@ static std::string trim(const std::string &s)
 }
 
 void
-SoldierStateLoader::Load(char *fileName, ObjectStates *states)
+SoldierStateLoader::Load(const std::filesystem::path& fileName, ObjectStates *states)
 {
 	std::string line;
 	Array<char> stateNames;
 
 	// We need to read in the file and load the states deal thing
-	std::ifstream fp(fileName);
+	std::ifstream fp(fileName.c_str());
 	while(std::getline(fp, line)) {
 		// Let's trim our string
 		std::string trimmed = trim(line);

@@ -6,8 +6,9 @@
 #include <string>
 #include <fstream>
 #include <sstream>
+#include <filesystem>
 
-static ObjectActions::StateIdx find_state(char *stateName);
+static ObjectActions::StateIdx find_state(const std::string& stateName);
 
 // Helper function to trim whitespace from both ends of a string
 static std::string trim(const std::string &s)
@@ -33,7 +34,7 @@ static void split(const std::string &s, char delim, Array<char> &result)
 }
 
 void
-SoldierActionLoader::Load(char *fileName, ObjectActions *actions)
+SoldierActionLoader::Load(const std::filesystem::path& fileName, ObjectActions *actions)
 {
 	std::string line;
 	Array<char> reqs;
@@ -43,7 +44,7 @@ SoldierActionLoader::Load(char *fileName, ObjectActions *actions)
 	assert(g_Globals->World.States.Soldiers.NumStates > 0);
 
 	// Let's loop through our input file
-	std::ifstream fp(fileName);
+	std::ifstream fp(fileName.c_str());
 	
 	// Let's pick off the first line, which is our column headers
 	assert(std::getline(fp, line));
@@ -154,11 +155,11 @@ SoldierActionLoader::Load(char *fileName, ObjectActions *actions)
 }
 
 ObjectActions::StateIdx 
-find_state(char *stateName)
+find_state(const std::string& stateName)
 {
 	for(int i = 0; i < g_Globals->World.States.Soldiers.NumStates; ++i)
 	{
-		if(strcmp(g_Globals->World.States.Soldiers.StateNames[i], stateName) == 0)
+		if(stateName == g_Globals->World.States.Soldiers.StateNames[i])
 		{
 			return i;
 		}

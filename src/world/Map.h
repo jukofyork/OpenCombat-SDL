@@ -1,5 +1,6 @@
 #pragma once
 
+#include <filesystem>
 #include <string>
 #include <misc/Array.h>
 #include <misc/Structs.h>
@@ -28,7 +29,7 @@ public:
 	virtual void RenderElements(Screen *screen, Rect *clip);
 	// Render victory location text (call after static objects, before mobile objects)
 	virtual void RenderVictoryLocationText(Screen *screen, Rect *clip);
-	static Map *Create(char *fileName);
+	static Map *Create(const std::filesystem::path& fileName);
 
 	// Gets the width and height of the map
 	inline int GetWidth() { return _mapImage->GetWidth(); }

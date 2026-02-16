@@ -1,5 +1,6 @@
 #pragma once
 
+#include <filesystem>
 #include <objects/Soldier.h>
 
 class AnimationManager;
@@ -16,10 +17,10 @@ public:
 	virtual ~SoldierManager(void);
 
 	// Loads a group of soldiers from a configuration file
-	void LoadSoldiers(char *fileName, char *soldierNames);
+	void LoadSoldiers(const std::filesystem::path& fileName, const std::filesystem::path& soldierNames);
 
 	// Creates an instance of a specific soldier
-	Soldier *CreateSoldier(const char *soldierType, AnimationManager *animationManager, WeaponManager *weaponManager);
+	Soldier *CreateSoldier(const std::string& soldierType, AnimationManager *animationManager, WeaponManager *weaponManager);
 
 protected:
 	// The list of soldier templates that we are managing
@@ -29,6 +30,6 @@ protected:
 	Array<char> _soldierNames;
 
 	// Retrieves an animation from the animation manager by name
-	Animation *GetAnimation(AnimationManager *animationManager, const char *name, SoldierTemplate *tplate);
+	Animation *GetAnimation(AnimationManager *animationManager, const std::string& name, SoldierTemplate *tplate);
 
 };

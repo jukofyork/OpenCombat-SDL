@@ -1,5 +1,6 @@
 #pragma once
 
+#include <filesystem>
 #include <string>
 #include <misc/Color.h>
 
@@ -11,8 +12,8 @@ public:
 	ColorManager();
 	virtual ~ColorManager(void);
 
-	void Load(char *configFile);
-	void CopyColor(char *name, Color *dest);
+	void Load(const std::filesystem::path& configFile);
+	void CopyColor(const std::string& name, Color *dest);
 
 private:
 	Color _colors[MAX_COLORS];

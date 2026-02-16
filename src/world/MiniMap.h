@@ -1,5 +1,6 @@
 #pragma once
 
+#include <filesystem>
 #include <misc/Structs.h>
 #include <misc/TGA.h>
 class Screen;
@@ -22,7 +23,7 @@ public:
 	virtual void Render(Screen *screen);
 
 	// Create a new mini map
-	static MiniMap *Create(const char *fileName, World *parentWorld);
+	static MiniMap *Create(const std::filesystem::path& fileName, World *parentWorld);
 
 	// Gets the width and height of this mini-map
 	inline int GetWidth() { return _tga->GetWidth() + 4; }

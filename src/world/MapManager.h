@@ -1,5 +1,6 @@
 #pragma once
 
+#include <filesystem>
 #include <string>
 #include <misc/Structs.h>
 #include <world/VictoryLocation.h>
@@ -24,5 +25,5 @@ public:
 
 	// Creates a map template from the configuration
 	// file
-	static MapAttributes *Parse(char *configFile);
+	static MapAttributes *Parse(const std::filesystem::path& configFile);
 };

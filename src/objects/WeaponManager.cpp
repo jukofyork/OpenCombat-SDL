@@ -1,6 +1,7 @@
 #include "./WeaponManager.h"
 #include <misc/tinyxml2.h>
 
+#include <filesystem>
 #include <objects/Weapon.h>
 
 using namespace tinyxml2;
@@ -14,12 +15,12 @@ WeaponManager::~WeaponManager(void)
 }
 
 void
-WeaponManager::LoadWeapons(char *fileName)
+WeaponManager::LoadWeapons(const std::filesystem::path& fileName)
 {
 
 	XMLDocument doc;
-	if (doc.LoadFile(fileName) != XML_SUCCESS) {
-		printf("Failed to load weapons file: %s\n", fileName);
+	if (doc.LoadFile(fileName.c_str()) != XML_SUCCESS) {
+		printf("Failed to load weapons file: %s\n", fileName.c_str());
 		return;
 	}
 	
@@ -89,10 +90,10 @@ WeaponManager::LoadWeapons(char *fileName)
 }
 
 Weapon *
-WeaponManager::GetWeapon(const char *weaponName)
+WeaponManager::GetWeapon(const std::string& weaponName)
 {
 	for(int i = 0; i < _weapons.Count; ++i) {
-		if(strcmp(weaponName, _weapons.Items[i]->Name.c_str()) == 0) {
+		if(weaponName == _weapons.Items[i]->Name) {
 			Weapon *w = new Weapon();
 			
 			w->_numRounds = _weapons.Items[i]->NumRounds;

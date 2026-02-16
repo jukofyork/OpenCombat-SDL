@@ -8,6 +8,7 @@
 #include <assert.h>
 #include <strings.h>
 #include <string>
+#include <filesystem>
 
 #define MAX_SOLDIERS_IN_SQUAD 32
 #define MAX_VEHICLES_IN_SQUAD 1
@@ -50,12 +51,12 @@ SquadManager::~SquadManager(void)
 
 // Loads a group of soldiers from a configuration file
 void
-SquadManager::LoadSquads(char *fileName)
+SquadManager::LoadSquads(const std::filesystem::path& fileName)
 {
 
 	XMLDocument doc;
-	if (doc.LoadFile(fileName) != XML_SUCCESS) {
-		printf("Failed to load squads file: %s\n", fileName);
+	if (doc.LoadFile(fileName.c_str()) != XML_SUCCESS) {
+		printf("Failed to load squads file: %s\n", fileName.c_str());
 		return;
 	}
 	
@@ -169,7 +170,7 @@ SquadManager::LoadSquads(char *fileName)
 
 // Creates an instance of a specific soldier
 Squad *
-SquadManager::CreateSquad(const char *squadType, SoldierManager *soldierManager, VehicleManager *vehicleManager, AnimationManager *animationManager, WeaponManager *weaponManager)
+SquadManager::CreateSquad(const std::string& squadType, SoldierManager *soldierManager, VehicleManager *vehicleManager, AnimationManager *animationManager, WeaponManager *weaponManager)
 {
 	for(int i = 0; i < _squads.Count; ++i) {
 		if(squadType == _squads.Items[i]->Name) {
@@ -181,7 +182,7 @@ SquadManager::CreateSquad(const char *squadType, SoldierManager *soldierManager,
 
 			// Add all of the soldiers
 			for(int j = 0; j < _squads.Items[i]->NumSoldiers; ++j) {
-				Soldier *s = soldierManager->CreateSoldier(_squads.Items[i]->Soldiers[j].Type.c_str(), animationManager, weaponManager);
+				Soldier *s = soldierManager->CreateSoldier(_squads.Items[i]->Soldiers[j].Type, animationManager, weaponManager);
 				s->SetTitle(_squads.Items[i]->Soldiers[j].Title);
 				s->SetRank(_squads.Items[i]->Soldiers[j].Rank);
 				s->SetCamouflage(_squads.Items[i]->Soldiers[j].Camo);
@@ -199,7 +200,7 @@ SquadManager::CreateSquad(const char *squadType, SoldierManager *soldierManager,
 			// Add all of the vehicles
 			for(int j = 0; j < _squads.Items[i]->NumVehicles; ++j)
 			{
-				Vehicle *v = vehicleManager->GetVehicle(const_cast<char*>(_squads.Items[i]->Vehicles[j].Type.c_str()));
+				Vehicle *v = vehicleManager->GetVehicle(_squads.Items[i]->Vehicles[j].Type);
 				v->SetSquadLeader(true); // XXX/GWS: Better determination here
 
 				// Now add soldiers to this vehicle

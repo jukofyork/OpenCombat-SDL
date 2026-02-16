@@ -11,6 +11,7 @@
 #include <objects/WeaponManager.h>
 #include <fstream>
 #include <string>
+#include <filesystem>
 
 using namespace tinyxml2;
 
@@ -74,12 +75,12 @@ SoldierManager::~SoldierManager(void)
 }
 
 void
-SoldierManager::LoadSoldiers(char *fileName, char *soldierNames)
+SoldierManager::LoadSoldiers(const std::filesystem::path& fileName, const std::filesystem::path& soldierNames)
 {
 
 	XMLDocument doc;
-	if (doc.LoadFile(fileName) != XML_SUCCESS) {
-		printf("Failed to load soldiers file: %s\n", fileName);
+	if (doc.LoadFile(fileName.c_str()) != XML_SUCCESS) {
+		printf("Failed to load soldiers file: %s\n", fileName.c_str());
 		return;
 	}
 	
@@ -189,7 +190,7 @@ SoldierManager::LoadSoldiers(char *fileName, char *soldierNames)
 	}
 
 	// Now read in the soldier names file
-	std::ifstream fp(soldierNames);
+	std::ifstream fp(soldierNames.c_str());
 	std::string line;
 	srand(time(NULL));
 	while(std::getline(fp, line)) {
@@ -204,7 +205,7 @@ SoldierManager::LoadSoldiers(char *fileName, char *soldierNames)
 }
 
 Soldier *
-SoldierManager::CreateSoldier(const char *soldierType, AnimationManager *animationManager, WeaponManager *weaponManager)
+SoldierManager::CreateSoldier(const std::string& soldierType, AnimationManager *animationManager, WeaponManager *weaponManager)
 {
 	for(int i = 0; i < _soldiers.Count; ++i) {
 		SoldierTemplate *t = _soldiers.Items[i];
@@ -217,7 +218,7 @@ SoldierManager::CreateSoldier(const char *soldierType, AnimationManager *animati
 			s->_personalName = _soldierNames.Items[rand()%_soldierNames.Count];
 
 			// Get the primary weapon
-			s->_weapons[0] = weaponManager->GetWeapon(const_cast<char*>(t->PrimaryWeapon.c_str()));
+			s->_weapons[0] = weaponManager->GetWeapon(t->PrimaryWeapon);
 			s->_currentWeaponIdx = 0;
 			s->_numWeapons = 1;
 			s->_weaponsNumClips[0] = t->PrimaryWeaponNumClips;
@@ -264,11 +265,11 @@ SoldierManager::CreateSoldier(const char *soldierType, AnimationManager *animati
 }
 
 Animation *
-SoldierManager::GetAnimation(AnimationManager *animationManager, const char *name, SoldierTemplate *tplate)
+SoldierManager::GetAnimation(AnimationManager *animationManager, const std::string& name, SoldierTemplate *tplate)
 {
 	for(int i = 0; i < tplate->States.Count; ++i) {
 		if(tplate->States.Items[i]->Name == name) {
-			return animationManager->GetAnimation(const_cast<char*>(tplate->States.Items[i]->Animation.c_str()));
+			return animationManager->GetAnimation(tplate->States.Items[i]->Animation);
 		}
 	}
 	return NULL;

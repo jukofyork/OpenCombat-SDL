@@ -1,5 +1,6 @@
 #pragma once
 
+#include <filesystem>
 #include <misc/Array.h>
 
 class AnimationManager;
@@ -16,10 +17,10 @@ public:
 	virtual ~SquadManager(void);
 
 	// Loads a group of soldiers from a configuration file
-	void LoadSquads(char *fileName);
+	void LoadSquads(const std::filesystem::path& fileName);
 
 	// Creates an instance of a specific soldier
-	Squad *CreateSquad(const char *squadName, SoldierManager *soldierManager, VehicleManager *vehicleManager, AnimationManager *animationManager, WeaponManager *weaponManager);
+	Squad *CreateSquad(const std::string& squadName, SoldierManager *soldierManager, VehicleManager *vehicleManager, AnimationManager *animationManager, WeaponManager *weaponManager);
 
 protected:
 	// The list of squad templates that we are managing

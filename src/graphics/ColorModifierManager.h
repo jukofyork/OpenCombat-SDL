@@ -1,5 +1,6 @@
 #pragma once
 
+#include <filesystem>
 #include <misc/Color.h>
 
 #define MAX_COLOR_MODIFIERS 1024
@@ -10,5 +11,5 @@ public:
 	ColorModifierManager();
 	virtual ~ColorModifierManager(void);
 
-	void Load(char *configFile);
+	void Load(const std::filesystem::path& configFile);
 };

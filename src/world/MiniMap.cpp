@@ -4,6 +4,7 @@
 #include <world/World.h>
 #include <graphics/Screen.h>
 #include <application/Globals.h>
+#include <filesystem>
 
 MiniMap::MiniMap(void)
 {
@@ -134,7 +135,7 @@ MiniMap::Render(Screen *screen)
 }
 
 MiniMap *
-MiniMap::Create(const char *fileName, World *parentWorld)
+MiniMap::Create(const std::filesystem::path& fileName, World *parentWorld)
 {
 	MiniMap *mm = new MiniMap();
 	mm->_tga = TGA::Create(fileName);
