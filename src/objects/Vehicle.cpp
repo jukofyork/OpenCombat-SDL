@@ -100,6 +100,13 @@ Vehicle::Simulate(long dt, World *world)
 			// This is a move order, let's head in that direction
 			// TODO: Move should move tank in reverse (like old Close Combat)
 			// TODO: Sneak should move slower than normal Move
+			//       NOTE: Not implemented because vehicles only have one speed (MaxRoadSpeed)
+			//       defined in Vehicles.xml, unlike infantry which have separate
+			//       WalkingSpeed/RunningSpeed/CrawlingSpeed/SneakingSpeed in Soldiers.xml.
+			//       To implement properly, either:
+			//       1. Add MaxSneakSpeed/SneakAcceleration to Vehicles.xml (like infantry), or
+			//       2. Use a hard-coded multiplier (e.g., Sneak = 50% of MaxRoadSpeed)
+			// TODO: MoveFast could use a speed boost (currently same as normal Move)
 			_currentAction = Unit::Moving;
 			handled = HandleMoveOrder(dt, (MoveOrder *) order, Moving);
 			break;
