@@ -63,7 +63,7 @@ public:
 	std::string PrimaryWeapon;
 	int PrimaryWeaponNumClips;
 
-	Array<SoldierState> States;
+	std::vector<SoldierState*> States;
 };
 
 SoldierManager::SoldierManager(void)
@@ -182,11 +182,11 @@ SoldierManager::LoadSoldiers(const std::filesystem::path& fileName, const std::f
 					state->Animation = animElem->GetText();
 				}
 				
-				soldier->States.Add(state);
+				soldier->States.push_back(state);
 			}
 		}
 		
-		_soldiers.Add(soldier);
+		_soldiers.push_back(soldier);
 	}
 
 	// Now read in the soldier names file
@@ -207,8 +207,7 @@ SoldierManager::LoadSoldiers(const std::filesystem::path& fileName, const std::f
 Soldier *
 SoldierManager::CreateSoldier(const std::string& soldierType, AnimationManager *animationManager, WeaponManager *weaponManager)
 {
-	for(int i = 0; i < _soldiers.Count; ++i) {
-		SoldierTemplate *t = _soldiers.Items[i];
+	for(auto* t : _soldiers) {
 		if(t->Name == soldierType) {
 			// Create a soldier of this type
 			Soldier *s = new Soldier();
@@ -261,16 +260,16 @@ SoldierManager::CreateSoldier(const std::string& soldierType, AnimationManager *
 			return s;
 		}
 	}
-	return NULL;
+	return nullptr;
 }
 
 Animation *
 SoldierManager::GetAnimation(AnimationManager *animationManager, const std::string& name, SoldierTemplate *tplate)
 {
-	for(int i = 0; i < tplate->States.Count; ++i) {
-		if(tplate->States.Items[i]->Name == name) {
-			return animationManager->GetAnimation(tplate->States.Items[i]->Animation);
+	for(auto* state : tplate->States) {
+		if(state->Name == name) {
+			return animationManager->GetAnimation(state->Animation);
 		}
 	}
-	return NULL;
+	return nullptr;
 }

@@ -2,7 +2,7 @@
 
 #include <filesystem>
 #include <string>
-#include <misc/Array.h>
+#include <vector>
 
 class Weapon;
 
@@ -35,5 +35,5 @@ public:
 
 protected:
 	// The array of weapon templates
-	Array<WeaponTemplate> _weapons;
+	std::vector<WeaponTemplate*> _weapons;
 };

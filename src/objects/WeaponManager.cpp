@@ -85,30 +85,30 @@ WeaponManager::LoadWeapons(const std::filesystem::path& fileName)
 			weapon->ReloadTimeChamber = atoi(reloadChamberElem->GetText());
 		}
 		
-		_weapons.Add(weapon);
+		_weapons.push_back(weapon);
 	}
 }
 
 Weapon *
 WeaponManager::GetWeapon(const std::string& weaponName)
 {
-	for(int i = 0; i < _weapons.Count; ++i) {
-		if(weaponName == _weapons.Items[i]->Name) {
+	for(auto* weaponTemplate : _weapons) {
+		if(weaponName == weaponTemplate->Name) {
 			Weapon *w = new Weapon();
 			
-			w->_numRounds = _weapons.Items[i]->NumRounds;
-			w->_totalRounds = _weapons.Items[i]->NumRounds;
-			w->_name = _weapons.Items[i]->Name;
-			w->_iconName = _weapons.Items[i]->Icon;
-			w->_sound = _weapons.Items[i]->Sound;
-			w->SetEffect(_weapons.Items[i]->Animation);
-			w->_reloadTimeChamber = _weapons.Items[i]->ReloadTimeChamber;
-			w->_reloadTimeClip = _weapons.Items[i]->ReloadTimeClip;
-			w->_roundsPerBurst = _weapons.Items[i]->RoundsPerBurst;
-			w->_timeToFire = _weapons.Items[i]->TimeToFire;
-			w->SetGroundShaker(_weapons.Items[i]->ShakeGround);
+			w->_numRounds = weaponTemplate->NumRounds;
+			w->_totalRounds = weaponTemplate->NumRounds;
+			w->_name = weaponTemplate->Name;
+			w->_iconName = weaponTemplate->Icon;
+			w->_sound = weaponTemplate->Sound;
+			w->SetEffect(weaponTemplate->Animation);
+			w->_reloadTimeChamber = weaponTemplate->ReloadTimeChamber;
+			w->_reloadTimeClip = weaponTemplate->ReloadTimeClip;
+			w->_roundsPerBurst = weaponTemplate->RoundsPerBurst;
+			w->_timeToFire = weaponTemplate->TimeToFire;
+			w->SetGroundShaker(weaponTemplate->ShakeGround);
 			return w;
 		}
 	}
-	return NULL;
+	return nullptr;
 }

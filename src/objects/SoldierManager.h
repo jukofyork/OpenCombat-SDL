@@ -26,7 +26,7 @@ public:
 
 protected:
 	// The list of soldier templates that we are managing
-	Array<SoldierTemplate> _soldiers;
+	std::vector<SoldierTemplate*> _soldiers;
 
 	// A list of soldier names that we can choose from
 	std::vector<std::string> _soldierNames;
