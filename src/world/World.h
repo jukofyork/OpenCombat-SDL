@@ -132,7 +132,7 @@ public:
 	void GetOrigin(int *x, int *y) { *x = _originX; *y = _originY; }
 
 	// Gets the list of mobile objects in this world
-	inline Array<Object> *GetObjects() { return &_mobileObjects; }
+	inline std::vector<Object*> *GetObjects() { return &_mobileObjects; }
 
 	// The state of objects in this world
 	InterfaceState State;
@@ -191,16 +191,16 @@ protected:
 	WorldState _currentState;
 
 	// A list of mobile objects.
-	Array<Object> _mobileObjects;
+	std::vector<Object*> _mobileObjects;
 
 	// A list of static objects
-	Array<Object> _staticObjects;
+	std::vector<Object*> _staticObjects;
 
 	// The list of selected objects
-	Array<Object> _selectedObjects;
+	std::vector<Object*> _selectedObjects;
 
 	// A list of effects in the world
-	Array<Effect> _effects;
+	std::vector<Effect*> _effects;
 
 	// Soldier and animation manager from the combat module
 	SoldierManager *_soldierManager;

@@ -98,14 +98,14 @@ Map::Render(Screen *screen, Rect *clip)
 		if(endX > _nBlocksX) endX = _nBlocksX;
 		if(endY > _nBlocksY) endY = _nBlocksY;
 
-		Array<Building> buildingsToDraw;
+		std::vector<Building*> buildingsToDraw;
 		for(int j = startY; j < endY; ++j) {
 			for(int i = startX; i < endX; ++i) {
 				// Is there a building on this tile?
 				if(_buildingIndices[j*_nBlocksX+i] > 0)
 				{
 					// Is there a soldier in this building?
-					Building *b = _buildings.Items[_buildingIndices[j*_nBlocksX+i]-1];
+					Building *b = _buildings[_buildingIndices[j*_nBlocksX+i]-1];
 					for(int k = 0; k < b->NumTiles; ++k)
 					{
 						if(_objects[b->Tiles[k]] != NULL || g_Globals->World.bRenderBuildingInteriors)
@@ -113,9 +113,9 @@ Map::Render(Screen *screen, Rect *clip)
 							// We have to draw this building. Make sure it is
 							// not already in our list
 							bool bAdd = true;
-							for(int m = 0; m < buildingsToDraw.Count; ++m)
+							for(size_t m = 0; m < buildingsToDraw.size(); ++m)
 							{
-								if(buildingsToDraw.Items[m] == b)
+								if(buildingsToDraw[m] == b)
 								{
 									bAdd = false;
 									break;
@@ -123,7 +123,7 @@ Map::Render(Screen *screen, Rect *clip)
 							}
 							if(bAdd)
 							{
-								buildingsToDraw.Add(b);
+								buildingsToDraw.push_back(b);
 							}
 							break;
 						}
@@ -132,29 +132,29 @@ Map::Render(Screen *screen, Rect *clip)
 			}
 		}
 
-		for(int i = 0; i < buildingsToDraw.Count; ++i)
+		for(size_t i = 0; i < buildingsToDraw.size(); ++i)
 		{
 			// Draw this building
 			Color white(255,255,255);
-			TGA *tga = buildingsToDraw.Items[i]->GetInterior();
+			TGA *tga = buildingsToDraw[i]->GetInterior();
 			screen->Blit(tga->GetData(), 
-					buildingsToDraw.Items[i]->Position.x-_originX,
-					buildingsToDraw.Items[i]->Position.y-_originY,
+					buildingsToDraw[i]->Position.x-_originX,
+					buildingsToDraw[i]->Position.y-_originY,
 					tga->GetWidth(), tga->GetHeight(), tga->GetWidth(), tga->GetHeight(),
 					tga->GetDepth(), &white);
 		}
 
 		// Render victory locations if they are here
-		for(int i = 0; i < _victoryLocations.Count; ++i)
+		for(size_t i = 0; i < _victoryLocations.size(); ++i)
 		{
 			int x=0,y=0;
-			ConvertMegaTileToPosition(_victoryLocations.Items[i]->X, _victoryLocations.Items[i]->Y, &x, &y);
+			ConvertMegaTileToPosition(_victoryLocations[i]->X, _victoryLocations[i]->Y, &x, &y);
 			if(x > _originX && (x < (_originX+clip->w))
 				&& (y > _originY) && (y < (_originY+clip->h)))
 			{
-				if(_victoryLocations.Items[i]->ControllingTeam >= 0)
+				if(_victoryLocations[i]->ControllingTeam >= 0)
 				{
-				TGA *tga = g_Globals->World.Nationalities.Items[g_Globals->World.Teams[_victoryLocations.Items[i]->ControllingTeam].Nationality]->VictoryLocation;
+				TGA *tga = g_Globals->World.Nationalities.Items[g_Globals->World.Teams[_victoryLocations[i]->ControllingTeam].Nationality]->VictoryLocation;
 					screen->Blit(tga->GetData(), x-_originX-tga->GetWidth()/2, y-_originY-tga->GetHeight()/2, tga->GetWidth(), tga->GetHeight(), 0, 0, tga->GetWidth(), tga->GetHeight(), tga->GetDepth(), true, true);
 				}
 				else
@@ -224,7 +224,7 @@ Map::Create(const std::filesystem::path& fileName)
 		VictoryLocation *vl = attr->VictoryLocations.Items[i];
 		vl->ControllingTeam = j;
 		j = (j+1) % 2;
-		m->_victoryLocations.Add(vl);
+		m->_victoryLocations.push_back(vl);
 	}
 
 	delete attr;
@@ -309,7 +309,7 @@ Map::PlaceObject(Object *object, Point *to)
 }
 
 void
-Map::SelectObjects(int x, int y, Array<Object> *dest)
+Map::SelectObjects(int x, int y, std::vector<Object*> *dest)
 {
 	// Let's look in a 3x3 sqare centered on (x,y)
 	int ci = x / _nPixelsPerBlockX;
@@ -326,12 +326,12 @@ Map::SelectObjects(int x, int y, Array<Object> *dest)
 			while(object != NULL)
 			{
 				// XXX/GWS: We are going to do way too many Contains() calls
-				//			in the call stack here. If you trace it down
-				//			to the soldier level, i think we do two or three
-				//			too many. It comes down to the squad needing
-				//			to know which individual soldier was selected,
-				//			so we need to add a new squad->Select() call to
-				//			take that into account.
+				//          in the call stack here. If you trace it down
+				//          to the soldier level, i think we do two or three
+				//          too many. It comes down to the squad needing
+				//          to know which individual soldier was selected,
+				//          so we need to add a new squad->Select() call to
+				//          take that into account.
 				//
 				// Remember, we only want to select objects that are part of
 				// our team!
@@ -341,9 +341,9 @@ Map::SelectObjects(int x, int y, Array<Object> *dest)
 					
 					// Have we already added the squad?
 					bool bAdd = true;
-					for(int k = 0; k < dest->Count; ++k)
+					for(size_t k = 0; k < dest->size(); ++k)
 					{
-						if(dest->Items[k]->GetID() == s->GetID())
+						if((*dest)[k]->GetID() == s->GetID())
 						{
 							// Our squad has been added already, so don't do it again
 							bAdd = false;
@@ -355,7 +355,7 @@ Map::SelectObjects(int x, int y, Array<Object> *dest)
 					if(bAdd)
 					{
 						s->Select(x,y);
-						dest->Add(s);
+						dest->push_back(s);
 					}
 				}
 				object = object->NextObject;
@@ -367,14 +367,14 @@ Map::SelectObjects(int x, int y, Array<Object> *dest)
 void
 Map::PopulateBuildingsIndices()
 {
-	for(int i = 0; i < _buildings.Count; ++i)
+	for(int i = 0; i < static_cast<int>(_buildings.size()); ++i)
 	{
-		int si = _buildings.Items[i]->Position.x / _nPixelsPerBlockX;
-		int sj = _buildings.Items[i]->Position.y / _nPixelsPerBlockY;
-		int ni = _buildings.Items[i]->GetInterior()->GetWidth() / _nPixelsPerBlockX;
-		int nj = _buildings.Items[i]->GetInterior()->GetHeight() / _nPixelsPerBlockY;
+		int si = _buildings[i]->Position.x / _nPixelsPerBlockX;
+		int sj = _buildings[i]->Position.y / _nPixelsPerBlockY;
+		int ni = _buildings[i]->GetInterior()->GetWidth() / _nPixelsPerBlockX;
+		int nj = _buildings[i]->GetInterior()->GetHeight() / _nPixelsPerBlockY;
 
-		Building *building = _buildings.Items[i];
+		Building *building = _buildings[i];
 		for(int n = sj; n <= (sj+nj); ++n)
 		{
 			for(int m = si; m <= (si+ni); ++m)
@@ -407,19 +407,19 @@ void
 Map::GetVictoryLocation(int idx, int *x, int *y, Nationality **nationality)
 {
 	assert(idx >= 0);
-	assert(idx < _victoryLocations.Count);
+	assert(idx < static_cast<int>(_victoryLocations.size()));
 
-	ConvertMegaTileToPosition(_victoryLocations.Items[idx]->X, _victoryLocations.Items[idx]->Y, x, y);
+	ConvertMegaTileToPosition(_victoryLocations[idx]->X, _victoryLocations[idx]->Y, x, y);
 	
 	// Bounds check for team index
-	if(_victoryLocations.Items[idx]->ControllingTeam < 0 || 
-	   _victoryLocations.Items[idx]->ControllingTeam >= g_Globals->World.NumTeams) {
+	if(_victoryLocations[idx]->ControllingTeam < 0 || 
+	   _victoryLocations[idx]->ControllingTeam >= g_Globals->World.NumTeams) {
 		*nationality = nullptr;
 		return;
 	}
 	
 	// Get the nationality index for this team
-	int natIdx = g_Globals->World.Teams[_victoryLocations.Items[idx]->ControllingTeam].Nationality;
+	int natIdx = g_Globals->World.Teams[_victoryLocations[idx]->ControllingTeam].Nationality;
 	
 	// Bounds check for nationality index
 	if(natIdx < 0 || natIdx >= g_Globals->World.Nationalities.Count) {
@@ -434,8 +434,8 @@ Map::GetVictoryLocation(int idx, int *x, int *y, Nationality **nationality)
 const std::string&
 Map::GetVictoryLocationName(int idx)
 {
-	assert(idx < _victoryLocations.Count);
-	return _victoryLocations.Items[idx]->Name;
+	assert(idx < static_cast<int>(_victoryLocations.size()));
+	return _victoryLocations[idx]->Name;
 }
 
 void
@@ -449,18 +449,18 @@ Map::RenderVictoryLocationText(Screen *screen, Rect *clip)
 	int mapWidth = GetWidth();
 	int mapHeight = GetHeight();
 	
-	for(int i = 0; i < _victoryLocations.Count; ++i)
+	for(size_t i = 0; i < _victoryLocations.size(); ++i)
 	{
 		int x=0,y=0;
-		ConvertMegaTileToPosition(_victoryLocations.Items[i]->X, _victoryLocations.Items[i]->Y, &x, &y);
+		ConvertMegaTileToPosition(_victoryLocations[i]->X, _victoryLocations[i]->Y, &x, &y);
 		
-		if(_victoryLocations.Items[i]->ControllingTeam >= 0)
+		if(_victoryLocations[i]->ControllingTeam >= 0)
 		{
-			TGA *tga = g_Globals->World.Nationalities.Items[g_Globals->World.Teams[_victoryLocations.Items[i]->ControllingTeam].Nationality]->VictoryLocation;
+			TGA *tga = g_Globals->World.Nationalities.Items[g_Globals->World.Teams[_victoryLocations[i]->ControllingTeam].Nationality]->VictoryLocation;
 			
 			Color white(255, 255, 255);
 			int textW, textH;
-			g_Globals->World.Fonts->GetTextSize(_victoryLocations.Items[i]->Name, &textW, &textH, FontSize_Large);
+			g_Globals->World.Fonts->GetTextSize(_victoryLocations[i]->Name, &textW, &textH, FontSize_Large);
 			
 			// Determine text placement based on victory location's position on the MAP
 			bool nearLeftEdge = (x < EDGE_MARGIN);
@@ -495,7 +495,7 @@ Map::RenderVictoryLocationText(Screen *screen, Rect *clip)
 				// Convert to view-relative coordinates for rendering
 				int renderX = textX - _originX;
 				int renderY = textY - _originY;
-				g_Globals->World.Fonts->Render(screen, _victoryLocations.Items[i]->Name, renderX, renderY, &white, FontSize_Large);
+				g_Globals->World.Fonts->Render(screen, _victoryLocations[i]->Name, renderX, renderY, &white, FontSize_Large);
 			}
 		}
 	}

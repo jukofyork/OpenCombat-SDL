@@ -10,7 +10,7 @@
 #include <application/Globals.h>
 
 void
-BuildingManager::LoadBuildings(const std::filesystem::path& fileName, Array<Building> *buildings)
+BuildingManager::LoadBuildings(const std::filesystem::path& fileName, std::vector<Building*> *buildings)
 {
 	tinyxml2::XMLDocument doc;
 	if (doc.LoadFile(fileName.c_str()) != tinyxml2::XML_SUCCESS) {
@@ -80,6 +80,6 @@ BuildingManager::LoadBuildings(const std::filesystem::path& fileName, Array<Buil
 			building->SetInterior(TGA::Create(path));
 		}
 		
-		buildings->Add(building);
+		buildings->push_back(building);
 	}
 }

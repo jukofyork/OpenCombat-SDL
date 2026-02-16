@@ -2,7 +2,7 @@
 
 #include <filesystem>
 #include <string>
-#include <misc/Array.h>
+#include <vector>
 #include <misc/Structs.h>
 #include <misc/TGA.h>
 #include <world/Building.h>
@@ -63,10 +63,10 @@ public:
 	void PlaceObject(Object *object, Point *to);
 
 	// Tries to select objects at (x,y) and place them in the array argument
-	void SelectObjects(int x, int y, Array<Object> *dest);
+	void SelectObjects(int x, int y, std::vector<Object*> *dest);
 
 	// Gets the number of victory locations
-	int GetNumVictoryLocations() { return _victoryLocations.Count; }
+	int GetNumVictoryLocations() { return static_cast<int>(_victoryLocations.size()); }
 	void GetVictoryLocation(int idx, int *x, int *y, Nationality **nationality);
 	const std::string& GetVictoryLocationName(int idx);
 
@@ -102,7 +102,7 @@ protected:
 	unsigned short *_buildingIndices;
 
 	// An array of the buildings that are on this map
-	Array<Building> _buildings;
+	std::vector<Building*> _buildings;
 
 	// The number of blocks for the elements and elevation files.
 	// For legacy files, each block is 10x10 pixels
@@ -112,7 +112,7 @@ protected:
 	int _nPixelsPerBlockX, _nPixelsPerBlockY;
 
 	// Victory locations on this map
-	Array<VictoryLocation> _victoryLocations;
+	std::vector<VictoryLocation*> _victoryLocations;
 
 	std::string _miniName;
 	std::string _overlandName;

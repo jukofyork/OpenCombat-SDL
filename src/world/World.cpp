@@ -89,8 +89,8 @@ World::Render(Screen *screen, Rect *clip)
 	_currentMap->Render(screen, clip);
 
 	// Render all of the static objects that are in the clipping region
-	for(int i = 0; i < _staticObjects.Count; ++i) {
-		Object *o = _staticObjects.Items[i];
+	for(size_t i = 0; i < _staticObjects.size(); ++i) {
+		Object *o = _staticObjects[i];
 		if(o->Position.x > (clip->x+_originX) && o->Position.x < (clip->x+_originX+clip->w)
 			&& o->Position.y > (clip->y+_originY) && o->Position.y < (clip->y+_originY+clip->h))
 		{
@@ -100,8 +100,8 @@ World::Render(Screen *screen, Rect *clip)
 
 	// Render all of the mobile objects that are in the clipping region
 	_rangerSelectedObject = NULL;
-	for(int i = 0; i < _mobileObjects.Count; ++i) {
-		Object *o = _mobileObjects.Items[i];
+	for(size_t i = 0; i < _mobileObjects.size(); ++i) {
+		Object *o = _mobileObjects[i];
 		if(o->Position.x > (clip->x+_originX) && o->Position.x < (clip->x+_originX+clip->w)
 			&& o->Position.y > (clip->y+_originY) && o->Position.y < (clip->y+_originY+clip->h))
 		{
@@ -142,8 +142,8 @@ World::Render(Screen *screen, Rect *clip)
 	}
 
 	// Render all of the effects
-	for(int i = 0; i < _effects.Count; ++i) {
-		Effect *o = _effects.Items[i];
+	for(size_t i = 0; i < _effects.size(); ++i) {
+		Effect *o = _effects[i];
 		if(o->Position.x > (clip->x+_originX) && o->Position.x < (clip->x+_originX+clip->w)
 			&& o->Position.y > (clip->y+_originY) && o->Position.y < (clip->y+_originY+clip->h))
 		{
@@ -151,10 +151,10 @@ World::Render(Screen *screen, Rect *clip)
 		}
 	}
 
-	if(g_Globals->World.bWeaponFan && _selectedObjects.Count > 0) {
+	if(g_Globals->World.bWeaponFan && _selectedObjects.size() > 0) {
 		// Show the weapon fan. This is really time consuming!!!
-		int sx = _selectedObjects.Items[0]->Position.x/10;
-		int sy = _selectedObjects.Items[0]->Position.y/10;
+		int sx = _selectedObjects[0]->Position.x/10;
+		int sy = _selectedObjects[0]->Position.y/10;
 		int ox, oy, oz;
 
 		int m=0,n=0;
@@ -174,10 +174,10 @@ World::Render(Screen *screen, Rect *clip)
 
 	if(_currentState == Ambushing)
 	{
-		assert(_selectedObjects.Count > 0);
+		assert(_selectedObjects.size() > 0);
 		
 		// Find out which direction we need to show
-		Direction dir = Utilities::FindHeading(_selectedObjects.Items[0]->Position.x - _originX, _selectedObjects.Items[0]->Position.y-_originY, screen->GetCursorX(), screen->GetCursorY());
+		Direction dir = Utilities::FindHeading(_selectedObjects[0]->Position.x - _originX, _selectedObjects[0]->Position.y-_originY, screen->GetCursorX(), screen->GetCursorY());
 		_currentHeadingArc = dir;
 		Widget *w = NULL;
 		switch(dir) {
@@ -211,16 +211,16 @@ World::Render(Screen *screen, Rect *clip)
 		}
 		assert(w != NULL);
 		// Center the direction circle on the unit (subtract half width/height)
-		w->Render(screen, _selectedObjects.Items[0]->Position.x-_originX-w->GetWidth()/2, _selectedObjects.Items[0]->Position.y-_originY-w->GetHeight()/2, w->GetWidth(), w->GetHeight(), true);
+		w->Render(screen, _selectedObjects[0]->Position.x-_originX-w->GetWidth()/2, _selectedObjects[0]->Position.y-_originY-w->GetHeight()/2, w->GetWidth(), w->GetHeight(), true);
 		delete w;
 	}
 
 	if(_currentState == Defending)
 	{
-		assert(_selectedObjects.Count > 0);
+		assert(_selectedObjects.size() > 0);
 		
 		// Find out which direction we need to show
-		Direction dir = Utilities::FindHeading(_selectedObjects.Items[0]->Position.x - _originX, _selectedObjects.Items[0]->Position.y-_originY, screen->GetCursorX(), screen->GetCursorY());
+		Direction dir = Utilities::FindHeading(_selectedObjects[0]->Position.x - _originX, _selectedObjects[0]->Position.y-_originY, screen->GetCursorX(), screen->GetCursorY());
 		_currentHeadingArc = dir;
 		Widget *w = NULL;
 		switch(dir) {
@@ -254,7 +254,7 @@ World::Render(Screen *screen, Rect *clip)
 		}
 		assert(w != NULL);
 		// Center the direction circle on the unit (subtract half width/height)
-		w->Render(screen, _selectedObjects.Items[0]->Position.x-_originX-w->GetWidth()/2, _selectedObjects.Items[0]->Position.y-_originY-w->GetHeight()/2, w->GetWidth(), w->GetHeight(), true);
+		w->Render(screen, _selectedObjects[0]->Position.x-_originX-w->GetWidth()/2, _selectedObjects[0]->Position.y-_originY-w->GetHeight()/2, w->GetWidth(), w->GetHeight(), true);
 		delete w;
 	}
 
@@ -263,14 +263,14 @@ World::Render(Screen *screen, Rect *clip)
 	}
 
 	if(_currentState == ContextSelected) {
-		assert(_selectedObjects.Count > 0);
-		_rangerX = _selectedObjects.Items[0]->Position.x-_originX;
-		_rangerY = _selectedObjects.Items[0]->Position.y-_originY;
+		assert(_selectedObjects.size() > 0);
+		_rangerX = _selectedObjects[0]->Position.x-_originX;
+		_rangerY = _selectedObjects[0]->Position.y-_originY;
 
 		if(_currentChoice == CombatContextMenu::ContextMenuChoice::Fire) {
 			int ox, oy, oz;
-			int x0 = _selectedObjects.Items[0]->Position.x/10;
-			int y0 = _selectedObjects.Items[0]->Position.y/10;
+			int x0 = _selectedObjects[0]->Position.x/10;
+			int y0 = _selectedObjects[0]->Position.y/10;
 			int x1 = (screen->GetCursorX()+_originX)/10;
 			int y1 = (screen->GetCursorY()+_originY)/10;
 			Color c;
@@ -338,17 +338,18 @@ void
 World::Simulate(long dt)
 {
 	// Simulate all of the mobile objects
-	for(int i = 0; i < _mobileObjects.Count; ++i) {
-		Object *o = _mobileObjects.Items[i];
+	for(auto* o : _mobileObjects) {
 		o->Simulate(dt, this);
 	}
 
 	// Simulate all of the effects
-	for(int i = 0; i < _effects.Count; ++i) {
-		_effects.Items[i]->Simulate(dt);
-		if(_effects.Items[i]->IsCompleted()) {
-			delete _effects.RemoveAt(i);
-			--i;
+	for(auto it = _effects.begin(); it != _effects.end(); ) {
+		(*it)->Simulate(dt);
+		if((*it)->IsCompleted()) {
+			delete *it;
+			it = _effects.erase(it);
+		} else {
+			++it;
 		}
 	}
 
@@ -541,9 +542,9 @@ World::UpdateState()
 
 	// Update the state of any selected objects
 	State.SelectedSquad = -1;
-	if(_selectedObjects.Count > 0) {
+	if(_selectedObjects.size() > 0) {
 		for(int i = 0; i < State.NumSquads; ++i) {
-			if(_selectedObjects.Items[0]->GetID() == State.SquadStates[i].ID) {
+			if(_selectedObjects[0]->GetID() == State.SquadStates[i].ID) {
 				State.SelectedSquad = i;
 				break;
 			}
@@ -551,10 +552,10 @@ World::UpdateState()
 	}
 
 	// Now check to see if we have any highlighted objects
-	for(int i = 0; i < _mobileObjects.Count; ++i) {
-		if(_mobileObjects.Items[i]->IsHighlighted()) {
+	for(auto* o : _mobileObjects) {
+		if(o->IsHighlighted()) {
 			for(int j = 0; j < State.NumSquads; ++j) {
-				if(_mobileObjects.Items[i]->GetID() == State.SquadStates[j].ID) {
+				if(o->GetID() == State.SquadStates[j].ID) {
 					State.SelectedSquad = j;
 					break;
 				}
@@ -568,9 +569,9 @@ void
 World::AddObject(Object *o) 
 {
 	if(o->IsMobile()) {
-		_mobileObjects.Add(o);
+		_mobileObjects.push_back(o);
 	} else {
-		_staticObjects.Add(o);
+		_staticObjects.push_back(o);
 	}
 }
 
@@ -616,9 +617,9 @@ World::LeftMouseUp(int x, int y)
 		_currentChoice = _contextMenu->Choose(x, y);
 
 		// Now act on this choice
-		assert(_selectedObjects.Count > 0);
-		_rangerX = _selectedObjects.Items[0]->Position.x-_originX;
-		_rangerY = _selectedObjects.Items[0]->Position.y-_originY;
+		assert(_selectedObjects.size() > 0);
+		_rangerX = _selectedObjects[0]->Position.x-_originX;
+		_rangerY = _selectedObjects[0]->Position.y-_originY;
 				
 		switch(_currentChoice) {
 			case CombatContextMenu::ContextMenuChoice::Move:
@@ -730,13 +731,12 @@ World::RightMouseUp(int x, int y)
 	}
 
 	// We need to make sure that this point is inside our selected objects
-	if(_selectedObjects.Count <= 0) {
+	if(_selectedObjects.size() <= 0) {
 		// We have no selected items, so try to select something
 		Select(x,y);
 	} else {
 		bool bContains = false;
-		for(int i = 0; i < _selectedObjects.Count; ++i) {
-			Object *o = _selectedObjects.Items[i];
+		for(auto* o : _selectedObjects) {
 			if(o->Contains(x+_originX, y+_originY)) {
 				bContains = true;
 			}
@@ -754,8 +754,7 @@ World::RightMouseUp(int x, int y)
 	// Show the context menu
 	bool move=false, moveFast=false, sneak=false, fire=false, defend=false, ambush=false, smoke=false;
 	bool bShow = false;
-	for(int i = 0; i < _selectedObjects.Count; ++i) {
-		Object *o = (Object *) _selectedObjects.Items[i];
+	for(auto* o : _selectedObjects) {
 		bShow = true;
 			
 		if(o->CanMove()) {
@@ -823,16 +822,16 @@ World::ClearSelect(int x, int y)
 {
 	UNREFERENCED_PARAMETER(x);
 	UNREFERENCED_PARAMETER(y);
-	for(int i = _selectedObjects.Count-1; i >= 0; --i) {
-		(_selectedObjects.RemoveAt(i))->Select(false);
+	for(auto* o : _selectedObjects) {
+		o->Select(false);
 	}
+	_selectedObjects.clear();
 }
 
 void
 World::IssueOrder(Order *order)
 {
-	for(int i = 0; i < _selectedObjects.Count; ++i) {
-		Object *o = _selectedObjects.Items[i];
+	for(auto* o : _selectedObjects) {
 		o->ClearOrders();
 		o->AddOrder(order);
 	}
@@ -847,16 +846,16 @@ World::KeyUp(int key)
 {
 	// Let's kill one of our soldiers
 	if(key == 'k' || key == 'K') {
-		for(int i = 0; i < _selectedObjects.Count; ++i) {
-			_selectedObjects.Items[i]->Kill();
+		for(auto* o : _selectedObjects) {
+			o->Kill();
 		}
 	}
 	else if(key == 'f' || key == 'F')
 	{
 		// Change the formation of the currently selected object
-		for(int i = 0; i < _selectedObjects.Count; ++i) {
-			Formation::Type f = _selectedObjects.Items[i]->GetFormation();
-			_selectedObjects.Items[i]->SetFormation((Formation::Type)((f+1)%Formation::NumFormations));
+		for(auto* o : _selectedObjects) {
+			Formation::Type f = o->GetFormation();
+			o->SetFormation((Formation::Type)((f+1)%Formation::NumFormations));
 		}
 	}
 	else if(key == KEY_LEFT)
@@ -1088,12 +1087,12 @@ World::CalculateHitChance(int shooterX, int shooterY, int targetX, int targetY, 
 void
 World::UpdateFireCursor(int cursorX, int cursorY, bool hasTarget)
 {
-	if(_selectedObjects.Count <= 0) {
+	if(_selectedObjects.size() <= 0) {
 		return;
 	}
 	
-	int shooterX = _selectedObjects.Items[0]->Position.x;
-	int shooterY = _selectedObjects.Items[0]->Position.y;
+	int shooterX = _selectedObjects[0]->Position.x;
+	int shooterY = _selectedObjects[0]->Position.y;
 	int targetX = cursorX + _originX;
 	int targetY = cursorY + _originY;
 	
