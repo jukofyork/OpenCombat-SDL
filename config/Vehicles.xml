@@ -26,7 +26,7 @@
 			<Weapon slot="1" clips="8">.30 Cal MG</Weapon>
 		</Hull>
 		<Wreck>
-			<Graphic>Vehicles/panser_IVG_wreck.11.21.tga</Graphic>
+			<Graphic>Vehicles/panzer_IVG_wreck.11.21.tga</Graphic>
 		</Wreck>
 	</Vehicle>
 </Vehicles>

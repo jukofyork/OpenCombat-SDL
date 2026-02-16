@@ -524,11 +524,9 @@ World::Load(const std::filesystem::path& fileName, SoldierManager *soldierManage
 		g_Globals->World.Teams[2].Objects.push_back(s);
 	}
 
-#if 0
 	squad = _squadManager->CreateSquad("Panzer IVG", _soldierManager, _vehicleManager, _animationManager, _weaponManager);
 	squad->SetPosition(300, 200);
 	AddObject(squad);
-#endif
 }
 
 void
