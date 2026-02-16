@@ -42,7 +42,7 @@ SoldierAnimationManager::LoadAnimations(const std::filesystem::path& fileName)
 		return;
 	}
 	
-	Array<AnimationAttributes> dest;
+	std::vector<AnimationAttributes> dest;
 	std::string directory;
 	std::string image;
 	std::string mask;
@@ -64,40 +64,40 @@ SoldierAnimationManager::LoadAnimations(const std::filesystem::path& fileName)
 		 animElem != nullptr; 
 		 animElem = animElem->NextSiblingElement("Animation")) 
 	{
-		AnimationAttributes* attr = new AnimationAttributes();
-		memset(attr, 0, sizeof(AnimationAttributes));
+		AnimationAttributes attr;
+		memset(&attr, 0, sizeof(AnimationAttributes));
 		
 		XMLElement* nameElem = animElem->FirstChildElement("Name");
 		if (nameElem && nameElem->GetText()) {
-			attr->Name = nameElem->GetText();
+			attr.Name = nameElem->GetText();
 		}
 		
 		XMLElement* firstDirElem = animElem->FirstChildElement("FirstDirection");
 		if (firstDirElem && firstDirElem->GetText()) {
-			attr->FirstDirection = firstDirElem->GetText();
+			attr.FirstDirection = firstDirElem->GetText();
 		}
 		
 		XMLElement* dirElem = animElem->FirstChildElement("Directions");
 		if (dirElem && dirElem->GetText()) {
-			attr->nDirections = atoi(dirElem->GetText());
+			attr.nDirections = atoi(dirElem->GetText());
 		}
 		
 		XMLElement* framesElem = animElem->FirstChildElement("NumFrames");
 		if (framesElem && framesElem->GetText()) {
-			attr->nFrames = atoi(framesElem->GetText());
+			attr.nFrames = atoi(framesElem->GetText());
 		}
 		
 		XMLElement* timeElem = animElem->FirstChildElement("Time");
 		if (timeElem && timeElem->GetText()) {
-			attr->Time = atoi(timeElem->GetText());
+			attr.Time = atoi(timeElem->GetText());
 		}
 		
 		XMLElement* transElem = animElem->FirstChildElement("TransparentColor");
 		if (transElem && transElem->GetText()) {
-			attr->TransparentColor = (unsigned int)atoi(transElem->GetText());
+			attr.TransparentColor = (unsigned int)atoi(transElem->GetText());
 		}
 		
-		dest.Add(attr);
+		dest.push_back(attr);
 	}
 	
 	// Replace Windows FindFirstFile with POSIX opendir/readdir
@@ -163,16 +163,16 @@ SoldierAnimationManager::LoadAnimations(const std::filesystem::path& fileName)
    // Okay, now iterate through all of the animation attributes and create
    // our frames
 	size_t numFiles = 0;
-	for(int i = 0; i < dest.Count; ++i) {
-		Animation *a = new Animation(dest.Items[i]->Name);
+	for(size_t i = 0; i < dest.size(); ++i) {
+		Animation *a = new Animation(dest[i].Name);
 
 		// Find out what our first direction is
 		Direction firstDir = North;
 
 		// We need to create one frame for each file in the directory
 		// Up to the number of frames we are supposed to read in
-		for(int j = 0; j < dest.Items[i]->nFrames; ++j) {
-			for(int k = 0; k < dest.Items[i]->nDirections; ++k) {
+		for(int j = 0; j < dest[i].nFrames; ++j) {
+			for(int k = 0; k < dest[i].nDirections; ++k) {
 				// Create the source tga
 				if (numFiles >= files.size()) break;
 				const std::string& fName = files[numFiles];
@@ -195,18 +195,18 @@ SoldierAnimationManager::LoadAnimations(const std::filesystem::path& fileName)
 				mtga->SetOrigin(x, y);
 
 				// Add to our sources
-				_sourceImages.Add(tga);
-				_sourceImages.Add(mtga);
+				_sourceImages.push_back(tga);
+				_sourceImages.push_back(mtga);
 
 				// Parse the transparent color
 				Color c;
-				c.Parse(dest.Items[i]->TransparentColor);
+				c.Parse(dest[i].TransparentColor);
 
-				MaskFrame *frame = new MaskFrame(tga, mtga, dest.Items[i]->Time, tga->GetWidth(), tga->GetHeight(), 0, 0, &c);
+				MaskFrame *frame = new MaskFrame(tga, mtga, dest[i].Time, tga->GetWidth(), tga->GetHeight(), 0, 0, &c);
 				a->AddFrame(frame, (Direction) (((int)firstDir+k) % NumDirections));
 			}
 		}
-		_animations.Add(a);
+		_animations.push_back(a);
 	}
 }
 

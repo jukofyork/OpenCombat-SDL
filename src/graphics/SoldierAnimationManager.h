@@ -1,6 +1,5 @@
 #pragma once
 #include <graphics/AnimationManager.h>
-#include <misc/Array.h>
 
 class SoldierAnimationManager : AnimationManager
 {

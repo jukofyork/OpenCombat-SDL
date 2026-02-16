@@ -2,6 +2,7 @@
 
 #include <filesystem>
 #include <string>
+#include <vector>
 #include <graphics/Animation.h>
 
 /**
@@ -21,8 +22,8 @@ public:
 
 protected:
 	// The list of animations that we are managing
-	Array<Animation> _animations;
+	std::vector<Animation*> _animations;
 
 	// The array of source image files
-	Array<TGA> _sourceImages;
+	std::vector<TGA*> _sourceImages;
 };
