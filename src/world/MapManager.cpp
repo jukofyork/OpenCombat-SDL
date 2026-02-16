@@ -2,6 +2,7 @@
 #include "misc/tinyxml2.h"
 
 #include <string>
+#include <filesystem>
 #include <stdio.h>
 #include <math.h>
 #include <application/Globals.h>
@@ -39,31 +40,31 @@ MapManager::Parse(char *fileName)
     // Parse Background
     XMLElement* bgElem = root->FirstChildElement("Background");
     if (bgElem && bgElem->GetText()) {
-        attr->Background = std::string(g_Globals->Application.MapsDirectory) + "/" + bgElem->GetText();
+        attr->Background = (g_Globals->Application.MapsDirectory / bgElem->GetText()).string();
     }
-    
+
     // Parse Buildings
     XMLElement* buildingsElem = root->FirstChildElement("Buildings");
     if (buildingsElem && buildingsElem->GetText()) {
-        attr->Buildings = std::string(g_Globals->Application.MapsDirectory) + "/" + buildingsElem->GetText();
+        attr->Buildings = (g_Globals->Application.MapsDirectory / buildingsElem->GetText()).string();
     }
-    
+
     // Parse Elements
     XMLElement* elementsElem = root->FirstChildElement("Elements");
     if (elementsElem && elementsElem->GetText()) {
-        attr->Elements = std::string(g_Globals->Application.MapsDirectory) + "/" + elementsElem->GetText();
+        attr->Elements = (g_Globals->Application.MapsDirectory / elementsElem->GetText()).string();
     }
-    
+
     // Parse Mini
     XMLElement* miniElem = root->FirstChildElement("Mini");
     if (miniElem && miniElem->GetText()) {
-        attr->Mini = std::string(g_Globals->Application.MapsDirectory) + "/" + miniElem->GetText();
+        attr->Mini = (g_Globals->Application.MapsDirectory / miniElem->GetText()).string();
     }
-    
+
     // Parse Overland
     XMLElement* overlandElem = root->FirstChildElement("Overland");
     if (overlandElem && overlandElem->GetText()) {
-        attr->Overland = std::string(g_Globals->Application.MapsDirectory) + "/" + overlandElem->GetText();
+        attr->Overland = (g_Globals->Application.MapsDirectory / overlandElem->GetText()).string();
     }
     
     // Parse Victory Locations

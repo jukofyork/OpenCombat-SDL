@@ -2,6 +2,7 @@
 #include "misc/tinyxml2.h"
 
 #include <string>
+#include <filesystem>
 #include <SDL2/SDL_mixer.h>
 #include "sound/Sound.h"
 #include "application/Globals.h"
@@ -58,8 +59,8 @@ SoundManager::LoadSounds(char *fileName)
 	// our sounds
 	for(int i = 0; i < dest.Count; ++i) {
 		// Create the source sound file
-	   std::string fName = std::string(g_Globals->Application.SoundsDirectory) + "/" + dest.Items[i]->SoundFile;
-	   Sound *s = new Sound(dest.Items[i]->Name, fName);
+	   std::filesystem::path fName = g_Globals->Application.SoundsDirectory / dest.Items[i]->SoundFile;
+	   Sound *s = new Sound(dest.Items[i]->Name, fName.string());
 	   // Load the WAV file using SDL_mixer
 	   s->_chunk = Mix_LoadWAV(s->_soundFileName.c_str());
 	   if (s->_chunk == NULL) {

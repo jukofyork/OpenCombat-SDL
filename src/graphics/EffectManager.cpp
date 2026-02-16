@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <filesystem>
 #include <dirent.h>
 #include <assert.h>
 #include <misc/TGA.h>
@@ -78,10 +79,9 @@ EffectManager::LoadEffects(char *fileName)
 			 graphicElem != nullptr;
 			 graphicElem = graphicElem->NextSiblingElement("Graphic"))
 		{
-			if (graphicElem->GetText()) {
-				attr->GraphicsFile.push_back(std::string(g_Globals->Application.GraphicsDirectory) + 
-					"/Effects/" + graphicElem->GetText());
-			}
+		if (graphicElem->GetText()) {
+			attr->GraphicsFile.push_back((g_Globals->Application.GraphicsDirectory / "Effects" / graphicElem->GetText()).string());
+		}
 		}
 
 		// Parse <Graphics> element with file pattern
@@ -106,7 +106,7 @@ EffectManager::LoadEffects(char *fileName)
 		e->SetPlaceOnTurret(dest.Items[i]->PlaceOnTurret);
 
 		for(size_t j = 0; j < dest.Items[i]->GraphicsFile.size(); ++j) {
-			TGA *tga = TGA::Create((char*)dest.Items[i]->GraphicsFile[j].c_str());
+			TGA *tga = TGA::Create(dest.Items[i]->GraphicsFile[j]);
 			tga->SetTransparentColor(0,0,0);
 			_sourceImages.Add(tga);
 
@@ -133,7 +133,7 @@ EffectManager::LoadEffects(char *fileName)
 
 void EffectManager::GetFiles(EffectAttributes *attr, const char *searchStr)
 {
-	std::string searchDir = std::string(g_Globals->Application.GraphicsDirectory) + "/Effects/" + searchStr;
+	std::string searchDir = (g_Globals->Application.GraphicsDirectory / "Effects" / searchStr).string();
 
 	// Find the wildcard position
 	size_t wildcardPos = searchDir.find('*');

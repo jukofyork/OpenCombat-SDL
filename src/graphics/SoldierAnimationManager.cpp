@@ -6,6 +6,7 @@
 #include <dirent.h>
 #include <string.h>
 #include <string>
+#include <filesystem>
 #include <misc/Color.h>
 #include <misc/Structs.h>
 #include <graphics/MaskFrame.h>
@@ -107,8 +108,10 @@ SoldierAnimationManager::LoadAnimations(char *fileName)
 	// Replace Windows FindFirstFile with POSIX opendir/readdir
 	Array<char> files;
 	Array<char> masks;
+	std::filesystem::path searchPath = g_Globals->Application.GraphicsDirectory / directory / image;
+	std::string searchDirStr = searchPath.string();
 	char searchDir[512];
-	snprintf(searchDir, sizeof(searchDir), "%s/%s/%s", g_Globals->Application.GraphicsDirectory.c_str(), directory.c_str(), image.c_str());
+	snprintf(searchDir, sizeof(searchDir), "%s", searchDirStr.c_str());
 	
 	// Extract directory portion from search pattern
 	char* lastSlash = strrchr(searchDir, '/');
@@ -132,8 +135,8 @@ SoldierAnimationManager::LoadAnimations(char *fileName)
 					if (strcasecmp(fileExt, ".tga") == 0) {
 						// Check if it starts with 'spr' (sprite files, not 'msk' mask files)
 						if (strncmp(entry->d_name, "spr", 3) == 0) {
-							snprintf(searchDir, sizeof(searchDir), "%s/%s/%s", g_Globals->Application.GraphicsDirectory.c_str(), directory.c_str(), entry->d_name);
-							files.Add(strdup(searchDir));
+							std::filesystem::path filePath = g_Globals->Application.GraphicsDirectory / directory / entry->d_name;
+							files.Add(strdup(filePath.c_str()));
 
 							// Add mask file (replace first 3 chars with 'msk')
 							std::string maskPath = searchDir;
