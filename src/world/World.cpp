@@ -2,6 +2,7 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string>
 #include <application/CursorInterface.h>
 #include <graphics/Effect.h>
 #include <graphics/Mark.h>
@@ -283,39 +284,39 @@ World::Render(Screen *screen, Rect *clip)
 				c.blue = 0;
 				c.green = 255;
 				screen->DrawLine(_rangerX, _rangerY, screen->GetCursorX(), screen->GetCursorY(), 3, &c);
-				char msg[64];
-				Vector2 v;
-				v.x = (float)(screen->GetCursorX()-_rangerX);
-				v.y = (float)(screen->GetCursorY()- _rangerX);
-				sprintf(msg, "%dm", (int)v.Magnitude()/g_Globals->World.Constants.PixelsPerMeter);
-				// Position text just outside SE corner of 32x32 cursor
-				// Cursor is 32x32 centered on hotspot, so corners are at +/-16
-				// Text goes at (16+2, 16+2) = (18, 18) from center for small margin
-				const int textOffset = 10;
-				g_Globals->World.Fonts->Render(screen, msg, screen->GetCursorX() + textOffset, screen->GetCursorY() + textOffset, &white);
-			} else {
-				char msg[64];
+			char msg[64];
+			Vector2 v;
+			v.x = (float)(screen->GetCursorX()-_rangerX);
+			v.y = (float)(screen->GetCursorY()- _rangerX);
+			sprintf(msg, "%dm", (int)v.Magnitude()/g_Globals->World.Constants.PixelsPerMeter);
+			// Position text just outside SE corner of 32x32 cursor
+			// Cursor is 32x32 centered on hotspot, so corners are at +/-16
+			// Text goes at (16+2, 16+2) = (18, 18) from center for small margin
+			const int textOffset = 10;
+			g_Globals->World.Fonts->Render(screen, msg, screen->GetCursorX() + textOffset, screen->GetCursorY() + textOffset, &white);
+		} else {
+			char msg[64];
 
-				// Find the distance to the blocked element
-				Vector2 vb;
-				vb.x = (float)((ox*10+5)-x0*10);
-				vb.y = (float)((oy*10+5)-y0*10);
-				float bdist = vb.Magnitude();
-				// Find the total distance
-				Vector2 vt;
-				vt.x = (float)(x1*10-x0*10);
-				vt.y = (float)(y1*10-y0*10);
-				float tdist = vt.Magnitude();
-				int bx = (int)(_rangerX + (screen->GetCursorX() - _rangerX)*bdist/tdist);
-				int by = (int)(_rangerY + (screen->GetCursorY() - _rangerY)*bdist/tdist);
+			// Find the distance to the blocked element
+			Vector2 vb;
+			vb.x = (float)((ox*10+5)-x0*10);
+			vb.y = (float)((oy*10+5)-y0*10);
+			float bdist = vb.Magnitude();
+			// Find the total distance
+			Vector2 vt;
+			vt.x = (float)(x1*10-x0*10);
+			vt.y = (float)(y1*10-y0*10);
+			float tdist = vt.Magnitude();
+			int bx = (int)(_rangerX + (screen->GetCursorX() - _rangerX)*bdist/tdist);
+			int by = (int)(_rangerY + (screen->GetCursorY() - _rangerY)*bdist/tdist);
 
-				Vector2 v;
-				v.x = (float)(bx-_rangerX);
-				v.y = (float)(by-_rangerY);
-				sprintf(msg, "%dm", (int)v.Magnitude()/g_Globals->World.Constants.PixelsPerMeter);
-				// Position text at SE corner of blocked line end
-				const int textOffset = 10;
-				g_Globals->World.Fonts->Render(screen, msg, bx + textOffset, by + textOffset, &white);
+			Vector2 v;
+			v.x = (float)(bx-_rangerX);
+			v.y = (float)(by-_rangerY);
+			sprintf(msg, "%dm", (int)v.Magnitude()/g_Globals->World.Constants.PixelsPerMeter);
+			// Position text at SE corner of blocked line end
+			const int textOffset = 10;
+			g_Globals->World.Fonts->Render(screen, msg, bx + textOffset, by + textOffset, &white);
 				c.red = 0;
 				c.blue = 0;
 				c.green = 255;
@@ -397,44 +398,43 @@ World::Load(char *fileName, SoldierManager *soldierManager, AnimationManager *an
 	_originY = 0;
 
 	// Initialize the context menu
-	char widgetsFile[256];
-	sprintf(widgetsFile, "%s/ContextMenuWidgets.xml", g_Globals->Application.ConfigDirectory.c_str());
-	_contextMenu->Initialize(widgetsFile);
+	std::string widgetsFile = g_Globals->Application.ConfigDirectory + "/ContextMenuWidgets.xml";
+	_contextMenu->Initialize(const_cast<char*>(widgetsFile.c_str()));
 
 	// Create the element manager
-	sprintf(widgetsFile, "%s/Elements.xml", g_Globals->Application.ConfigDirectory.c_str());
+	widgetsFile = g_Globals->Application.ConfigDirectory + "/Elements.xml";
 	_elementManager = new ElementManager();
-	_elementManager->Load(widgetsFile);
+	_elementManager->Load(const_cast<char*>(widgetsFile.c_str()));
 	g_Globals->World.Elements = _elementManager;
 
 	// Create the color manager
-	sprintf(widgetsFile, "%s/Colors.xml", g_Globals->Application.ConfigDirectory.c_str());
+	widgetsFile = g_Globals->Application.ConfigDirectory + "/Colors.xml";
 	_colorManager = new ColorManager();
-	_colorManager->Load(widgetsFile);
+	_colorManager->Load(const_cast<char*>(widgetsFile.c_str()));
 
 	// Create the effect manager
 	_effectManager = new EffectManager();
-	sprintf(widgetsFile, "%s/Effects.xml", g_Globals->Application.ConfigDirectory.c_str());
-	_effectManager->LoadEffects(widgetsFile);
+	widgetsFile = g_Globals->Application.ConfigDirectory + "/Effects.xml";
+	_effectManager->LoadEffects(const_cast<char*>(widgetsFile.c_str()));
 	g_Globals->World.Effects = _effectManager;
 
 	// Create the weapon manager
 	_weaponManager = new WeaponManager();
-	sprintf(widgetsFile, "%s/Weapons.xml", g_Globals->Application.ConfigDirectory.c_str());
-	_weaponManager->LoadWeapons(widgetsFile);
+	widgetsFile = g_Globals->Application.ConfigDirectory + "/Weapons.xml";
+	_weaponManager->LoadWeapons(const_cast<char*>(widgetsFile.c_str()));
 	g_Globals->World.Weapons = _weaponManager;
 
 	// Create the vehicle manager
 	// The vehicle manager needs to be created after the weapon manager!
-	sprintf(widgetsFile, "%s/Vehicles.xml", g_Globals->Application.ConfigDirectory.c_str());
+	widgetsFile = g_Globals->Application.ConfigDirectory + "/Vehicles.xml";
 	_vehicleManager = new VehicleManager();
-	_vehicleManager->Load(widgetsFile);
+	_vehicleManager->Load(const_cast<char*>(widgetsFile.c_str()));
 	g_Globals->World.Vehicles = _vehicleManager;
 
 	// Create the squad manager
-	sprintf(widgetsFile, "%s/Squads.xml", g_Globals->Application.ConfigDirectory.c_str());
+	widgetsFile = g_Globals->Application.ConfigDirectory + "/Squads.xml";
 	_squadManager = new SquadManager();
-	_squadManager->LoadSquads(widgetsFile);
+	_squadManager->LoadSquads(const_cast<char*>(widgetsFile.c_str()));
 	g_Globals->World.Squads = _squadManager;
 
 	// XXX/GWS: Load the current map. This is hard coded for now

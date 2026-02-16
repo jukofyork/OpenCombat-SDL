@@ -3,6 +3,7 @@
 #include "misc/TGA.h"
 #include <stdio.h>
 #include <string.h>
+#include <string>
 #include <application/Globals.h>
 
 using namespace tinyxml2;
@@ -54,22 +55,20 @@ Nationality::Load(char *fileName, Array<Nationality> *nationalities)
 		// Load VictoryLocation (flag) image
 		XMLElement* flagElem = natElem->FirstChildElement("VictoryLocation");
 		if (flagElem && flagElem->GetText()) {
-			char fullPath[256];
-			sprintf(fullPath, "%s/%s", g_Globals->Application.GraphicsDirectory.c_str(), flagElem->GetText());
-			nationality->VictoryLocation = TGA::Create(fullPath);
+			std::string fullPath = g_Globals->Application.GraphicsDirectory + "/" + flagElem->GetText();
+			nationality->VictoryLocation = TGA::Create(fullPath.c_str());
 			if (!nationality->VictoryLocation) {
-				printf("Failed to load victory location image: %s\n", fullPath);
+				printf("Failed to load victory location image: %s\n", fullPath.c_str());
 			}
 		}
-		
+
 		// Load MiniMap icon image
 		XMLElement* miniElem = natElem->FirstChildElement("MiniMap");
 		if (miniElem && miniElem->GetText()) {
-			char fullPath[256];
-			sprintf(fullPath, "%s/%s", g_Globals->Application.GraphicsDirectory.c_str(), miniElem->GetText());
-			nationality->MiniMap = TGA::Create(fullPath);
+			std::string fullPath = g_Globals->Application.GraphicsDirectory + "/" + miniElem->GetText();
+			nationality->MiniMap = TGA::Create(fullPath.c_str());
 			if (!nationality->MiniMap) {
-				printf("Failed to load minimap image: %s\n", fullPath);
+				printf("Failed to load minimap image: %s\n", fullPath.c_str());
 			}
 		}
 		

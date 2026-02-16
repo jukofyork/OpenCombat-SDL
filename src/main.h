@@ -5,6 +5,7 @@
 //-----------------------------------------------------------------------------
 #pragma once
 
+#include <string>
 #include <SDL2/SDL.h>
 #include "misc/StatusCallback.h"
 #include "application/CursorInterface.h"
@@ -60,7 +61,7 @@ protected:
 	long _millis;
 	MouseState _oldMouseState;
 	MouseState _currentMouseState;
-	char _statusText[256];
+	std::string _statusText;
 
 	// Custom cursors
 	SDL_Cursor* _cursors[CursorInterface::NumCursorTypes];

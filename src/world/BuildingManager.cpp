@@ -2,6 +2,7 @@
 #include <misc/tinyxml2.h>
 #include <stdio.h>
 #include <math.h>
+#include <string>
 #include <misc/Structs.h>
 #include <misc/TGA.h>
 #include <world/Building.h>
@@ -67,17 +68,15 @@ BuildingManager::LoadBuildings(const char *fileName, Array<Building> *buildings)
 		// Parse Exterior Graphic
 		tinyxml2::XMLElement* extElem = buildingElem->FirstChildElement("ExteriorGraphic");
 		if (extElem && extElem->GetText()) {
-			char path[256];
-			sprintf(path, "%s/%s", g_Globals->Application.MapsDirectory.c_str(), extElem->GetText());
-			building->SetExterior(TGA::Create(path));
+			std::string path = g_Globals->Application.MapsDirectory + "/" + extElem->GetText();
+			building->SetExterior(TGA::Create(path.c_str()));
 		}
-		
+
 		// Parse Interior Graphic
 		tinyxml2::XMLElement* intElem = buildingElem->FirstChildElement("InteriorGraphic");
 		if (intElem && intElem->GetText()) {
-			char path[256];
-			sprintf(path, "%s/%s", g_Globals->Application.MapsDirectory.c_str(), intElem->GetText());
-			building->SetInterior(TGA::Create(path));
+			std::string path = g_Globals->Application.MapsDirectory + "/" + intElem->GetText();
+			building->SetInterior(TGA::Create(path.c_str()));
 		}
 		
 		buildings->Add(building);

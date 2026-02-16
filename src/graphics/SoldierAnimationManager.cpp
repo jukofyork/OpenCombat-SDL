@@ -5,6 +5,7 @@
 #include <math.h>
 #include <dirent.h>
 #include <string.h>
+#include <string>
 #include <misc/Color.h>
 #include <misc/Structs.h>
 #include <graphics/MaskFrame.h>
@@ -46,22 +47,22 @@ SoldierAnimationManager::LoadAnimations(char *fileName)
 	}
 	
 	Array<AnimationAttributes> dest;
-	char directory[256] = {0};
-	char image[256] = {0};
-	char mask[256] = {0};
-	
+	std::string directory;
+	std::string image;
+	std::string mask;
+
 	XMLElement* root = doc.FirstChildElement("Animations");
 	if (!root) return;
-	
+
 	// Get attributes from <Animations> element
 	const char* dirAttr = root->Attribute("dir");
-	if (dirAttr) strcpy(directory, dirAttr);
-	
+	if (dirAttr) directory = dirAttr;
+
 	const char* imageAttr = root->Attribute("image");
-	if (imageAttr) strcpy(image, imageAttr);
-	
+	if (imageAttr) image = imageAttr;
+
 	const char* maskAttr = root->Attribute("mask");
-	if (maskAttr) strcpy(mask, maskAttr);
+	if (maskAttr) mask = maskAttr;
 	
 	for (XMLElement* animElem = root->FirstChildElement("Animation"); 
 		 animElem != nullptr; 
@@ -107,7 +108,7 @@ SoldierAnimationManager::LoadAnimations(char *fileName)
 	Array<char> files;
 	Array<char> masks;
 	char searchDir[512];
-	sprintf(searchDir, "%s/%s/%s", g_Globals->Application.GraphicsDirectory.c_str(), directory, image);
+	snprintf(searchDir, sizeof(searchDir), "%s/%s/%s", g_Globals->Application.GraphicsDirectory.c_str(), directory.c_str(), image.c_str());
 	
 	// Extract directory portion from search pattern
 	char* lastSlash = strrchr(searchDir, '/');
@@ -127,25 +128,24 @@ SoldierAnimationManager::LoadAnimations(char *fileName)
 				char* fileExt = strrchr(entry->d_name, '.');
 				if (!fileExt) continue;
 				
-				// Check for .tga extension (case insensitive)
-				if (strcasecmp(fileExt, ".tga") == 0) {
-					// Check if it starts with 'spr' (sprite files, not 'msk' mask files)
-					if (strncmp(entry->d_name, "spr", 3) == 0) {
-						sprintf(searchDir, "%s/%s/%s", g_Globals->Application.GraphicsDirectory.c_str(), directory, entry->d_name);
-						files.Add(strdup(searchDir));
-						
-						// Add mask file (replace first 3 chars with 'msk')
-						char maskPath[512];
-						strcpy(maskPath, searchDir);
-						char* base = strrchr(maskPath, '/') + 1;
-						if (base) {
-							base[0] = 'm';
-							base[1] = 's';
-							base[2] = 'k';
+					// Check for .tga extension (case insensitive)
+					if (strcasecmp(fileExt, ".tga") == 0) {
+						// Check if it starts with 'spr' (sprite files, not 'msk' mask files)
+						if (strncmp(entry->d_name, "spr", 3) == 0) {
+							snprintf(searchDir, sizeof(searchDir), "%s/%s/%s", g_Globals->Application.GraphicsDirectory.c_str(), directory.c_str(), entry->d_name);
+							files.Add(strdup(searchDir));
+
+							// Add mask file (replace first 3 chars with 'msk')
+							std::string maskPath = searchDir;
+							size_t lastSlash = maskPath.find_last_of('/');
+							if (lastSlash != std::string::npos && lastSlash + 3 < maskPath.length()) {
+								maskPath[lastSlash + 1] = 'm';
+								maskPath[lastSlash + 2] = 's';
+								maskPath[lastSlash + 3] = 'k';
+							}
+							masks.Add(strdup(maskPath.c_str()));
 						}
-						masks.Add(strdup(maskPath));
 					}
-				}
 			}
 			closedir(dir);
 			

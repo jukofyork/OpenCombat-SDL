@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <string>
 #include <assert.h>
 
 /**
@@ -157,16 +158,19 @@ TGA::Create(const char *fileName)
 	}
 
 	if(count >= 3) {
-		char fName[256];
-		strcpy(fName, fileName);
-		char *last = strrchr(fName, '.');
-		*last = '\0';
-		char *second = strrchr(fName, '.');
-		*second = '\0';
-		char *third = strrchr(fName, '.');
-		int x = atoi(third+1);
-		int y = atoi(second+1);
-		tga->SetOrigin(x,y);
+		std::string fName = fileName;
+		size_t last = fName.find_last_of('.');
+		if (last != std::string::npos) {
+			size_t second = fName.find_last_of('.', last - 1);
+			if (second != std::string::npos) {
+				size_t third = fName.find_last_of('.', second - 1);
+				if (third != std::string::npos) {
+					int x = atoi(fName.substr(third + 1, second - third - 1).c_str());
+					int y = atoi(fName.substr(second + 1, last - second - 1).c_str());
+					tga->SetOrigin(x, y);
+				}
+			}
+		}
 	}
 
 	return tga;

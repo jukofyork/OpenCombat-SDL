@@ -66,12 +66,10 @@ WidgetManager::LoadWidgets(char *fileName)
 
 	// Okay, now iterate through all of the widget attributes and create
 	// our widgets
-	char fName[256];
-
 	for(int i = 0; i < dest.Count; ++i) {
 		// Create the source TGA file
-		sprintf(fName, "%s/%s", g_Globals->Application.GraphicsDirectory.c_str(), dest.Items[i]->GraphicsFile.c_str()); 
-		TGA *tga = TGA::Create(fName);
+		std::string fName = g_Globals->Application.GraphicsDirectory + "/" + dest.Items[i]->GraphicsFile.c_str();
+		TGA *tga = TGA::Create(fName.c_str());
 		_sourceImages.Add(tga);
 		Widget *w = new Widget(dest.Items[i]->Name, tga);
 		if(dest.Items[i]->Index == -1) {

@@ -116,7 +116,7 @@ CSDLApplication::CSDLApplication()
 
 	memset(&_oldMouseState, 0, sizeof(MouseState));
 	memset(&_currentMouseState, 0, sizeof(MouseState));
-	strcpy(_statusText, "Loading... Please wait");
+	_statusText = "Loading... Please wait";
 
 	// Initialize cursor array to NULL
 	for(int i = 0; i < CursorInterface::NumCursorTypes; i++) {
@@ -815,8 +815,7 @@ void CSDLApplication::HandleMouseMotion(int x, int y)
 void CSDLApplication::Status(char *msg)
 {
 	if(msg) {
-		strncpy(_statusText, msg, 255);
-		_statusText[255] = '\0';
+		_statusText = msg;
 	}
 }
 

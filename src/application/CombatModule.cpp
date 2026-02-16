@@ -319,9 +319,8 @@ Color white(255,255,255);
 			delete w;
 
 			// Do the number of rounds
-			char rounds[16];
-			sprintf(rounds, "%d", _currentWorld->State.SquadStates[_currentWorld->State.SelectedSquad].UnitStates[i].NumRounds);
-			g_Globals->World.Fonts->Render(screen, rounds, x+166, y-dy+18, &white);
+			std::string rounds = std::to_string(_currentWorld->State.SquadStates[_currentWorld->State.SelectedSquad].UnitStates[i].NumRounds);
+			g_Globals->World.Fonts->Render(screen, rounds.c_str(), x+166, y-dy+18, &white);
 
 // Do the title
 			w = _iconManager->GetWidget(const_cast<char*>(_currentWorld->State.SquadStates[_currentWorld->State.SelectedSquad].UnitStates[i].Title.c_str()));

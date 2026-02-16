@@ -230,7 +230,6 @@ VehicleManager::GetVehicle(const char *vehicleName)
 		    // Okay, now iterate through all of the widget attributes and create
 		    // our widgets
 			// XXX/GWS: The hardcoded directory here is bad
-			char fName[256];
 
 			v->_name = _vehicles.Items[i]->Name;
 			v->_turretPosition.x = _vehicles.Items[i]->Turret.Position.x;
@@ -244,22 +243,22 @@ VehicleManager::GetVehicle(const char *vehicleName)
 
 			// The hull graphics
 			if(_vehicles.Items[i]->Hull.Tga == NULL) {
-				sprintf(fName, "%s/%s", g_Globals->Application.GraphicsDirectory.c_str(), _vehicles.Items[i]->Hull.Graphic.c_str()); 
-				_vehicles.Items[i]->Hull.Tga = TGA::Create(fName);
+				std::string fName = g_Globals->Application.GraphicsDirectory + "/" + _vehicles.Items[i]->Hull.Graphic.c_str();
+				_vehicles.Items[i]->Hull.Tga = TGA::Create(fName.c_str());
 			}
 			v->_hullGraphics = _vehicles.Items[i]->Hull.Tga;
-		
+
 			// The turret graphic
 			if(_vehicles.Items[i]->Turret.Tga == NULL) {
-				sprintf(fName, "%s/%s", g_Globals->Application.GraphicsDirectory.c_str(), _vehicles.Items[i]->Turret.Graphic.c_str()); 
-				_vehicles.Items[i]->Turret.Tga = TGA::Create(fName);
+				std::string fName = g_Globals->Application.GraphicsDirectory + "/" + _vehicles.Items[i]->Turret.Graphic.c_str();
+				_vehicles.Items[i]->Turret.Tga = TGA::Create(fName.c_str());
 			}
 			v->_turretGraphics = _vehicles.Items[i]->Turret.Tga;
-		
+
 			// The wreck graphic
 			if(_vehicles.Items[i]->Wreck.Tga == NULL) {
-				sprintf(fName, "%s/%s", g_Globals->Application.GraphicsDirectory.c_str(), _vehicles.Items[i]->Wreck.Graphic.c_str()); 
-				_vehicles.Items[i]->Wreck.Tga = TGA::Create(fName);
+				std::string fName = g_Globals->Application.GraphicsDirectory + "/" + _vehicles.Items[i]->Wreck.Graphic.c_str();
+				_vehicles.Items[i]->Wreck.Tga = TGA::Create(fName.c_str());
 			}
 			v->_wreckGraphics = _vehicles.Items[i]->Wreck.Tga;
 
