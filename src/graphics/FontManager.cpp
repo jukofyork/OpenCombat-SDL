@@ -73,29 +73,29 @@ FontManager::Invalidate()
 }
 
 void
-FontManager::GetTextSize(const char *msg, int *w, int *h, FontSize size)
+FontManager::GetTextSize(const std::string &msg, int *w, int *h, FontSize size)
 {
 	if(size < 0 || size >= FontSize_Count) {
 		size = FontSize_Small;
 	}
 	
-	if(_fonts[size] == NULL || msg == NULL) {
+	if(_fonts[size] == NULL || msg.empty()) {
 		*w = 0;
 		*h = 0;
 		return;
 	}
 	
-	TTF_SizeText(_fonts[size], msg, w, h);
+	TTF_SizeText(_fonts[size], msg.c_str(), w, h);
 }
 
 void 
-FontManager::Render(Screen *screen, const char *msg, int x, int y, Color *c, FontSize size)
+FontManager::Render(Screen *screen, const std::string &msg, int x, int y, Color *c, FontSize size)
 {
 	if(size < 0 || size >= FontSize_Count) {
 		size = FontSize_Small;
 	}
 	
-	if(_fonts[size] == NULL || msg == NULL || screen == NULL) {
+	if(_fonts[size] == NULL || msg.empty() || screen == NULL) {
 		return;
 	}
 	
@@ -107,7 +107,7 @@ FontManager::Render(Screen *screen, const char *msg, int x, int y, Color *c, Fon
 	color.a = c->alpha;
 	
 	// Render text to surface
-	SDL_Surface *textSurface = TTF_RenderText_Blended(_fonts[size], msg, color);
+	SDL_Surface *textSurface = TTF_RenderText_Blended(_fonts[size], msg.c_str(), color);
 	if(textSurface == NULL) {
 		return;
 	}

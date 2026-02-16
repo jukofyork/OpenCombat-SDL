@@ -245,21 +245,21 @@ VehicleManager::GetVehicle(const std::string& vehicleName)
 			// The hull graphics
 			if(_vehicles.Items[i]->Hull.Tga == NULL) {
 				std::filesystem::path fName = g_Globals->Application.GraphicsDirectory / _vehicles.Items[i]->Hull.Graphic;
-				_vehicles.Items[i]->Hull.Tga = TGA::Create(fName.c_str());
+				_vehicles.Items[i]->Hull.Tga = TGA::Create(fName);
 			}
 			v->_hullGraphics = _vehicles.Items[i]->Hull.Tga;
 
 			// The turret graphic
 			if(_vehicles.Items[i]->Turret.Tga == NULL) {
 				std::filesystem::path fName = g_Globals->Application.GraphicsDirectory / _vehicles.Items[i]->Turret.Graphic;
-				_vehicles.Items[i]->Turret.Tga = TGA::Create(fName.c_str());
+				_vehicles.Items[i]->Turret.Tga = TGA::Create(fName);
 			}
 			v->_turretGraphics = _vehicles.Items[i]->Turret.Tga;
 
 			// The wreck graphic
 			if(_vehicles.Items[i]->Wreck.Tga == NULL) {
 				std::filesystem::path fName = g_Globals->Application.GraphicsDirectory / _vehicles.Items[i]->Wreck.Graphic;
-				_vehicles.Items[i]->Wreck.Tga = TGA::Create(fName.c_str());
+				_vehicles.Items[i]->Wreck.Tga = TGA::Create(fName);
 			}
 			v->_wreckGraphics = _vehicles.Items[i]->Wreck.Tga;
 

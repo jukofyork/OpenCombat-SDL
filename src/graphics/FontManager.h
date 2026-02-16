@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <SDL2/SDL_ttf.h>
 
 class Color;
@@ -28,10 +29,10 @@ public:
 	void Invalidate();
 
 	// Render text with specified font size
-	void Render(Screen *screen, const char *msg, int x, int y, Color *c, FontSize size = FontSize_Small);
+	void Render(Screen *screen, const std::string &msg, int x, int y, Color *c, FontSize size = FontSize_Small);
 	
 	// Get text dimensions with specified font size
-	void GetTextSize(const char *msg, int *w, int *h, FontSize size = FontSize_Small);
+	void GetTextSize(const std::string &msg, int *w, int *h, FontSize size = FontSize_Small);
 
 protected:
     TTF_Font* _fonts[FontSize_Count]; // Fonts at different sizes

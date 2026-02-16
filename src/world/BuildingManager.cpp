@@ -70,14 +70,14 @@ BuildingManager::LoadBuildings(const std::filesystem::path& fileName, Array<Buil
 		tinyxml2::XMLElement* extElem = buildingElem->FirstChildElement("ExteriorGraphic");
 		if (extElem && extElem->GetText()) {
 			std::filesystem::path path = g_Globals->Application.MapsDirectory / extElem->GetText();
-			building->SetExterior(TGA::Create(path.c_str()));
+			building->SetExterior(TGA::Create(path));
 		}
 
 		// Parse Interior Graphic
 		tinyxml2::XMLElement* intElem = buildingElem->FirstChildElement("InteriorGraphic");
 		if (intElem && intElem->GetText()) {
 			std::filesystem::path path = g_Globals->Application.MapsDirectory / intElem->GetText();
-			building->SetInterior(TGA::Create(path.c_str()));
+			building->SetInterior(TGA::Create(path));
 		}
 		
 		buildings->Add(building);

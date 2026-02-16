@@ -293,7 +293,7 @@ World::Render(Screen *screen, Rect *clip)
 			// Cursor is 32x32 centered on hotspot, so corners are at +/-16
 			// Text goes at (16+2, 16+2) = (18, 18) from center for small margin
 			const int textOffset = 10;
-			g_Globals->World.Fonts->Render(screen, msg.c_str(), screen->GetCursorX() + textOffset, screen->GetCursorY() + textOffset, &white);
+			g_Globals->World.Fonts->Render(screen, msg, screen->GetCursorX() + textOffset, screen->GetCursorY() + textOffset, &white);
 		} else {
 			// Find the distance to the blocked element
 			Vector2 vb;
@@ -314,7 +314,7 @@ World::Render(Screen *screen, Rect *clip)
 			std::string msg = std::to_string((int)v.Magnitude()/g_Globals->World.Constants.PixelsPerMeter) + "m";
 			// Position text at SE corner of blocked line end
 			const int textOffset = 10;
-			g_Globals->World.Fonts->Render(screen, msg.c_str(), bx + textOffset, by + textOffset, &white);
+			g_Globals->World.Fonts->Render(screen, msg, bx + textOffset, by + textOffset, &white);
 				c.red = 0;
 				c.blue = 0;
 				c.green = 255;
@@ -322,7 +322,7 @@ World::Render(Screen *screen, Rect *clip)
 				v.x = (float)(screen->GetCursorX()-_rangerX);
 				v.y = (float)(screen->GetCursorY()- _rangerX);
 				msg = std::to_string((int)v.Magnitude()/g_Globals->World.Constants.PixelsPerMeter) + "m";
-				g_Globals->World.Fonts->Render(screen, msg.c_str(), screen->GetCursorX() + textOffset, screen->GetCursorY() + textOffset, &white);
+			g_Globals->World.Fonts->Render(screen, msg, screen->GetCursorX() + textOffset, screen->GetCursorY() + textOffset, &white);
 				c.red = 255;
 				c.blue = 0;
 				c.green = 0;

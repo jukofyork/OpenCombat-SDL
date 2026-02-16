@@ -206,7 +206,7 @@ bool CSDLApplication::CreateWindow()
 	// Load and set window icon
 	std::filesystem::path iconPath = g_Globals->Application.CurrentDirectory / "graphics/Resources/app_icon.tga";
 
-	TGA* iconTga = TGA::Create(iconPath.c_str());
+	TGA* iconTga = TGA::Create(iconPath);
 	if(iconTga != NULL) {
 		int width = iconTga->GetWidth();
 		int height = iconTga->GetHeight();
@@ -886,7 +886,7 @@ bool CSDLApplication::LoadCursors()
 		std::filesystem::path path = g_Globals->Application.CurrentDirectory / cursorFiles[i];
 
 		// Load TGA file
-		TGA* tga = TGA::Create(path.c_str());
+		TGA* tga = TGA::Create(path);
 		if(tga == NULL) {
 			fprintf(stderr, "Failed to load cursor: %s\n", path.c_str());
 			_cursors[i] = NULL;
