@@ -42,7 +42,7 @@ TGA::~TGA(void)
 }
 
 TGA *
-TGA::Create(const std::filesystem::path& fileName)
+TGA::Create(const std::filesystem::path& filePath)
 {
 	HEADER header;
 	FILE *fptr;
@@ -55,7 +55,7 @@ TGA::Create(const std::filesystem::path& fileName)
 	int w=0, h=0;
 
 	// Open the file
-    if ((fptr = fopen(fileName.c_str(),"rb")) == NULL) {
+    if ((fptr = fopen(filePath.c_str(),"rb")) == NULL) {
        return NULL;
     }
 
@@ -150,26 +150,26 @@ TGA::Create(const std::filesystem::path& fileName)
     fclose(fptr);
 
 	// Let's find our origin, if it is embedded in the filename.
-	// An origin exists if there are 3 or more '.' in the filename
-	std::string fName = fileName.string();
-	int count = 0;
-	for(size_t i = 0; i < fName.length(); ++i) {
-		if(fName[i] == '.') {
-			++count;
-		}
-	}
-
-	if(count >= 3) {
-		size_t last = fName.find_last_of('.');
-		if (last != std::string::npos) {
-			size_t second = fName.find_last_of('.', last - 1);
-			if (second != std::string::npos) {
-				size_t third = fName.find_last_of('.', second - 1);
-				if (third != std::string::npos) {
-					int x = atoi(fName.substr(third + 1, second - third - 1).c_str());
-					int y = atoi(fName.substr(second + 1, last - second - 1).c_str());
-					tga->SetOrigin(x, y);
-				}
+	// Format: name.x.y.tga where x and y are origin coordinates
+	// Use filename only (not full path) to avoid counting dots in directory names
+	std::string fName = filePath.filename().string();
+	
+	// Strip the extension first (.tga)
+	size_t extDot = fName.rfind('.');
+	if (extDot != std::string::npos) {
+		fName = fName.substr(0, extDot);
+		// Find the Y coordinate (after the last remaining dot)
+		size_t yDot = fName.rfind('.');
+		if (yDot != std::string::npos) {
+			std::string yStr = fName.substr(yDot + 1);
+			// Find the X coordinate
+			fName = fName.substr(0, yDot);
+			size_t xDot = fName.rfind('.');
+			if (xDot != std::string::npos) {
+				std::string xStr = fName.substr(xDot + 1);
+				int x = atoi(xStr.c_str());
+				int y = atoi(yStr.c_str());
+				tga->SetOrigin(x, y);
 			}
 		}
 	}

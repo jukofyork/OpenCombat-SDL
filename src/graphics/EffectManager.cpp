@@ -106,31 +106,12 @@ EffectManager::LoadEffects(const std::filesystem::path& fileName)
 
 		for(size_t j = 0; j < dest[i].GraphicsFile.size(); ++j) {
 			TGA *tga = TGA::Create(dest[i].GraphicsFile[j]);
+			if (!tga) {
+				printf("Failed to load effect frame: %s\n", dest[i].GraphicsFile[j].c_str());
+				continue;
+			}
 			tga->SetTransparentColor(0,0,0);
 			_sourceImages.push_back(tga);
-
-			// Let's find the hotspot for this effect. It is encoded in the
-			// filename (format: name.x.y.tga)
-			std::string fName = dest[i].GraphicsFile[j];
-			// First, skip the .tga extension
-			size_t extDot = fName.rfind('.');
-			if (extDot != std::string::npos) {
-				// Now find the Y coordinate (after the last remaining dot)
-				fName = fName.substr(0, extDot);
-				size_t yDot = fName.rfind('.');
-				if (yDot != std::string::npos) {
-					std::string yStr = fName.substr(yDot + 1);
-					// Now find the X coordinate
-					fName = fName.substr(0, yDot);
-					size_t xDot = fName.rfind('.');
-					if (xDot != std::string::npos) {
-						std::string xStr = fName.substr(xDot + 1);
-						int x = atoi(xStr.c_str());
-						int y = atoi(yStr.c_str());
-						tga->SetOrigin(x,y);
-					}
-				}
-			}
 			e->AddFrame(tga, dest[i].FrameHold);
 	    }
 		_effects.push_back(e);
