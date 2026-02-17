@@ -598,15 +598,6 @@ World::LeftMouseUp(int x, int y)
 	
 		// Hide the context menu if we were showing it
 		_contextMenu->Hide();
-
-		// If nothing was selected, go BOOM!
-#if 0
-		if(_selectedObjects.Count <= 0) {
-			Effect *e = _effectManager->GetEffect("Explosion 60m");
-			e->SetPosition(x+_originX, y+_originY);
-			_effects.Add(e);
-		}
-#endif
 	} else if(_currentState == ContextSelecting) {
 		_currentState = ContextSelected;
 

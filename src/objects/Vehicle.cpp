@@ -38,7 +38,6 @@ Vehicle::~Vehicle(void)
 void 
 Vehicle::Render(Screen *screen, Rect *clip)
 {
-	UNREFERENCED_PARAMETER(clip);
 	Color white(255,255,255);
 	screen->Blit(_hullGraphics->GetData(), 
 		Position.x - screen->Origin.x - _hullGraphics->GetOriginX(), 
@@ -68,7 +67,12 @@ Vehicle::Render(Screen *screen, Rect *clip)
 				effect->SetPosition(Position.x, Position.y);
 			}
 		}
-		effect->Render(screen);
+		// Only render if effect is within the clipping region
+		if(effect->Position.x > (clip->x+screen->Origin.x) && effect->Position.x < (clip->x+screen->Origin.x+clip->w)
+			&& effect->Position.y > (clip->y+screen->Origin.y) && effect->Position.y < (clip->y+screen->Origin.y+clip->h))
+		{
+			effect->Render(screen);
+		}
 	}
 
 	if(IsHighlighted()) {
@@ -449,7 +453,7 @@ Vehicle::Shoot(Weapon *weapon, Object *target, Target::Type targetType, int targ
 			break;
 	}
 	weapon->Fire();
-			
+		
 	_currentState = State::Firing;
 	_currentAction = Unit::Firing;
 	_effects.push_back(std::unique_ptr<Effect>(g_Globals->World.Effects->GetEffect(weapon->GetEffect(effectHeading))));
@@ -458,6 +462,19 @@ Vehicle::Shoot(Weapon *weapon, Object *target, Target::Type targetType, int targ
 		Effect *e = g_Globals->World.Effects->GetEffect("Dust Cloud");
 		e->SetPosition(Position.x, Position.y);
 		_effects.push_back(std::unique_ptr<Effect>(e));
+
+		// Show explosion at target location (only for main gun)
+		int explosionX, explosionY;
+		if(targetType == Target::Soldier && target != NULL) {
+			explosionX = target->Position.x;
+			explosionY = target->Position.y;
+		} else {
+			explosionX = targetX;
+			explosionY = targetY;
+		}
+		Effect *explosion = g_Globals->World.Effects->GetEffect("Explosion 60m");
+		explosion->SetPosition(explosionX, explosionY);
+		_effects.push_back(std::unique_ptr<Effect>(explosion));
 	}
 }
 
