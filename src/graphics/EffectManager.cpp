@@ -3,9 +3,7 @@
 
 #include <string>
 #include <vector>
-#include <algorithm>
 #include <filesystem>
-#include <dirent.h>
 #include <assert.h>
 #include <misc/TGA.h>
 #include <graphics/Effect.h>
@@ -73,20 +71,14 @@ EffectManager::LoadEffects(const std::filesystem::path& fileName)
 			attr.Sound = soundElem->GetText();
 		}
 
-		// Parse <Graphic> elements
+		// Parse <Graphic> elements (explicit file list)
 		for (XMLElement* graphicElem = effectElem->FirstChildElement("Graphic");
 			 graphicElem != nullptr;
 			 graphicElem = graphicElem->NextSiblingElement("Graphic"))
 		{
-		if (graphicElem->GetText()) {
-			attr.GraphicsFile.push_back((g_Globals->Application.GraphicsDirectory / "Effects" / graphicElem->GetText()).string());
-		}
-		}
-
-		// Parse <Graphics> element with file pattern
-		XMLElement* graphicsElem = effectElem->FirstChildElement("Graphics");
-		if (graphicsElem && graphicsElem->GetText()) {
-			GetFiles(&attr, graphicsElem->GetText());
+			if (graphicElem->GetText()) {
+				attr.GraphicsFile.push_back((g_Globals->Application.GraphicsDirectory / "Effects" / graphicElem->GetText()).string());
+			}
 		}
 
 		XMLElement* frameElem = effectElem->FirstChildElement("FrameHold");
@@ -116,41 +108,6 @@ EffectManager::LoadEffects(const std::filesystem::path& fileName)
 	    }
 		_effects.push_back(e);
    }
-}
-
-void EffectManager::GetFiles(EffectAttributes *attr, const std::string& searchStr)
-{
-	std::string searchDir = (g_Globals->Application.GraphicsDirectory / "Effects" / searchStr).string();
-
-	// Find the wildcard position
-	size_t wildcardPos = searchDir.find('*');
-	if (wildcardPos == std::string::npos) return;
-
-	std::string baseDir = searchDir.substr(0, wildcardPos);
-
-	DIR* dir = opendir(baseDir.c_str());
-	if (!dir) {
-		assert(0);
-		return;
-	}
-
-	struct dirent* entry;
-	while ((entry = readdir(dir)) != NULL) {
-		// Skip . and ..
-		if (entry->d_name[0] == '.') continue;
-
-		// Simple pattern matching - check if filename has extension
-		std::string fileName = entry->d_name;
-		if (fileName.find('.') != std::string::npos) {
-			attr->GraphicsFile.push_back(baseDir + fileName);
-		}
-	}
-	closedir(dir);
-	
-	// Sort the graphics files to ensure correct order
-	if(!attr->GraphicsFile.empty()) {
-		std::sort(attr->GraphicsFile.begin(), attr->GraphicsFile.end());
-	}
 }
 
 Effect *

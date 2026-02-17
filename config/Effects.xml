@@ -41,166 +41,465 @@
 	<Effect type="static">
 		<Name>Dust Cloud</Name>
 		<FrameHold>33</FrameHold>
-		<Graphics>Dustcloud/*.tga</Graphics>
+		<Graphic>Dustcloud/image001.29.28.tga</Graphic>
+		<Graphic>Dustcloud/image002.29.29.tga</Graphic>
+		<Graphic>Dustcloud/image003.29.29.tga</Graphic>
+		<Graphic>Dustcloud/image004.33.34.tga</Graphic>
+		<Graphic>Dustcloud/image005.33.34.tga</Graphic>
+		<Graphic>Dustcloud/image006.32.31.tga</Graphic>
+		<Graphic>Dustcloud/image007.34.32.tga</Graphic>
+		<Graphic>Dustcloud/image008.34.33.tga</Graphic>
+		<Graphic>Dustcloud/image009.34.33.tga</Graphic>
+		<Graphic>Dustcloud/image010.34.34.tga</Graphic>
+		<Graphic>Dustcloud/image011.34.34.tga</Graphic>
+		<Graphic>Dustcloud/image012.34.34.tga</Graphic>
+		<Graphic>Dustcloud/image013.35.35.tga</Graphic>
+		<Graphic>Dustcloud/image014.35.35.tga</Graphic>
+		<Graphic>Dustcloud/image015.35.35.tga</Graphic>
+		<Graphic>Dustcloud/image016.34.35.tga</Graphic>
+		<Graphic>Dustcloud/image017.34.35.tga</Graphic>
+		<Graphic>Dustcloud/image018.34.35.tga</Graphic>
+		<Graphic>Dustcloud/image019.34.35.tga</Graphic>
+		<Graphic>Dustcloud/image020.34.12.tga</Graphic>
 	</Effect>
 	<Effect type="dynamic">
 		<Name>Rifle North</Name>
 		<FrameHold>33</FrameHold>
-		<Graphics>rifle_n/*.tga</Graphics>
+		<Graphic>rifle_n/image001.-1.26.tga</Graphic>
+		<Graphic>rifle_n/image002.-1.29.tga</Graphic>
+		<Graphic>rifle_n/image003.-1.28.tga</Graphic>
+		<Graphic>rifle_n/image004.-2.18.tga</Graphic>
+		<Graphic>rifle_n/image005.-2.18.tga</Graphic>
 	</Effect>
 	<Effect type="dynamic">
 		<Name>Rifle NorthEast</Name>
 		<FrameHold>33</FrameHold>
-		<Graphics>rifle_ne/*.tga</Graphics>
+		<Graphic>rifle_ne/image001.-9.16.tga</Graphic>
+		<Graphic>rifle_ne/image002.-8.18.tga</Graphic>
+		<Graphic>rifle_ne/image003.-8.17.tga</Graphic>
+		<Graphic>rifle_ne/image004.-8.10.tga</Graphic>
+		<Graphic>rifle_ne/image005.-8.10.tga</Graphic>
 	</Effect>
 	<Effect type="dynamic">
 		<Name>Rifle East</Name>
 		<FrameHold>33</FrameHold>
-		<Graphics>rifle_e/*.tga</Graphics>
+		<Graphic>rifle_e/image001.-15.-3.tga</Graphic>
+		<Graphic>rifle_e/image002.-14.-2.tga</Graphic>
+		<Graphic>rifle_e/image003.-14.-2.tga</Graphic>
+		<Graphic>rifle_e/image004.-14.-3.tga</Graphic>
+		<Graphic>rifle_e/image005.-14.-3.tga</Graphic>
 	</Effect>
 	<Effect type="dynamic">
 		<Name>Rifle SouthEast</Name>
 		<FrameHold>33</FrameHold>
-		<Graphics>rifle_se/*.tga</Graphics>
+		<Graphic>rifle_se/image001.-7.-13.tga</Graphic>
+		<Graphic>rifle_se/image002.-6.-12.tga</Graphic>
+		<Graphic>rifle_se/image003.-6.-12.tga</Graphic>
+		<Graphic>rifle_se/image004.-6.-12.tga</Graphic>
+		<Graphic>rifle_se/image005.-6.-12.tga</Graphic>
 	</Effect>
 	<Effect type="dynamic">
 		<Name>Rifle South</Name>
 		<FrameHold>33</FrameHold>
-		<Graphics>rifle_s/*.tga</Graphics>
+		<Graphic>rifle_s/image001.5.-15.tga</Graphic>
+		<Graphic>rifle_s/image002.5.-14.tga</Graphic>
+		<Graphic>rifle_s/image003.5.-14.tga</Graphic>
+		<Graphic>rifle_s/image004.4.-14.tga</Graphic>
+		<Graphic>rifle_s/image005.4.-14.tga</Graphic>
 	</Effect>
 	<Effect type="dynamic">
 		<Name>Rifle SouthWest</Name>
 		<FrameHold>33</FrameHold>
-		<Graphics>rifle_sw/*.tga</Graphics>
+		<Graphic>rifle_sw/image001.18.-7.tga</Graphic>
+		<Graphic>rifle_sw/image002.21.-6.tga</Graphic>
+		<Graphic>rifle_sw/image003.19.-6.tga</Graphic>
+		<Graphic>rifle_sw/image004.14.-6.tga</Graphic>
+		<Graphic>rifle_sw/image005.14.-7.tga</Graphic>
 	</Effect>
 	<Effect type="dynamic">
 		<Name>Rifle West</Name>
 		<FrameHold>33</FrameHold>
-		<Graphics>rifle_w/*.tga</Graphics>
+		<Graphic>rifle_w/image001.20.4.tga</Graphic>
+		<Graphic>rifle_w/image002.22.4.tga</Graphic>
+		<Graphic>rifle_w/image003.21.4.tga</Graphic>
+		<Graphic>rifle_w/image004.17.3.tga</Graphic>
+		<Graphic>rifle_w/image005.17.3.tga</Graphic>
 	</Effect>
 	<Effect type="dynamic">
 		<Name>Rifle NorthWest</Name>
 		<FrameHold>33</FrameHold>
-		<Graphics>rifle_nw/*.tga</Graphics>
+		<Graphic>rifle_nw/image001.14.17.tga</Graphic>
+		<Graphic>rifle_nw/image002.17.20.tga</Graphic>
+		<Graphic>rifle_nw/image003.15.18.tga</Graphic>
+		<Graphic>rifle_nw/image004.11.13.tga</Graphic>
+		<Graphic>rifle_nw/image005.11.13.tga</Graphic>
 	</Effect>
 	<Effect type="dynamic">
 		<Name>Bazooka North</Name>
 		<FrameHold>33</FrameHold>
-		<Graphics>bazooka_n/*.tga</Graphics>
+		<Graphic>bazooka_n/image001.-4.-16.tga</Graphic>
+		<Graphic>bazooka_n/image002.-3.-16.tga</Graphic>
+		<Graphic>bazooka_n/image003.-1.-16.tga</Graphic>
+		<Graphic>bazooka_n/image004.0.-18.tga</Graphic>
+		<Graphic>bazooka_n/image005.1.-21.tga</Graphic>
+		<Graphic>bazooka_n/image006.2.-24.tga</Graphic>
+		<Graphic>bazooka_n/image007.4.-28.tga</Graphic>
+		<Graphic>bazooka_n/image008.5.-31.tga</Graphic>
+		<Graphic>bazooka_n/image009.6.-35.tga</Graphic>
+		<Graphic>bazooka_n/image010.6.-39.tga</Graphic>
+		<Graphic>bazooka_n/image011.4.-42.tga</Graphic>
+		<Graphic>bazooka_n/image012.4.-45.tga</Graphic>
 	</Effect>
 	<Effect type="dynamic">
 		<Name>Bazooka NorthEast</Name>
 		<FrameHold>33</FrameHold>
-		<Graphics>bazooka_ne/*.tga</Graphics>
+		<Graphic>bazooka_ne/image001.9.-15.tga</Graphic>
+		<Graphic>bazooka_ne/image002.13.-15.tga</Graphic>
+		<Graphic>bazooka_ne/image003.18.-15.tga</Graphic>
+		<Graphic>bazooka_ne/image004.22.-15.tga</Graphic>
+		<Graphic>bazooka_ne/image005.25.-17.tga</Graphic>
+		<Graphic>bazooka_ne/image006.29.-19.tga</Graphic>
+		<Graphic>bazooka_ne/image007.34.-21.tga</Graphic>
+		<Graphic>bazooka_ne/image008.38.-23.tga</Graphic>
+		<Graphic>bazooka_ne/image009.42.-26.tga</Graphic>
+		<Graphic>bazooka_ne/image010.42.-28.tga</Graphic>
+		<Graphic>bazooka_ne/image011.42.-31.tga</Graphic>
+		<Graphic>bazooka_ne/image012.42.-33.tga</Graphic>
 	</Effect>
 	<Effect type="dynamic">
 		<Name>Bazooka East</Name>
 		<FrameHold>33</FrameHold>
-		<Graphics>bazooka_e/*.tga</Graphics>
+		<Graphic>bazooka_e/image001.16.-3.tga</Graphic>
+		<Graphic>bazooka_e/image002.24.-2.tga</Graphic>
+		<Graphic>bazooka_e/image003.32.0.tga</Graphic>
+		<Graphic>bazooka_e/image004.40.1.tga</Graphic>
+		<Graphic>bazooka_e/image005.48.2.tga</Graphic>
+		<Graphic>bazooka_e/image006.56.3.tga</Graphic>
+		<Graphic>bazooka_e/image007.64.5.tga</Graphic>
+		<Graphic>bazooka_e/image008.72.6.tga</Graphic>
+		<Graphic>bazooka_e/image009.80.7.tga</Graphic>
+		<Graphic>bazooka_e/image010.80.8.tga</Graphic>
+		<Graphic>bazooka_e/image011.80.6.tga</Graphic>
+		<Graphic>bazooka_e/image012.80.6.tga</Graphic>
 	</Effect>
 	<Effect type="dynamic">
 		<Name>Bazooka SouthEast</Name>
 		<FrameHold>33</FrameHold>
-		<Graphics>bazooka_se/*.tga</Graphics>
+		<Graphic>bazooka_se/image001.16.9.tga</Graphic>
+		<Graphic>bazooka_se/image002.21.13.tga</Graphic>
+		<Graphic>bazooka_se/image003.26.18.tga</Graphic>
+		<Graphic>bazooka_se/image004.31.22.tga</Graphic>
+		<Graphic>bazooka_se/image005.36.25.tga</Graphic>
+		<Graphic>bazooka_se/image006.41.29.tga</Graphic>
+		<Graphic>bazooka_se/image007.47.34.tga</Graphic>
+		<Graphic>bazooka_se/image008.50.38.tga</Graphic>
+		<Graphic>bazooka_se/image009.50.43.tga</Graphic>
+		<Graphic>bazooka_se/image010.50.47.tga</Graphic>
+		<Graphic>bazooka_se/image011.50.47.tga</Graphic>
+		<Graphic>bazooka_se/image012.50.47.tga</Graphic>
 	</Effect>
 	<Effect type="dynamic">
 		<Name>Bazooka South</Name>
 		<FrameHold>33</FrameHold>
-		<Graphics>bazooka_s/*.tga</Graphics>
+		<Graphic>bazooka_s/image001.6.19.tga</Graphic>
+		<Graphic>bazooka_s/image002.7.25.tga</Graphic>
+		<Graphic>bazooka_s/image003.7.32.tga</Graphic>
+		<Graphic>bazooka_s/image004.8.38.tga</Graphic>
+		<Graphic>bazooka_s/image005.9.43.tga</Graphic>
+		<Graphic>bazooka_s/image006.10.50.tga</Graphic>
+		<Graphic>bazooka_s/image007.12.56.tga</Graphic>
+		<Graphic>bazooka_s/image008.14.62.tga</Graphic>
+		<Graphic>bazooka_s/image009.15.65.tga</Graphic>
+		<Graphic>bazooka_s/image010.17.65.tga</Graphic>
+		<Graphic>bazooka_s/image011.19.65.tga</Graphic>
+		<Graphic>bazooka_s/image012.21.65.tga</Graphic>
 	</Effect>
 	<Effect type="dynamic">
 		<Name>Bazooka SouthWest</Name>
 		<FrameHold>33</FrameHold>
-		<Graphics>bazooka_sw/*.tga</Graphics>
+		<Graphic>bazooka_sw/image001.-1.14.tga</Graphic>
+		<Graphic>bazooka_sw/image002.-1.19.tga</Graphic>
+		<Graphic>bazooka_sw/image003.-1.24.tga</Graphic>
+		<Graphic>bazooka_sw/image004.-2.29.tga</Graphic>
+		<Graphic>bazooka_sw/image005.-4.34.tga</Graphic>
+		<Graphic>bazooka_sw/image006.-6.39.tga</Graphic>
+		<Graphic>bazooka_sw/image007.-7.45.tga</Graphic>
+		<Graphic>bazooka_sw/image008.-10.50.tga</Graphic>
+		<Graphic>bazooka_sw/image009.-12.54.tga</Graphic>
+		<Graphic>bazooka_sw/image010.-14.54.tga</Graphic>
+		<Graphic>bazooka_sw/image011.-16.54.tga</Graphic>
+		<Graphic>bazooka_sw/image012.-19.50.tga</Graphic>
 	</Effect>
 	<Effect type="dynamic">
 		<Name>Bazooka West</Name>
 		<FrameHold>33</FrameHold>
-		<Graphics>bazooka_w/*.tga</Graphics>
+		<Graphic>bazooka_w/image001.-14.8.tga</Graphic>
+		<Graphic>bazooka_w/image002.-14.9.tga</Graphic>
+		<Graphic>bazooka_w/image003.-14.11.tga</Graphic>
+		<Graphic>bazooka_w/image004.-14.12.tga</Graphic>
+		<Graphic>bazooka_w/image005.-18.14.tga</Graphic>
+		<Graphic>bazooka_w/image006.-23.16.tga</Graphic>
+		<Graphic>bazooka_w/image007.-27.17.tga</Graphic>
+		<Graphic>bazooka_w/image008.-31.18.tga</Graphic>
+		<Graphic>bazooka_w/image009.-36.20.tga</Graphic>
+		<Graphic>bazooka_w/image010.-41.20.tga</Graphic>
+		<Graphic>bazooka_w/image011.-45.17.tga</Graphic>
+		<Graphic>bazooka_w/image012.-49.18.tga</Graphic>
 	</Effect>
 	<Effect type="dynamic">
 		<Name>Bazooka NorthWest</Name>
 		<FrameHold>33</FrameHold>
-		<Graphics>bazooka_nw/*.tga</Graphics>
+		<Graphic>bazooka_nw/image001.-11.-9.tga</Graphic>
+		<Graphic>bazooka_nw/image002.-11.-9.tga</Graphic>
+		<Graphic>bazooka_nw/image003.-11.-9.tga</Graphic>
+		<Graphic>bazooka_nw/image004.-11.-10.tga</Graphic>
+		<Graphic>bazooka_nw/image005.-12.-12.tga</Graphic>
+		<Graphic>bazooka_nw/image006.-14.-14.tga</Graphic>
+		<Graphic>bazooka_nw/image007.-16.-15.tga</Graphic>
+		<Graphic>bazooka_nw/image008.-18.-18.tga</Graphic>
+		<Graphic>bazooka_nw/image009.-21.-20.tga</Graphic>
+		<Graphic>bazooka_nw/image010.-23.-22.tga</Graphic>
+		<Graphic>bazooka_nw/image011.-26.-24.tga</Graphic>
+		<Graphic>bazooka_nw/image012.-28.-27.tga</Graphic>
 	</Effect>
 	<Effect type="dynamic">
 		<Name>Machine Gun North</Name>
 		<FrameHold>33</FrameHold>
-		<Graphics>rifle_n/*.tga</Graphics>
+		<Graphic>rifle_n/image001.-1.26.tga</Graphic>
+		<Graphic>rifle_n/image002.-1.29.tga</Graphic>
+		<Graphic>rifle_n/image003.-1.28.tga</Graphic>
+		<Graphic>rifle_n/image004.-2.18.tga</Graphic>
+		<Graphic>rifle_n/image005.-2.18.tga</Graphic>
 	</Effect>
 	<Effect type="dynamic">
 		<Name>Machine Gun NorthEast</Name>
 		<FrameHold>33</FrameHold>
-		<Graphics>rifle_ne/*.tga</Graphics>
+		<Graphic>rifle_ne/image001.-9.16.tga</Graphic>
+		<Graphic>rifle_ne/image002.-8.18.tga</Graphic>
+		<Graphic>rifle_ne/image003.-8.17.tga</Graphic>
+		<Graphic>rifle_ne/image004.-8.10.tga</Graphic>
+		<Graphic>rifle_ne/image005.-8.10.tga</Graphic>
 	</Effect>
 	<Effect type="dynamic">
 		<Name>Machine Gun East</Name>
 		<FrameHold>33</FrameHold>
-		<Graphics>rifle_e/*.tga</Graphics>
+		<Graphic>rifle_e/image001.-15.-3.tga</Graphic>
+		<Graphic>rifle_e/image002.-14.-2.tga</Graphic>
+		<Graphic>rifle_e/image003.-14.-2.tga</Graphic>
+		<Graphic>rifle_e/image004.-14.-3.tga</Graphic>
+		<Graphic>rifle_e/image005.-14.-3.tga</Graphic>
 	</Effect>
 	<Effect type="dynamic">
 		<Name>Machine Gun SouthEast</Name>
 		<FrameHold>33</FrameHold>
-		<Graphics>rifle_se/*.tga</Graphics>
+		<Graphic>rifle_se/image001.-7.-13.tga</Graphic>
+		<Graphic>rifle_se/image002.-6.-12.tga</Graphic>
+		<Graphic>rifle_se/image003.-6.-12.tga</Graphic>
+		<Graphic>rifle_se/image004.-6.-12.tga</Graphic>
+		<Graphic>rifle_se/image005.-6.-12.tga</Graphic>
 	</Effect>
 	<Effect type="dynamic">
 		<Name>Machine Gun South</Name>
 		<FrameHold>33</FrameHold>
-		<Graphics>rifle_s/*.tga</Graphics>
+		<Graphic>rifle_s/image001.5.-15.tga</Graphic>
+		<Graphic>rifle_s/image002.5.-14.tga</Graphic>
+		<Graphic>rifle_s/image003.5.-14.tga</Graphic>
+		<Graphic>rifle_s/image004.4.-14.tga</Graphic>
+		<Graphic>rifle_s/image005.4.-14.tga</Graphic>
 	</Effect>
 	<Effect type="dynamic">
 		<Name>Machine Gun SouthWest</Name>
 		<FrameHold>33</FrameHold>
-		<Graphics>rifle_sw/*.tga</Graphics>
+		<Graphic>rifle_sw/image001.18.-7.tga</Graphic>
+		<Graphic>rifle_sw/image002.21.-6.tga</Graphic>
+		<Graphic>rifle_sw/image003.19.-6.tga</Graphic>
+		<Graphic>rifle_sw/image004.14.-6.tga</Graphic>
+		<Graphic>rifle_sw/image005.14.-7.tga</Graphic>
 	</Effect>
 	<Effect type="dynamic">
 		<Name>Machine Gun West</Name>
 		<FrameHold>33</FrameHold>
-		<Graphics>rifle_w/*.tga</Graphics>
+		<Graphic>rifle_w/image001.20.4.tga</Graphic>
+		<Graphic>rifle_w/image002.22.4.tga</Graphic>
+		<Graphic>rifle_w/image003.21.4.tga</Graphic>
+		<Graphic>rifle_w/image004.17.3.tga</Graphic>
+		<Graphic>rifle_w/image005.17.3.tga</Graphic>
 	</Effect>
 	<Effect type="dynamic">
 		<Name>Machine Gun NorthWest</Name>
 		<FrameHold>33</FrameHold>
-		<Graphics>rifle_nw/*.tga</Graphics>
+		<Graphic>rifle_nw/image001.14.17.tga</Graphic>
+		<Graphic>rifle_nw/image002.17.20.tga</Graphic>
+		<Graphic>rifle_nw/image003.15.18.tga</Graphic>
+		<Graphic>rifle_nw/image004.11.13.tga</Graphic>
+		<Graphic>rifle_nw/image005.11.13.tga</Graphic>
 	</Effect>
 	<Effect type="dynamic" place="turret">
 		<Name>Muzzle North</Name>
 		<FrameHold>33</FrameHold>
-		<Graphics>muzzle_n/*.tga</Graphics>
+		<Graphic>muzzle_n/image001.-1.-1.tga</Graphic>
+		<Graphic>muzzle_n/image002.1.4.tga</Graphic>
+		<Graphic>muzzle_n/image003.4.9.tga</Graphic>
+		<Graphic>muzzle_n/image004.6.15.tga</Graphic>
+		<Graphic>muzzle_n/image005.7.21.tga</Graphic>
+		<Graphic>muzzle_n/image006.9.25.tga</Graphic>
+		<Graphic>muzzle_n/image007.9.23.tga</Graphic>
+		<Graphic>muzzle_n/image008.9.23.tga</Graphic>
+		<Graphic>muzzle_n/image009.10.20.tga</Graphic>
+		<Graphic>muzzle_n/image010.11.22.tga</Graphic>
+		<Graphic>muzzle_n/image011.11.24.tga</Graphic>
+		<Graphic>muzzle_n/image012.12.25.tga</Graphic>
+		<Graphic>muzzle_n/image013.12.25.tga</Graphic>
+		<Graphic>muzzle_n/image014.12.25.tga</Graphic>
+		<Graphic>muzzle_n/image015.12.22.tga</Graphic>
+		<Graphic>muzzle_n/image016.13.22.tga</Graphic>
+		<Graphic>muzzle_n/image017.13.21.tga</Graphic>
 	</Effect>
 	<Effect type="dynamic" place="turret">
 		<Name>Muzzle NorthEast</Name>
 		<FrameHold>33</FrameHold>
-		<Graphics>muzzle_ne/*.tga</Graphics>
+		<Graphic>muzzle_ne/image001.0.0.tga</Graphic>
+		<Graphic>muzzle_ne/image002.0.4.tga</Graphic>
+		<Graphic>muzzle_ne/image003.1.9.tga</Graphic>
+		<Graphic>muzzle_ne/image004.0.14.tga</Graphic>
+		<Graphic>muzzle_ne/image005.1.19.tga</Graphic>
+		<Graphic>muzzle_ne/image006.3.22.tga</Graphic>
+		<Graphic>muzzle_ne/image007.3.20.tga</Graphic>
+		<Graphic>muzzle_ne/image008.4.20.tga</Graphic>
+		<Graphic>muzzle_ne/image009.5.21.tga</Graphic>
+		<Graphic>muzzle_ne/image010.5.22.tga</Graphic>
+		<Graphic>muzzle_ne/image011.5.22.tga</Graphic>
+		<Graphic>muzzle_ne/image012.5.22.tga</Graphic>
+		<Graphic>muzzle_ne/image013.5.22.tga</Graphic>
+		<Graphic>muzzle_ne/image014.4.22.tga</Graphic>
+		<Graphic>muzzle_ne/image015.4.22.tga</Graphic>
+		<Graphic>muzzle_ne/image016.3.22.tga</Graphic>
+		<Graphic>muzzle_ne/image017.2.22.tga</Graphic>
 	</Effect>
 	<Effect type="dynamic" place="turret">
 		<Name>Muzzle East</Name>
 		<FrameHold>33</FrameHold>
-		<Graphics>muzzle_e/*.tga</Graphics>
+		<Graphic>muzzle_e/image001.-1.-1.tga</Graphic>
+		<Graphic>muzzle_e/image002.-1.1.tga</Graphic>
+		<Graphic>muzzle_e/image003.-1.4.tga</Graphic>
+		<Graphic>muzzle_e/image004.-1.6.tga</Graphic>
+		<Graphic>muzzle_e/image005.-1.7.tga</Graphic>
+		<Graphic>muzzle_e/image006.-1.9.tga</Graphic>
+		<Graphic>muzzle_e/image007.-1.9.tga</Graphic>
+		<Graphic>muzzle_e/image008.-1.8.tga</Graphic>
+		<Graphic>muzzle_e/image009.-2.9.tga</Graphic>
+		<Graphic>muzzle_e/image010.-2.10.tga</Graphic>
+		<Graphic>muzzle_e/image011.-2.11.tga</Graphic>
+		<Graphic>muzzle_e/image012.-2.12.tga</Graphic>
+		<Graphic>muzzle_e/image013.-3.12.tga</Graphic>
+		<Graphic>muzzle_e/image014.-4.12.tga</Graphic>
+		<Graphic>muzzle_e/image015.-4.13.tga</Graphic>
+		<Graphic>muzzle_e/image016.-4.13.tga</Graphic>
+		<Graphic>muzzle_e/image017.-4.13.tga</Graphic>
 	</Effect>
 	<Effect type="dynamic" place="turret">
 		<Name>Muzzle SouthEast</Name>
 		<FrameHold>33</FrameHold>
-		<Graphics>muzzle_se/*.tga</Graphics>
+		<Graphic>muzzle_se/image001.-1.0.tga</Graphic>
+		<Graphic>muzzle_se/image002.0.0.tga</Graphic>
+		<Graphic>muzzle_se/image003.1.1.tga</Graphic>
+		<Graphic>muzzle_se/image004.0.1.tga</Graphic>
+		<Graphic>muzzle_se/image005.1.1.tga</Graphic>
+		<Graphic>muzzle_se/image006.2.3.tga</Graphic>
+		<Graphic>muzzle_se/image007.3.3.tga</Graphic>
+		<Graphic>muzzle_se/image008.4.4.tga</Graphic>
+		<Graphic>muzzle_se/image009.5.5.tga</Graphic>
+		<Graphic>muzzle_se/image010.6.5.tga</Graphic>
+		<Graphic>muzzle_se/image011.5.5.tga</Graphic>
+		<Graphic>muzzle_se/image012.5.5.tga</Graphic>
+		<Graphic>muzzle_se/image013.5.5.tga</Graphic>
+		<Graphic>muzzle_se/image014.4.4.tga</Graphic>
+		<Graphic>muzzle_se/image015.4.4.tga</Graphic>
+		<Graphic>muzzle_se/image016.3.3.tga</Graphic>
+		<Graphic>muzzle_se/image017.3.2.tga</Graphic>
 	</Effect>
 	<Effect type="dynamic" place="turret">
 		<Name>Muzzle South</Name>
 		<FrameHold>33</FrameHold>
-		<Graphics>muzzle_s/*.tga</Graphics>
+		<Graphic>muzzle_s/image001.-1.-1.tga</Graphic>
+		<Graphic>muzzle_s/image002.2.-1.tga</Graphic>
+		<Graphic>muzzle_s/image003.4.-1.tga</Graphic>
+		<Graphic>muzzle_s/image004.6.-1.tga</Graphic>
+		<Graphic>muzzle_s/image005.7.-1.tga</Graphic>
+		<Graphic>muzzle_s/image006.9.-1.tga</Graphic>
+		<Graphic>muzzle_s/image007.12.-1.tga</Graphic>
+		<Graphic>muzzle_s/image008.13.-1.tga</Graphic>
+		<Graphic>muzzle_s/image009.11.-1.tga</Graphic>
+		<Graphic>muzzle_s/image010.12.-2.tga</Graphic>
+		<Graphic>muzzle_s/image011.12.-2.tga</Graphic>
+		<Graphic>muzzle_s/image012.12.-2.tga</Graphic>
+		<Graphic>muzzle_s/image013.12.-3.tga</Graphic>
+		<Graphic>muzzle_s/image014.12.-4.tga</Graphic>
+		<Graphic>muzzle_s/image015.13.-3.tga</Graphic>
+		<Graphic>muzzle_s/image016.14.-4.tga</Graphic>
+		<Graphic>muzzle_s/image017.14.-4.tga</Graphic>
 	</Effect>
 	<Effect type="dynamic" place="turret">
 		<Name>Muzzle SouthWest</Name>
 		<FrameHold>33</FrameHold>
-		<Graphics>muzzle_sw/*.tga</Graphics>
+		<Graphic>muzzle_sw/image001.-1.-1.tga</Graphic>
+		<Graphic>muzzle_sw/image002.2.0.tga</Graphic>
+		<Graphic>muzzle_sw/image003.7.1.tga</Graphic>
+		<Graphic>muzzle_sw/image004.13.0.tga</Graphic>
+		<Graphic>muzzle_sw/image005.18.1.tga</Graphic>
+		<Graphic>muzzle_sw/image006.21.2.tga</Graphic>
+		<Graphic>muzzle_sw/image007.20.3.tga</Graphic>
+		<Graphic>muzzle_sw/image008.21.4.tga</Graphic>
+		<Graphic>muzzle_sw/image009.16.5.tga</Graphic>
+		<Graphic>muzzle_sw/image010.17.6.tga</Graphic>
+		<Graphic>muzzle_sw/image011.18.6.tga</Graphic>
+		<Graphic>muzzle_sw/image012.19.5.tga</Graphic>
+		<Graphic>muzzle_sw/image013.19.5.tga</Graphic>
+		<Graphic>muzzle_sw/image014.20.4.tga</Graphic>
+		<Graphic>muzzle_sw/image015.21.3.tga</Graphic>
+		<Graphic>muzzle_sw/image016.21.3.tga</Graphic>
+		<Graphic>muzzle_sw/image017.19.2.tga</Graphic>
 	</Effect>
 	<Effect type="dynamic" place="turret">
 		<Name>Muzzle West</Name>
 		<FrameHold>33</FrameHold>
-		<Graphics>muzzle_w/*.tga</Graphics>
+		<Graphic>muzzle_w/image001.-1.-1.tga</Graphic>
+		<Graphic>muzzle_w/image002.4.1.tga</Graphic>
+		<Graphic>muzzle_w/image003.9.4.tga</Graphic>
+		<Graphic>muzzle_w/image004.15.6.tga</Graphic>
+		<Graphic>muzzle_w/image005.21.8.tga</Graphic>
+		<Graphic>muzzle_w/image006.25.10.tga</Graphic>
+		<Graphic>muzzle_w/image007.23.12.tga</Graphic>
+		<Graphic>muzzle_w/image008.23.14.tga</Graphic>
+		<Graphic>muzzle_w/image009.20.10.tga</Graphic>
+		<Graphic>muzzle_w/image010.22.12.tga</Graphic>
+		<Graphic>muzzle_w/image011.24.12.tga</Graphic>
+		<Graphic>muzzle_w/image012.25.12.tga</Graphic>
+		<Graphic>muzzle_w/image013.25.12.tga</Graphic>
+		<Graphic>muzzle_w/image014.25.12.tga</Graphic>
+		<Graphic>muzzle_w/image015.22.12.tga</Graphic>
+		<Graphic>muzzle_w/image016.22.13.tga</Graphic>
+		<Graphic>muzzle_w/image017.21.14.tga</Graphic>
 	</Effect>
 	<Effect type="dynamic" place="turret">
 		<Name>Muzzle NorthWest</Name>
 		<FrameHold>33</FrameHold>
-		<Graphics>muzzle_nw/*.tga</Graphics>
+		<Graphic>muzzle_nw/image001.-1.-1.tga</Graphic>
+		<Graphic>muzzle_nw/image002.3.2.tga</Graphic>
+		<Graphic>muzzle_nw/image003.8.7.tga</Graphic>
+		<Graphic>muzzle_nw/image004.13.13.tga</Graphic>
+		<Graphic>muzzle_nw/image005.18.18.tga</Graphic>
+		<Graphic>muzzle_nw/image006.21.21.tga</Graphic>
+		<Graphic>muzzle_nw/image007.20.20.tga</Graphic>
+		<Graphic>muzzle_nw/image008.18.21.tga</Graphic>
+		<Graphic>muzzle_nw/image009.19.16.tga</Graphic>
+		<Graphic>muzzle_nw/image010.21.17.tga</Graphic>
+		<Graphic>muzzle_nw/image011.21.18.tga</Graphic>
+		<Graphic>muzzle_nw/image012.21.19.tga</Graphic>
+		<Graphic>muzzle_nw/image013.21.19.tga</Graphic>
+		<Graphic>muzzle_nw/image014.21.20.tga</Graphic>
+		<Graphic>muzzle_nw/image015.21.21.tga</Graphic>
+		<Graphic>muzzle_nw/image016.21.21.tga</Graphic>
+		<Graphic>muzzle_nw/image017.19.20.tga</Graphic>
 	</Effect>
 </Effects>
