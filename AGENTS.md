@@ -21,16 +21,20 @@ make check-deps
 ```
 
 ### Build
-```bash
-# Release build
-make
 
-# Debug build
-make debug
+**Tip**: Use `-j$(nproc)` for faster parallel compilation:
+```bash
+# Release build (parallel)
+make -j$(nproc)
+
+# Debug build (parallel)
+make debug -j$(nproc)
 
 # Clean
 make clean
 ```
+
+The `-j$(nproc)` flag tells make to run multiple compilation jobs in parallel, using all available CPU cores. This significantly reduces build time on multi-core systems.
 
 ### Run
 ```bash
@@ -48,21 +52,21 @@ Self-tests run automatically at startup:
 ./opencombat
 ```
 
-### Run Single Test
-Edit `src/main.cpp` to call specific test, then rebuild:
-```cpp
-// In main(), before app.Initialize():
-Screen::SelfTest();       // Test screen/blitting
-ActionQueue::SelfTest();  // Test action queue
-```
-Then run:
+### Run Self-Tests
+Tests can be run via command line arguments:
 ```bash
-make && ./opencombat
+./opencombat --test-screen        # Test screen/blitting only
+./opencombat --test-actionqueue   # Test action queue only
+./opencombat --test-all           # Run all tests
 ```
+
+When tests are run via command line, the game will not start - tests run and then exit.
 
 ### Available Self-Tests
 - `Screen::SelfTest()` - src/graphics/Screen.cpp:702
 - `ActionQueue::SelfTest()` - src/states/ActionQueue.h:92
+
+
 
 ---
 

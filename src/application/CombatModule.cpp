@@ -562,14 +562,12 @@ CombatModule::KeyUp(int key)
 			} else if(g_Globals->World.bRenderStats) {
 				g_Globals->World.bRenderStats = false;
 			} else {
-				g_Globals->World.bRenderHelpText = true;
-			}
-			break;
-#if 0
+			g_Globals->World.bRenderHelpText = true;
+		}
+		break;
 		case 115: /* F4 */
 			g_Globals->World.bWeaponFan = !g_Globals->World.bWeaponFan;
 			break;
-#endif
 		case 116: /* F5 */
 			_showMiniMap = !_showMiniMap;
 			break;
@@ -613,7 +611,7 @@ CombatModule::KeyDown(int key)
 {
 	// Pass through to world for scroll key handling
 	// (F-keys and other special keys don't need repeat)
-	if(key != 113 && key != 114 && key != 116 && key != 117 && key != 118 && key != 119 && key != 120) {
+	if(key != 113 && key != 114 && key != 115 && key != 116 && key != 117 && key != 118 && key != 119 && key != 120) {
 		_currentWorld->KeyDown(key);
 	}
 }

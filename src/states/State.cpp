@@ -9,7 +9,7 @@ State::State()
 bool
 State::IsSet(unsigned int state)
 {
-uint64_t flag = 1;
+	uint64_t flag = 1;
 	flag <<= state;
 	return (_bits&flag) != 0;
 }

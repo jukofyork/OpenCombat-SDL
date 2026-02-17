@@ -22,6 +22,7 @@
 #include "graphics/FontManager.h"
 #include "application/Globals.h"
 #include "misc/GameConstants.h"
+#include "states/ActionQueue.h"
 
 #ifndef UNREFERENCED_PARAMETER
 #define UNREFERENCED_PARAMETER(x) (void)(x)
@@ -49,14 +50,39 @@ long GetTickCount()
 //-----------------------------------------------------------------------------
 int main(int argc, char* argv[])
 {
-	UNREFERENCED_PARAMETER(argc);
-	UNREFERENCED_PARAMETER(argv);
+	// Check for test mode command line arguments
+	bool testScreen = false;
+	bool testActionQueue = false;
+	
+	for(int i = 1; i < argc; i++) {
+		if(strcmp(argv[i], "--test-screen") == 0 || strcmp(argv[i], "--test-all") == 0) {
+			testScreen = true;
+		}
+		if(strcmp(argv[i], "--test-actionqueue") == 0 || strcmp(argv[i], "--test-all") == 0) {
+			testActionQueue = true;
+		}
+	}
 
 	Globals globals;
 	g_Globals = &globals;
 
-	// Run our SelfTests
-	Screen::SelfTest();
+	// Run requested self-tests
+	if(testScreen) {
+		printf("Testing Screen...\n");
+		Screen::SelfTest();
+		printf("Screen tests passed!\n");
+	}
+	
+	if(testActionQueue) {
+		printf("Testing ActionQueue...\n");
+		ActionQueue::SelfTest();
+		printf("ActionQueue tests passed!\n");
+	}
+	
+	// If any tests were run, exit without starting the game
+	if(testScreen || testActionQueue) {
+		return 0;
+	}
 
 	// Get the current directory and store it
 	globals.Application.CurrentDirectory = std::filesystem::current_path();
@@ -690,6 +716,7 @@ void CSDLApplication::HandleKeyUp(SDL_Keycode key)
 		// Function keys (mapped to ASCII codes as expected by CombatModule)
 		case SDLK_F2:     gameKey = 113; break;  // 'q'
 		case SDLK_F3:     gameKey = 114; break;  // 'r'
+		case SDLK_F4:     gameKey = 115; break;  // 's'
 		case SDLK_F5:     gameKey = 116; break;  // 't'
 		case SDLK_F6:     gameKey = 117; break;  // 'u'
 		case SDLK_F7:     gameKey = 118; break;  // 'v'
@@ -735,6 +762,7 @@ void CSDLApplication::HandleKeyDown(SDL_Keycode key)
 		// Function keys (mapped to ASCII codes as expected by CombatModule)
 		case SDLK_F2:     gameKey = 113; break;  // 'q'
 		case SDLK_F3:     gameKey = 114; break;  // 'r'
+		case SDLK_F4:     gameKey = 115; break;  // 's'
 		case SDLK_F5:     gameKey = 116; break;  // 't'
 		case SDLK_F6:     gameKey = 117; break;  // 'u'
 		case SDLK_F7:     gameKey = 118; break;  // 'v'

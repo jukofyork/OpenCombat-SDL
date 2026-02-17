@@ -164,7 +164,15 @@ World::Render(Screen *screen, Rect *clip)
 			for(int i = (clip->x+_originX)/10; i < (clip->x+clip->w+_originX)/10; ++i) 
 			{
 				if(!_lineOfSight->CalculateLOSForTile(sx, sy, i, j, &ox, &oy, &oz, _currentMap)) {
-					screen->FillRect(m*10, n*10, 10, 10, &black);
+					// Draw checkered pattern so terrain is still visible underneath
+					// Checkerboard at pixel level: every other pixel
+					for(int py = 0; py < 10; ++py) {
+						for(int px = 0; px < 10; ++px) {
+							if((px + py) % 2 == 0) {
+								screen->FillRect(m*10 + px, n*10 + py, 1, 1, &black);
+							}
+						}
+					}
 				}
 				++m;
 			}

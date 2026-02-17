@@ -111,6 +111,52 @@ The game expects to find `config/`, `graphics/`, `maps/`, and `sounds/` director
 
 ---
 
+## Controls
+
+### Mouse Controls
+
+| Action | Control | Description |
+|--------|---------|-------------|
+| **Select Unit** | Left Click | Select a soldier or vehicle |
+| **Context Menu** | Right Click | Open action menu for selected unit |
+| **Pan View** | Middle Click + Drag | Click and drag to pan the camera |
+| **Minimap Click** | Left Click | Jump to location on minimap |
+
+### Context Menu Actions (Right-Click)
+
+When a unit is selected, right-click to open the context menu:
+
+- **Move** - Order unit to move to location (blue cursor)
+- **Move Fast** - Order unit to run (purple cursor)
+- **Fire** - Attack target (red cursor)
+- **Sneak** - Move stealthily (yellow cursor)
+- **Smoke** - Deploy smoke grenade (grey cursor)
+- **Defend** - Set up defensive position
+- **Ambush** - Set up ambush facing direction
+
+### Keyboard Controls
+
+#### View Controls
+| Key | Action |
+|-----|--------|
+| **Arrow Keys** | Scroll/Pan the view (hold for continuous scroll) |
+| **K** | Kill selected unit(s) (debug/cheat) |
+| **F** | Cycle through formations for selected unit(s) |
+
+#### Display Toggles (F-Keys)
+| Key | Action |
+|-----|--------|
+| **F2** | Toggle path rendering (show unit paths) |
+| **F3** | Cycle help text display (Help → Stats → Off) |
+| **F4** | Toggle weapon fan/LOS display (shows field of view for selected unit) |
+| **F5** | Toggle minimap visibility |
+| **F6** | Toggle team panel visibility |
+| **F7** | Toggle unit panel visibility |
+| **F8** | Cycle building display (Interiors → Outlines → Elevation → Off) |
+| **F9** | Toggle terrain elements visibility |
+
+---
+
 ## Key Files
 
 ### Entry Point
