@@ -13,6 +13,8 @@ The file 'adv-warfare.zip' contains the complete repository in .zip format.
 
 You can unzip and checkout a working copy with the following command: `cvs -d /full/path/to/adv-warfare co adv-warfare`
 
+NOTE: The final versions of the 'Bugs.txt' and 'TODO.txt' files have been extracted and saved in the 'docs' sub-folder.
+
 ---
 
 The file 'build-20051201.zip' was the only release version uploaded in a folder called 'snapshot 0.1a' on 02/12/2005.
