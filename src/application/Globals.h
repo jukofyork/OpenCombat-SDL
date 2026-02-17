@@ -190,7 +190,7 @@ struct WorldGlobals
 	ObjectStatesContainer States;
 	ObjectActionsContainer Actions;
 
-	WorldGlobals() { bRenderElevation=false; bRenderElements=true;bWeaponFan=false;bRenderBoundingBoxes=false;bRenderStats=false;bRenderPaths=false;bRenderHelpText=true;bRenderBuildingOutlines=false;bRenderBuildingInteriors=false; }
+	WorldGlobals() { bRenderElevation=false; bRenderElements=true;bWeaponFan=false;bRenderBoundingBoxes=false;bRenderStats=false;bRenderPaths=false;bRenderHelpText=false;bRenderBuildingOutlines=false;bRenderBuildingInteriors=false; }
 };
 
 /**
