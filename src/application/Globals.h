@@ -154,6 +154,7 @@ struct WorldGlobals
 	bool bRenderElements;
 	bool bRenderStats;
 	bool bWeaponFan;
+	bool bRenderBoundingBoxes;
 	bool bRenderPaths;
 	bool bRenderHelpText;
 	bool bRenderBuildingOutlines;
@@ -189,7 +190,7 @@ struct WorldGlobals
 	ObjectStatesContainer States;
 	ObjectActionsContainer Actions;
 
-	WorldGlobals() { bRenderElevation=false; bRenderElements=true;bWeaponFan=false;bRenderStats=false;bRenderPaths=false;bRenderHelpText=true;bRenderBuildingOutlines=false;bRenderBuildingInteriors=false; }
+	WorldGlobals() { bRenderElevation=false; bRenderElements=true;bWeaponFan=false;bRenderBoundingBoxes=false;bRenderStats=false;bRenderPaths=false;bRenderHelpText=true;bRenderBuildingOutlines=false;bRenderBuildingInteriors=false; }
 };
 
 /**

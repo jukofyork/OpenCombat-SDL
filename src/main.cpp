@@ -722,6 +722,7 @@ void CSDLApplication::HandleKeyUp(SDL_Keycode key)
 		case SDLK_F7:     gameKey = 118; break;  // 'v'
 		case SDLK_F8:     gameKey = 119; break;  // 'w'
 		case SDLK_F9:     gameKey = 120; break;  // 'x'
+		case SDLK_F10:    gameKey = 121; break;  // 'y'
 		
 		// Letter keys (pass through ASCII values)
 		// Note: SDL2 keycodes for letters are lowercase, so we check both cases
@@ -768,6 +769,7 @@ void CSDLApplication::HandleKeyDown(SDL_Keycode key)
 		case SDLK_F7:     gameKey = 118; break;  // 'v'
 		case SDLK_F8:     gameKey = 119; break;  // 'w'
 		case SDLK_F9:     gameKey = 120; break;  // 'x'
+		case SDLK_F10:    gameKey = 121; break;  // 'y'
 		
 		// Letter keys (pass through ASCII values)
 		case SDLK_k:      gameKey = 'k'; break;

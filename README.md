@@ -154,6 +154,7 @@ When a unit is selected, right-click to open the context menu:
 | **F7** | Toggle unit panel visibility |
 | **F8** | Cycle building display (Interiors → Outlines → Elevation → Off) |
 | **F9** | Toggle terrain elements visibility |
+| **F10** | Toggle bounding box display (cyan=animations, magenta=collision) |
 
 ---
 

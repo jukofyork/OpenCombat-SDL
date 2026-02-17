@@ -600,6 +600,9 @@ CombatModule::KeyUp(int key)
 		case 120: /* F9 */
 			g_Globals->World.bRenderElements = !g_Globals->World.bRenderElements;
 			break;
+		case 121: /* F10 */
+			g_Globals->World.bRenderBoundingBoxes = !g_Globals->World.bRenderBoundingBoxes;
+			break;
 	default:
 			_currentWorld->KeyUp(key);
 			break;
@@ -611,7 +614,7 @@ CombatModule::KeyDown(int key)
 {
 	// Pass through to world for scroll key handling
 	// (F-keys and other special keys don't need repeat)
-	if(key != 113 && key != 114 && key != 115 && key != 116 && key != 117 && key != 118 && key != 119 && key != 120) {
+	if(key != 113 && key != 114 && key != 115 && key != 116 && key != 117 && key != 118 && key != 119 && key != 120 && key != 121) {
 		_currentWorld->KeyDown(key);
 	}
 }

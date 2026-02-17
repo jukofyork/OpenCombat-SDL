@@ -1,5 +1,6 @@
 #include "./MaskFrame.h"
 #include <graphics/Screen.h>
+#include <application/Globals.h>
 
 MaskFrame::MaskFrame(TGA *source, TGA *mask, int displayTime, int width, int height, int sourceX, int sourceY, Color *transparentColor)
 : Frame(source, displayTime, width, height, sourceX, sourceY, transparentColor)
@@ -104,15 +105,15 @@ MaskFrame::Render(Screen *screen, int x, int y, bool hilit, Color *hilitColor, i
 		hilit, hilitColor, _tga->GetDepth(), camouflageIdx);
 
 	// Draw a bounding box around this frame
-#if 0
-	Color c(255,0,0);
-	Region r;
-	GetExtents(x, y, &r);
-	screen->DrawLine(r.points[0].x, r.points[0].y, r.points[1].x, r.points[1].y, 1, &c);
-	screen->DrawLine(r.points[1].x, r.points[1].y, r.points[2].x, r.points[2].y, 1, &c);
-	screen->DrawLine(r.points[2].x, r.points[2].y, r.points[3].x, r.points[3].y, 1, &c);
-	screen->DrawLine(r.points[3].x, r.points[3].y, r.points[0].x, r.points[0].y, 1, &c);
-#endif
+	if(g_Globals && g_Globals->World.bRenderBoundingBoxes) {
+		Color c(255,0,255);  // Magenta
+		Region r;
+		GetExtents(x, y, &r);
+		screen->DrawLine(r.points[0].x, r.points[0].y, r.points[1].x, r.points[1].y, 1, &c);
+		screen->DrawLine(r.points[1].x, r.points[1].y, r.points[2].x, r.points[2].y, 1, &c);
+		screen->DrawLine(r.points[2].x, r.points[2].y, r.points[3].x, r.points[3].y, 1, &c);
+		screen->DrawLine(r.points[3].x, r.points[3].y, r.points[0].x, r.points[0].y, 1, &c);
+	}
 }
 
 void
