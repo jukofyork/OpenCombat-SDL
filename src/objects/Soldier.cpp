@@ -646,6 +646,23 @@ Soldier::GetGeneralHeading(Vector2 *heading)
 		}
 	}
 
+	/*
+	 * DISABLED CODE: Path-based heading averaging
+	 *
+	 * This alternative implementation averages the heading across multiple path segments
+	 * to create smoother movement transitions. It was disabled in favor of the current
+	 * simpler implementation that just points toward the immediate next waypoint.
+	 *
+	 * The current implementation (above) calculates heading based on:
+	 * - Direct vector to next path node
+	 * - Target heading from movement orders
+	 *
+	 * This disabled code would average heading across MAX_PATH_AVERAGE segments,
+	 * potentially creating more natural-looking movement but may have had issues
+	 * with sharp turns or complex path geometries.
+	 *
+	 * Keep for reference if smoothing movement becomes a priority.
+	 */
 #if 0
 	// We need to look at our current path and average the next couple
 	// of paths we are going to follow

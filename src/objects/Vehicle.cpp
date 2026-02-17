@@ -421,13 +421,21 @@ Vehicle::Shoot(Weapon *weapon, Object *target, Target::Type targetType, int targ
 
 			effectHeading = Utilities::FindHeading(Position.x, Position.y, _currentTarget->Position.x, _currentTarget->Position.y);
 			// TODO: Vehicle damage calculation
-			// NOTE: This #if 0 block was already disabled in the original DirectX/Windows code from 2005!
-			// The g_World->CalculateShot() function never existed in the World class.
-			// Soldier damage works because Soldier::CalculateShot() is a method on the target soldier.
-			// To implement vehicle damage properly:
-			// 1. Add CalculateShot() method to Vehicle class (like Soldier has)
-			// 2. Vehicle damage model needs design (armor values, hit locations, etc.)
-			// 3. Vehicle weapons can fire but currently do no damage
+			/*
+			 * DISABLED CODE: Vehicle damage calculation
+			 *
+			 * This code was already disabled in the original DirectX/Windows codebase from 2005.
+			 * The g_World->CalculateShot() function never existed in the World class.
+			 *
+			 * Current status: Vehicle weapons can fire and show effects, but do no damage.
+			 *
+			 * To implement vehicle combat properly:
+			 * 1. Add CalculateShot() method to Vehicle class (similar to Soldier::CalculateShot)
+			 * 2. Design vehicle damage model (armor values, hit locations, penetration)
+			 * 3. Add proper target acquisition and damage application
+			 *
+			 * See docs/VEHICLE_COMBAT_IMPLEMENTATION_PLANS.md for detailed analysis.
+			 */
 #if 0
 				if(g_World->CalculateShot(this, _currentTarget, weapon))
 				{

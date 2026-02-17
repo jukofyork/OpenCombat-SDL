@@ -209,17 +209,3 @@ SoldierAnimationManager::LoadAnimations(const std::filesystem::path& fileName)
 		_animations.push_back(a);
 	}
 }
-
-#if 0
-Animation *
-SoldierAnimationManager::GetAnimation(char *animationName)
-{
-	for(int i = 0; i < _animations.Count; ++i) {
-		if(strcmp(animationName, _animations.Items[i]->GetName()) == 0) {
-			Animation *a = _animations.Items[i]->Clone();
-			return a;
-		}
-	}
-	return NULL;
-}
-#endif
