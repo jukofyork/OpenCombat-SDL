@@ -55,6 +55,12 @@
 			<Type>Thompson</Type>
 			<Camo>German Snow Infantry</Camo>
 		</Soldier>
+		<Soldier>
+			<Title>Gunner</Title>
+			<Rank>Private First Class</Rank>
+			<Type>Bazooka</Type>
+			<Camo>German AT Infantry</Camo>
+		</Soldier>
 	</Squad>
 	<Squad>
 		<Name>.30 Cal MG</Name>
