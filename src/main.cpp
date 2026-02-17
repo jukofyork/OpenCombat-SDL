@@ -714,6 +714,7 @@ void CSDLApplication::HandleKeyUp(SDL_Keycode key)
 		case SDLK_DOWN:   gameKey = 0x28; break;
 		
 		// Function keys (mapped to ASCII codes as expected by CombatModule)
+		case SDLK_F1:     gameKey = 112; break;  // 'p'
 		case SDLK_F2:     gameKey = 113; break;  // 'q'
 		case SDLK_F3:     gameKey = 114; break;  // 'r'
 		case SDLK_F4:     gameKey = 115; break;  // 's'
@@ -761,6 +762,7 @@ void CSDLApplication::HandleKeyDown(SDL_Keycode key)
 		case SDLK_DOWN:   gameKey = 0x28; break;
 		
 		// Function keys (mapped to ASCII codes as expected by CombatModule)
+		case SDLK_F1:     gameKey = 112; break;  // 'p'
 		case SDLK_F2:     gameKey = 113; break;  // 'q'
 		case SDLK_F3:     gameKey = 114; break;  // 'r'
 		case SDLK_F4:     gameKey = 115; break;  // 's'

@@ -146,8 +146,9 @@ When a unit is selected, right-click to open the context menu:
 #### Display Toggles (F-Keys)
 | Key | Action |
 |-----|--------|
-| **F2** | Toggle path rendering (show unit paths) |
-| **F3** | Toggle FPS/stats display |
+| **F1** | Toggle help display (shows controls) |
+| **F2** | Toggle FPS/stats display |
+| **F3** | Toggle path rendering (show unit paths) |
 | **F4** | Toggle weapon fan/LOS display (shows field of view for selected unit) |
 | **F5** | Toggle minimap visibility |
 | **F6** | Toggle team panel visibility |

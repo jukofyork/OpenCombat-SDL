@@ -522,6 +522,46 @@ Color white(255,255,255);
 		// Position in top-right corner (10px from top, 10px from right)
 		g_Globals->World.Fonts->Render(screen, stats, screen->GetWidth() - 140, 10, &yellow);
 	}
+
+	// Render help text if enabled
+	if(g_Globals->World.bRenderHelpText) {
+		Color yellow(255,255,0);
+		int y = 10;
+		int lineHeight = 14;
+		g_Globals->World.Fonts->Render(screen, "=== CONTROLS ===", 10, y, &yellow);
+		y += lineHeight;
+		g_Globals->World.Fonts->Render(screen, "F1: Toggle this help", 10, y, &yellow);
+		y += lineHeight;
+		g_Globals->World.Fonts->Render(screen, "F2: Toggle FPS/stats display", 10, y, &yellow);
+		y += lineHeight;
+		g_Globals->World.Fonts->Render(screen, "F3: Toggle path rendering", 10, y, &yellow);
+		y += lineHeight;
+		g_Globals->World.Fonts->Render(screen, "F4: Toggle weapon fan/LOS", 10, y, &yellow);
+		y += lineHeight;
+		g_Globals->World.Fonts->Render(screen, "F5: Toggle minimap", 10, y, &yellow);
+		y += lineHeight;
+		g_Globals->World.Fonts->Render(screen, "F6: Toggle team panel", 10, y, &yellow);
+		y += lineHeight;
+		g_Globals->World.Fonts->Render(screen, "F7: Toggle unit panel", 10, y, &yellow);
+		y += lineHeight;
+		g_Globals->World.Fonts->Render(screen, "F8: Cycle building display", 10, y, &yellow);
+		y += lineHeight;
+		g_Globals->World.Fonts->Render(screen, "F9: Toggle terrain elements", 10, y, &yellow);
+		y += lineHeight;
+		g_Globals->World.Fonts->Render(screen, "F10: Toggle bounding boxes", 10, y, &yellow);
+		y += lineHeight;
+		g_Globals->World.Fonts->Render(screen, "", 10, y, &yellow);
+		y += lineHeight;
+		g_Globals->World.Fonts->Render(screen, "MOUSE:", 10, y, &yellow);
+		y += lineHeight;
+		g_Globals->World.Fonts->Render(screen, "Left Click: Select unit", 10, y, &yellow);
+		y += lineHeight;
+		g_Globals->World.Fonts->Render(screen, "Right Click: Context menu", 10, y, &yellow);
+		y += lineHeight;
+		g_Globals->World.Fonts->Render(screen, "Middle Drag: Pan camera", 10, y, &yellow);
+		y += lineHeight;
+		g_Globals->World.Fonts->Render(screen, "Arrow Keys: Scroll view", 10, y, &yellow);
+	}
 }
 
 void 
@@ -576,11 +616,14 @@ void
 CombatModule::KeyUp(int key)
 {
 	switch(key) {
+		case 112: /* F1 */
+			g_Globals->World.bRenderHelpText = !g_Globals->World.bRenderHelpText;
+			break;
 		case 113: /* F2 */
-			g_Globals->World.bRenderPaths = !g_Globals->World.bRenderPaths;
+			g_Globals->World.bRenderStats = !g_Globals->World.bRenderStats;
 			break;
 		case 114: /* F3 */
-			g_Globals->World.bRenderStats = !g_Globals->World.bRenderStats;
+			g_Globals->World.bRenderPaths = !g_Globals->World.bRenderPaths;
 			break;
 		case 115: /* F4 */
 			g_Globals->World.bWeaponFan = !g_Globals->World.bWeaponFan;
@@ -631,7 +674,7 @@ CombatModule::KeyDown(int key)
 {
 	// Pass through to world for scroll key handling
 	// (F-keys and other special keys don't need repeat)
-	if(key != 113 && key != 114 && key != 115 && key != 116 && key != 117 && key != 118 && key != 119 && key != 120 && key != 121) {
+	if(key != 112 && key != 113 && key != 114 && key != 115 && key != 116 && key != 117 && key != 118 && key != 119 && key != 120 && key != 121) {
 		_currentWorld->KeyDown(key);
 	}
 }
