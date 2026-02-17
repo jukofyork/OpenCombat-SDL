@@ -35,6 +35,10 @@ CombatModule::CombatModule()
 	_showTeamPanel = false;
 	_colorModifierManager = NULL;
 	_marks = NULL;
+	_frameTimeAccumulator = 0;
+	_frameCount = 0;
+	_currentFPS = 0.0f;
+	_currentFrameTime = 0.0f;
 }
 
 CombatModule::~CombatModule(void)
@@ -204,6 +208,18 @@ void
 CombatModule::Simulate(long dt)
 {
 	_currentWorld->Simulate(dt);
+
+	// Track FPS and frame time
+	_frameTimeAccumulator += dt;
+	_frameCount++;
+	
+	// Update FPS display every 500ms
+	if(_frameTimeAccumulator >= 500) {
+		_currentFrameTime = (float)_frameTimeAccumulator / (float)_frameCount;
+		_currentFPS = (float)_frameCount * 1000.0f / (float)_frameTimeAccumulator;
+		_frameTimeAccumulator = 0;
+		_frameCount = 0;
+	}
 }
 
 void 
@@ -497,6 +513,15 @@ Color white(255,255,255);
 		w->Render(screen, x+171, y+21);
 		delete w;
 	}
+
+	// Render FPS and frame time stats if enabled
+	if(g_Globals->World.bRenderStats) {
+		Color yellow(255,255,0);
+		char stats[64];
+		snprintf(stats, sizeof(stats), "FPS: %.1f  Frame: %.2fms", _currentFPS, _currentFrameTime);
+		// Position in top-right corner (10px from top, 10px from right)
+		g_Globals->World.Fonts->Render(screen, stats, screen->GetWidth() - 140, 10, &yellow);
+	}
 }
 
 void 
@@ -555,16 +580,8 @@ CombatModule::KeyUp(int key)
 			g_Globals->World.bRenderPaths = !g_Globals->World.bRenderPaths;
 			break;
 		case 114: /* F3 */
-			// The order is Help->Stats->NULL and back
-			if(g_Globals->World.bRenderHelpText) {
-				g_Globals->World.bRenderHelpText = false;
-				g_Globals->World.bRenderStats = true;
-			} else if(g_Globals->World.bRenderStats) {
-				g_Globals->World.bRenderStats = false;
-			} else {
-			g_Globals->World.bRenderHelpText = true;
-		}
-		break;
+			g_Globals->World.bRenderStats = !g_Globals->World.bRenderStats;
+			break;
 		case 115: /* F4 */
 			g_Globals->World.bWeaponFan = !g_Globals->World.bWeaponFan;
 			break;

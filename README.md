@@ -147,7 +147,7 @@ When a unit is selected, right-click to open the context menu:
 | Key | Action |
 |-----|--------|
 | **F2** | Toggle path rendering (show unit paths) |
-| **F3** | Cycle help text display (Help → Stats → Off) |
+| **F3** | Toggle FPS/stats display |
 | **F4** | Toggle weapon fan/LOS display (shows field of view for selected unit) |
 | **F5** | Toggle minimap visibility |
 | **F6** | Toggle team panel visibility |

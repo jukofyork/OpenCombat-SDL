@@ -86,4 +86,10 @@ protected:
 
 	// Stores the various marks used in the ranger, etc
 	Mark *_marks;
+
+	// FPS and frame timing tracking
+	long _frameTimeAccumulator;
+	int _frameCount;
+	float _currentFPS;
+	float _currentFrameTime;
 };
