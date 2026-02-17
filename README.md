@@ -13,7 +13,7 @@ OpenCombat is an open-source clone of the classic Close Combat tactical wargame 
 
 ```
 opencombat-sdl/
-├── src/                    # Source code (~14,000 lines)
+├── src/                   # Source code (~14,000 lines)
 │   ├── ai/                # A* pathfinding and AI
 │   ├── application/       # Main application and game modules
 │   ├── graphics/          # Rendering, animations, UI (SDL2)
@@ -204,13 +204,19 @@ When a unit is selected, right-click to open the context menu:
 - See `AGENTS.md` for full coding guidelines
 
 ### Self-Tests
-Some classes have `SelfTest()` static methods:
+
+Run self-tests via command line:
+```bash
+./opencombat --test-screen        # Test screen/blitting only
+./opencombat --test-actionqueue   # Test action queue only
+./opencombat --test-all           # Run all tests
+```
+
+Or call directly in code:
 ```cpp
 Screen::SelfTest();       // src/graphics/Screen.cpp:702
 ActionQueue::SelfTest();  // src/states/ActionQueue.h:92
 ```
-
-Run these to verify functionality during development.
 
 ### Path Handling
 Original code used Windows path separators (`\`). These have been updated for portability:
@@ -251,4 +257,4 @@ The original was written for Windows/DirectX and could not be built from the CVS
 
 **Status**: SDL2 port complete - Game is playable! 🎮
 
-Last Updated: 2026-02-13
+Last Updated: 2026-02-17

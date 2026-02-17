@@ -3,7 +3,7 @@
 ## Project Overview
 
 OpenCombat SDL is a C++ tactical wargame being ported from DirectX/Windows to SDL2/cross-platform.
-- **Language**: C++11
+- **Language**: C++17
 - **Lines**: ~14,000 lines across 158 source files
 - **Status**: Active SDL2 port complete, testing phase
 
@@ -21,20 +21,17 @@ make check-deps
 ```
 
 ### Build
-
-**Tip**: Use `-j$(nproc)` for faster parallel compilation:
 ```bash
-# Release build (parallel)
+# Release build (parallel recommended)
 make -j$(nproc)
 
-# Debug build (parallel)
+# Debug build
 make debug -j$(nproc)
 
 # Clean
 make clean
+make distclean  # Full cleanup including backups
 ```
-
-The `-j$(nproc)` flag tells make to run multiple compilation jobs in parallel, using all available CPU cores. This significantly reduces build time on multi-core systems.
 
 ### Run
 ```bash
@@ -46,27 +43,18 @@ The `-j$(nproc)` flag tells make to run multiple compilation jobs in parallel, u
 
 ## Test Commands
 
-### Run All Self-Tests
-Self-tests run automatically at startup:
-```bash
-./opencombat
-```
-
-### Run Self-Tests
-Tests can be run via command line arguments:
+### Run Individual Tests
 ```bash
 ./opencombat --test-screen        # Test screen/blitting only
 ./opencombat --test-actionqueue   # Test action queue only
 ./opencombat --test-all           # Run all tests
 ```
 
-When tests are run via command line, the game will not start - tests run and then exit.
+Tests run and then exit without starting the game.
 
 ### Available Self-Tests
 - `Screen::SelfTest()` - src/graphics/Screen.cpp:702
 - `ActionQueue::SelfTest()` - src/states/ActionQueue.h:92
-
-
 
 ---
 
@@ -189,16 +177,6 @@ Linux filesystem is case-sensitive:
 
 ---
 
-## Image Asset Handling
-
-### TGA Files
-This project uses TGA images (e.g., `graphics/Vehicles/panzer_IVG_wreck.11.21.tga`). View them by converting to PNG:
-```bash
-convert graphics/Vehicles/panzer_IVG_wreck.11.21.tga /tmp/view.png
-```
-
----
-
 ## Agent Notes
 
 1. **Preserve existing style** - Match surrounding code conventions
@@ -210,93 +188,8 @@ convert graphics/Vehicles/panzer_IVG_wreck.11.21.tga /tmp/view.png
 
 ---
 
-## Important Design Patterns
+## Critical Design Patterns
 
-### Object Ownership and Selection
-
-**CRITICAL: Never add the same Order pointer to multiple objects**
-
-The codebase uses reference counting for orders (`Order::IncrementRefCount()` / `Order::Release()`). Adding the same order to multiple objects causes double-free crashes when all objects process and release the order.
-
-**The Infantry Firing Bug (Commit 996b9cb)**
-
-This bug occurred when adding vehicle squads (tanks) to the game:
-
-**What went wrong:**
-1. Tank squad was added to both `_mobileObjects` (via `AddObject()`) AND team objects list
-2. Selection code iterated both `_currentMap->SelectObjects()` AND `_mobileObjects` loop
-3. When clicking near both infantry squad and tank, BOTH got selected
-4. `IssueOrder()` added the SAME order pointer to both selected objects
-5. Both objects processed the order and called `Release()` → **double-free crash**
-
-**The fix:**
-```cpp
-// In World::Select() - only iterate mobile objects if map finds nothing
-_currentMap->SelectObjects(x+_originX, y+_originY, &_selectedObjects);
-
-if(_selectedObjects.empty()) {  // <-- GUARD: skip if already found
-    for(size_t i = 0; i < _mobileObjects.size(); ++i) {
-        if(_mobileObjects[i]->Select(x+_originX,y+_originY)) {
-            _selectedObjects.push_back(_mobileObjects[i]);
-            break;  // <-- Only select one object
-        }
-    }
-}
-```
-
-**Lessons learned:**
-- Always check if selection already found something before iterating alternatives
-- Vehicle squads should only be in `_mobileObjects`, NOT in team objects list
-- Team objects list (`g_Globals->World.Teams[...].Objects`) is for UI display only
-- The original author intentionally kept tanks out of team objects (see `#if 0` block)
-- When you see `#if 0` in original code, investigate WHY before enabling it
-
-**The Gun Flash Filename Parsing Bug (Commit fd3039e)**
-
-This bug caused muzzle flashes to appear out of soldiers' legs and facing completely wrong directions (e.g., northeast flash appearing southwest).
-
-**What went wrong:**
-Effect files are named with format: `imageNNN.x.y.tga` where x,y are origin/hotspot coordinates for positioning the muzzle flash.
-
-The parsing code in `EffectManager.cpp` had a critical bug:
-```cpp
-// OLD (buggy):
-size_t lastDot = fName.rfind('.');
-std::string yStr = fName.substr(lastDot + 1);  // Gets "tga" - WRONG!
-fName = fName.substr(0, lastDot);
-size_t secondDot = fName.rfind('.');
-std::string xStr = fName.substr(secondDot + 1);  // Gets "-3" - should be Y!
-int x = atoi(xStr.c_str());  // x = -3 (wrong!)
-int y = atoi(yStr.c_str());  // y = 0 from "tga" (wrong!)
-```
-
-For `image001.-15.-3.tga`:
-- OLD: x=-3, y=0 (flashes at leg level, wrong horizontal position)
-- CORRECT: x=-15, y=-3
-
-**The fix:**
-```cpp
-// NEW (fixed):
-size_t extDot = fName.rfind('.');
-if (extDot != std::string::npos) {
-    fName = fName.substr(0, extDot);  // Strip .tga first
-    size_t yDot = fName.rfind('.');
-    if (yDot != std::string::npos) {
-        std::string yStr = fName.substr(yDot + 1);  // Y = "-3"
-        fName = fName.substr(0, yDot);
-        size_t xDot = fName.rfind('.');
-        if (xDot != std::string::npos) {
-            std::string xStr = fName.substr(xDot + 1);  // X = "-15"
-            int x = atoi(xStr.c_str());
-            int y = atoi(yStr.c_str());
-            tga->SetOrigin(x,y);
-        }
-    }
-}
-```
-
-**Lessons learned:**
-- Always strip the file extension first when parsing structured filenames
-- Test parsing logic with actual example filenames
-- When debugging visual bugs, add printf() statements to verify what's being parsed
-- Negative numbers in filenames can confuse string parsing - be explicit about dot positions
+See [docs/CRITICAL_DESIGN_PATTERNS.md](docs/CRITICAL_DESIGN_PATTERNS.md) for detailed information on common pitfalls including:
+- Object ownership and order reference counting
+- Filename parsing conventions

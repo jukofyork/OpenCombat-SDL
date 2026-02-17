@@ -1,9 +1,22 @@
-# OpenCombat SDL - Complete Design Document
+# OpenCombat SDL - Architecture Documentation
+
+**Document History**: This document was renamed from `DESIGN.md` (originally created in commit 95ea30a) to better reflect its purpose as comprehensive architecture documentation for the SDL2 port.
+
+**Last Updated**: February 2026
+- Added: Self-test infrastructure (Section 1.6)
+- Added: Debug rendering flags (Section 1.10)
+- Added: F-Key toggle system documentation (Section 9.1.5)
+- Added: FPS tracking implementation (Section 9.1.6)
+- Added: Vehicle combat implementation status (Section 2.3.8)
+- Updated: Lines of code from ~21,420 to ~14,000 (SDL2 port optimized codebase)
 
 ## Table of Contents
 
 1. [Overview and High-Level Architecture](#1-overview-and-high-level-architecture)
+   - 1.6 [Self-Test Infrastructure](#16-self-test-infrastructure)
+   - 1.7 [Debug Rendering Flags](#110-debug-rendering-flags)
 2. [Object System](#2-object-system)
+   - 2.3.8 [Vehicle Combat Implementation Status](#238-combat-implementation-status)
 3. [State Machine and Action System](#3-state-machine-and-action-system)
 4. [Order System and AI Pathfinding](#4-order-system-and-ai-pathfinding)
 5. [Graphics and Rendering System](#5-graphics-and-rendering-system)
@@ -11,6 +24,8 @@
 7. [Configuration Files and Data Schemas](#7-configuration-files-and-data-schemas)
 8. [Asset Structure and File Formats](#8-asset-structure-and-file-formats)
 9. [UI System and Combat Module](#9-ui-system-and-combat-module)
+   - 9.1.5 [F-Key Toggle System](#915-input-handling---f-key-toggle-system)
+   - 9.1.6 [FPS and Frame Time Tracking](#916-fps-and-frame-time-tracking)
 10. [Build System and Dependencies](#10-build-system-and-dependencies)
 
 ---
@@ -28,60 +43,61 @@
 - **Perspective**: Top-down isometric view
 - **Engine**: SDL2-based (port from DirectX)
 - **Language**: C++17
-- **Lines of Code**: ~21,420 across 158 source files
+- **Lines of Code**: ~14,000 across 158 source files
+- **Status**: SDL2 port complete, testing phase
 
 ### 1.2 High-Level Architecture
 
 The architecture follows a modular design with clear separation between game logic, rendering, and platform abstraction:
 
 ```
-┌─────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────┐
 │                    APPLICATION LAYER                         │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐      │
-│  │   main.cpp   │  │GameApplication│  │CSDLApplication│      │
-│  │  (Entry)     │  │   (Module)    │  │  (SDL Wrapper)│      │
-│  └──────────────┘  └──────────────┘  └──────────────┘      │
-└─────────────────────────────────────────────────────────────┘
+│  ┌──────────────┐  ┌──────────────────┐  ┌────────────────┐  │
+│  │   main.cpp   │  │  GameApplication │  │ CSDLApplication│  │
+│  │  (Entry)     │  │    (Module)      │  │  (SDL Wrapper) │  │
+│  └──────────────┘  └──────────────────┘  └────────────────┘  │
+└──────────────────────────────────────────────────────────────┘
                               │
                               ▼
 ┌─────────────────────────────────────────────────────────────┐
-│                     MODULE SYSTEM                            │
-│  ┌─────────────────┐  ┌─────────────────┐                   │
-│  │ CombatModule    │  │ Introduction    │  (Future modules) │
-│  │ (Game Logic)    │  │ (Menu/Screens)  │                   │
-│  └─────────────────┘  └─────────────────┘                   │
+│                     MODULE SYSTEM                           │
+│  ┌──────────────────┐  ┌──────────────────┐                 │
+│  │  CombatModule    │  │  Introduction    │ (Future mods)   │
+│  │  (Game Logic)    │  │  (Menu/Screens)  │                 │
+│  └──────────────────┘  └──────────────────┘                 │
 └─────────────────────────────────────────────────────────────┘
                               │
                               ▼
-┌─────────────────────────────────────────────────────────────┐
-│                     GAME WORLD                               │
-│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐    │
-│  │  World   │  │   Map    │  │Building  │  │ LineOf   │    │
-│  │ (Manager)│  │ (Terrain)│  │Manager   │  │  Sight   │    │
-│  └──────────┘  └──────────┘  └──────────┘  └──────────┘    │
-└─────────────────────────────────────────────────────────────┘
+┌───────────────────────────────────────────────────────────┐
+│                      GAME WORLD                           │
+│  ┌───────────┐ ┌───────────┐ ┌───────────┐ ┌───────────┐  │
+│  │   World   │ │    Map    │ │ Building  │ │  LineOf   │  │
+│  │ (Manager) │ │  (Terrain)│ │ (Manager) │ │   Sight   │  │
+│  └───────────┘ └───────────┘ └───────────┘ └───────────┘  │
+└───────────────────────────────────────────────────────────┘
                               │
                               ▼
-┌─────────────────────────────────────────────────────────────┐
-│                   OBJECT SYSTEM                              │
-│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐    │
-│  │  Object  │  │  Soldier │  │  Vehicle │  │   Squad  │    │
-│  │ (Base)   │  │ (Infantry)│  │  (Tank)  │  │ (Team)   │    │
-│  └──────────┘  └──────────┘  └──────────┘  └──────────┘    │
-└─────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────┐
+│                    OBJECT SYSTEM                        │
+│  ┌──────────┐ ┌────────────┐ ┌──────────┐ ┌──────────┐  │
+│  │  Object  │ │  Soldier   │ │  Vehicle │ │  Squad   │  │
+│  │  (Base)  │ │ (Infantry) │ │  (Tank)  │ │  (Team)  │  │
+│  └──────────┘ └────────────┘ └──────────┘ └──────────┘  │
+└─────────────────────────────────────────────────────────┘
                               │
                               ▼
-┌─────────────────────────────────────────────────────────────┐
-│                   SUBSYSTEMS                                 │
-│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐    │
-│  │  Orders  │  │  States  │  │ Actions  │  │   AI     │    │
-│  │ (Commands)│  │(Behavior)│  │ (Handler)│  │(Pathfind)│    │
-│  └──────────┘  └──────────┘  └──────────┘  └──────────┘    │
-│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐    │
-│  │ Graphics │  │  Sound   │  │   UI     │  │  Input   │    │
-│  │ (Render) │  │ (Audio)  │  │ (Widgets)│  │ (Events) │    │
-│  └──────────┘  └──────────┘  └──────────┘  └──────────┘    │
-└─────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────┐
+│                      SUBSYSTEMS                              │
+│  ┌────────────┐ ┌────────────┐ ┌────────────┐ ┌───────────┐  │
+│  │   Orders   │ │   States   │ │  Actions   │ │    AI     │  │
+│  │ (Commands) │ │ (Behavior) │ │ (Handlers) │ │(Pathfind) │  │
+│  └────────────┘ └────────────┘ └────────────┘ └───────────┘  │
+│  ┌────────────┐ ┌────────────┐ ┌────────────┐ ┌───────────┐  │
+│  │  Graphics  │ │   Sound    │ │    UI      │ │   Input   │  │
+│  │  (Render)  │ │  (Audio)   │ │ (Widgets)  │ │  (Events) │  │
+│  └────────────┘ └────────────┘ └────────────┘ └───────────┘  │
+└──────────────────────────────────────────────────────────────┘
 ```
 
 ### 1.3 Core Design Patterns
@@ -157,6 +173,9 @@ OpenCombat-SDL/
 
 ```
 1. main()
+   └── Parse command-line arguments (--test-screen, --test-actionqueue, --test-all)
+   └── Run requested SelfTests (Screen, ActionQueue)
+   └── If tests run, exit without starting game
    └── Initialize SDL (video, audio, timer)
    └── Create GameApplication
    └── ChooseModule(Combat)
@@ -166,13 +185,17 @@ OpenCombat-SDL/
    └── Poll SDL Events (keyboard, mouse, window)
    └── Update() - Process input, update mouse states
    └── Simulate(dt) - Update game logic
-   │   └── World::Simulate(dt)
-   │       └── For each object: object->Simulate(dt, world)
+   │   └── CombatModule::Simulate(dt)
+   │       └── World::Simulate(dt)
+   │           └── For each object: object->Simulate(dt, world)
+   │       └── Track FPS and frame timing statistics
    └── Render(screen)
        └── CombatModule::Render(screen)
            └── World::Render(screen, clip)
                └── Render map, buildings, objects, effects
            └── Render UI panels, minimap
+           └── Render FPS/stats overlays (if enabled)
+           └── Render help text overlay (if enabled)
    └── SDL_RenderPresent()
 
 3. Shutdown
@@ -180,7 +203,47 @@ OpenCombat-SDL/
    └── SDL_Quit()
 ```
 
-### 1.6 Global State Management
+### 1.6 Self-Test Infrastructure
+
+The codebase includes a self-test framework for validating critical subsystems:
+
+**Test Entry Point**: `src/main.cpp:51-85`
+
+```cpp
+// Command-line test options
+bool testScreen = false;
+bool testActionQueue = false;
+
+for(int i = 1; i < argc; i++) {
+    if(strcmp(argv[i], "--test-screen") == 0 || strcmp(argv[i], "--test-all") == 0) {
+        testScreen = true;
+    }
+    if(strcmp(argv[i], "--test-actionqueue") == 0 || strcmp(argv[i], "--test-all") == 0) {
+        testActionQueue = true;
+    }
+}
+
+// Run tests and exit
+if(testScreen) {
+    Screen::SelfTest();      // Tests blitting, clipping, alpha
+}
+if(testActionQueue) {
+    ActionQueue::SelfTest(); // Tests circular buffer queue
+}
+```
+
+**Available Tests**:
+- `Screen::SelfTest()` - Tests software rendering, blitting, clipping, alpha blending (src/graphics/Screen.cpp:702)
+- `ActionQueue::SelfTest()` - Tests circular buffer implementation for action indices (src/states/ActionQueue.h:92)
+
+**Running Tests**:
+```bash
+./opencombat --test-screen        # Test graphics only
+./opencombat --test-actionqueue   # Test action queue only
+./opencombat --test-all           # Run all tests
+```
+
+### 1.7 Global State Management
 
 The `Globals` struct provides centralized access to all subsystems:
 
@@ -205,7 +268,7 @@ struct WorldGlobals {
 
 Access via global pointer: `g_Globals->World.CurrentWorld`
 
-### 1.7 Coordinate Systems
+### 1.8 Coordinate Systems
 
 | System | Units | Origin | Description |
 |--------|-------|--------|-------------|
@@ -219,7 +282,7 @@ Access via global pointer: `g_Globals->World.CurrentWorld`
 - World to Tile: `tile = world / 10`
 - Tile to World: `world = tile * 10 + 5` (center)
 
-### 1.8 Time and Simulation
+### 1.9 Time and Simulation
 
 - **Simulation timestep**: 50ms (configurable)
 - **Frame time**: Variable (vsync-independent)
@@ -233,6 +296,41 @@ void Update() {
         _millis = currentMillis;
         _game->Simulate(SIMULATION_TIMESTEP_MS);
     }
+}
+```
+
+### 1.10 Debug Rendering Flags
+
+The `WorldGlobals` struct includes debugging flags for visualizing game state:
+
+**Location**: `src/application/Globals.h:150-161`
+
+```cpp
+struct WorldGlobals {
+    bool bRenderElevation;        // Show terrain elevation
+    bool bRenderElements;         // Show terrain elements (trees, etc.)
+    bool bRenderStats;            // Show FPS and frame time
+    bool bWeaponFan;              // Show weapon line-of-sight fan
+    bool bRenderBoundingBoxes;    // Show object bounding boxes
+    bool bRenderPaths;            // Show movement paths
+    bool bRenderHelpText;         // Show control help overlay
+    bool bRenderBuildingOutlines; // Show building outlines
+    bool bRenderBuildingInteriors;// Show building interiors
+};
+```
+
+**Default Values** (constructor in Globals.h:193):
+```cpp
+WorldGlobals() { 
+    bRenderElevation = false;
+    bRenderElements = true;
+    bWeaponFan = false;
+    bRenderBoundingBoxes = false;
+    bRenderStats = false;
+    bRenderPaths = false;
+    bRenderHelpText = false;
+    bRenderBuildingOutlines = false;
+    bRenderBuildingInteriors = false;
 }
 ```
 
@@ -668,6 +766,45 @@ void AimTurret(Direction dir);      // Aim in cardinal direction
 ```
 
 Calculates shortest rotation direction and sets target angles for both hull and turret.
+
+#### 2.3.8 Combat Implementation Status
+
+**Current Status**: Vehicle combat is partially implemented (as of SDL2 port).
+
+**What Works**:
+- Vehicles can fire weapons and show visual effects (muzzle flashes, explosions)
+- Turret and hull rotation for aiming
+- Target acquisition (soldiers only)
+- Weapon cycling and ammo depletion
+
+**What Is Disabled**:
+- **Vehicle -> Soldier damage**: The `CalculateShot()` method was never implemented for vehicles
+- **Vehicle -> Vehicle damage**: Not implemented
+- **Soldier -> Vehicle targeting**: No `Target::Vehicle` case in `Soldier::Shoot()`
+
+**Historical Context** (from src/objects/Vehicle.cpp:421-438):
+```cpp
+/*
+ * DISABLED CODE: Vehicle damage calculation
+ *
+ * This code was already disabled in the original DirectX/Windows codebase from 2005.
+ * The g_World->CalculateShot() function never existed in the World class.
+ *
+ * Current status: Vehicle weapons can fire and show effects, but do no damage.
+ *
+ * To implement vehicle combat properly:
+ * 1. Add CalculateShot() method to Vehicle class (similar to Soldier::CalculateShot)
+ * 2. Design vehicle damage model (armor values, hit locations, penetration)
+ * 3. Add proper target acquisition and damage application
+ *
+ * See docs/VEHICLE_COMBAT_IMPLEMENTATION_PLANS.md for detailed analysis.
+ */
+```
+
+**Implementation Options**:
+See `docs/VEHICLE_COMBAT_IMPLEMENTATION_PLANS.md` for two proposed approaches:
+1. **Minimal Implementation**: Simple health-based damage following existing soldier patterns
+2. **Weapon Damage Types**: Add `<DamageType>` to weapons and `<Armor>` to vehicles for realistic penetration
 
 ### 2.4 Squad Class
 
@@ -5170,6 +5307,12 @@ protected:
     bool _showMiniMap;                   // F5 toggle
     bool _showUnitPanel;                 // F7 toggle
     
+    // FPS tracking (added in SDL2 port)
+    long _frameTimeAccumulator;          // Accumulated frame time
+    int _frameCount;                     // Frame count for averaging
+    float _currentFPS;                   // Current FPS display value
+    float _currentFrameTime;             // Current frame time in ms
+    
     // App reference
     void* _app;
 };
@@ -5303,53 +5446,130 @@ void CombatModule::Render(Screen *screen) {
 └─────────────────────────────────────────────────────────┘
 ```
 
-#### 9.1.5 Input Handling
+#### 9.1.5 Input Handling - F-Key Toggle System
 
-**Key Mappings**:
+The CombatModule provides comprehensive debug and UI toggle functionality via F-keys:
 
-| Key | Code | Action |
-|-----|------|--------|
-| F2 | 113 | Toggle path rendering |
-| F3 | 114 | Cycle help/stats display |
-| F5 | 116 | Toggle minimap (_showMiniMap) |
-| F6 | 117 | Toggle team panel (_showTeamPanel) |
-| F7 | 118 | Toggle unit panel (_showUnitPanel) |
-| F8 | 119 | Cycle building/elevation view |
-| F9 | 120 | Toggle elements rendering |
-| Left Arrow | 0x25 | Scroll left |
-| Up Arrow | 0x26 | Scroll up |
-| Right Arrow | 0x27 | Scroll right |
-| Down Arrow | 0x28 | Scroll down |
+**Key Mappings** (updated for SDL2 port):
 
+| Key | Code | Action | Global Variable |
+|-----|------|--------|-----------------|
+| F1 | 112 | Toggle help text overlay | `bRenderHelpText` |
+| F2 | 113 | Toggle FPS/stats display | `bRenderStats` |
+| F3 | 114 | Toggle path rendering | `bRenderPaths` |
+| F4 | 115 | Toggle weapon fan/LOS | `bWeaponFan` |
+| F5 | 116 | Toggle minimap | `_showMiniMap` |
+| F6 | 117 | Toggle team panel | `_showTeamPanel` |
+| F7 | 118 | Toggle unit panel | `_showUnitPanel` |
+| F8 | 119 | Cycle building display mode | Multiple flags |
+| F9 | 120 | Toggle terrain elements | `bRenderElements` |
+| F10 | 121 | Toggle bounding boxes | `bRenderBoundingBoxes` |
+| Left Arrow | 0x25 | Scroll left | - |
+| Up Arrow | 0x26 | Scroll up | - |
+| Right Arrow | 0x27 | Scroll right | - |
+| Down Arrow | 0x28 | Scroll down | - |
+
+**Implementation** (src/application/CombatModule.cpp:616-680):
 ```cpp
 void CombatModule::KeyUp(int key) {
     switch(key) {
-    case 113:  // F2
-        g_Globals->World.bRenderPaths = !g_Globals->World.bRenderPaths;
-        break;
-    case 114:  // F3
-        // Cycle stats display
-        break;
-    case 116:  // F5
-        _showMiniMap = !_showMiniMap;
-        break;
-    case 117:  // F6
-        _showTeamPanel = !_showTeamPanel;
-        break;
-    case 118:  // F7
-        _showUnitPanel = !_showUnitPanel;
-        break;
-    case 119:  // F8
-        g_Globals->World.bRenderBuildingInteriors = 
-            !g_Globals->World.bRenderBuildingInteriors;
-        break;
-    case 120:  // F9
-        g_Globals->World.bRenderElements = !g_Globals->World.bRenderElements;
-        break;
-    case 0x25: // Left
-    case 0x26: // Up
-    case 0x27: // Right
-    case 0x28: // Down
+        case 112: /* F1 */
+            g_Globals->World.bRenderHelpText = !g_Globals->World.bRenderHelpText;
+            break;
+        case 113: /* F2 */
+            g_Globals->World.bRenderStats = !g_Globals->World.bRenderStats;
+            break;
+        case 114: /* F3 */
+            g_Globals->World.bRenderPaths = !g_Globals->World.bRenderPaths;
+            break;
+        case 115: /* F4 */
+            g_Globals->World.bWeaponFan = !g_Globals->World.bWeaponFan;
+            break;
+        case 116: /* F5 */
+            _showMiniMap = !_showMiniMap;
+            break;
+        case 117: /* F6 */
+            _showTeamPanel = !_showTeamPanel;
+            break;
+        case 118: /* F7 */
+            _showUnitPanel = !_showUnitPanel;
+            break;
+        case 119: /* F8 */
+            // Cycle: Interiors -> Outlines -> Elevation -> NULL
+            if(g_Globals->World.bRenderBuildingInteriors) {
+                g_Globals->World.bRenderBuildingOutlines = true;
+                g_Globals->World.bRenderElevation = false;
+                g_Globals->World.bRenderBuildingInteriors = false;
+            } else if(g_Globals->World.bRenderBuildingOutlines) {
+                g_Globals->World.bRenderBuildingOutlines = false;
+                g_Globals->World.bRenderElevation = true;
+            } else if(g_Globals->World.bRenderElevation) {
+                g_Globals->World.bRenderElevation = false;
+            } else {
+                g_Globals->World.bRenderBuildingInteriors = true;
+            }
+            break;
+        case 120: /* F9 */
+            g_Globals->World.bRenderElements = !g_Globals->World.bRenderElements;
+            break;
+        case 121: /* F10 */
+            g_Globals->World.bRenderBoundingBoxes = !g_Globals->World.bRenderBoundingBoxes;
+            break;
+        default:
+            _currentWorld->KeyUp(key);
+            break;
+    }
+}
+```
+
+#### 9.1.6 FPS and Frame Time Tracking
+
+The CombatModule tracks performance metrics for display:
+
+**Implementation** (src/application/CombatModule.cpp:207-223):
+```cpp
+void CombatModule::Simulate(long dt) {
+    _currentWorld->Simulate(dt);
+
+    // Track FPS and frame time
+    _frameTimeAccumulator += dt;
+    _frameCount++;
+    
+    // Update FPS display every 500ms
+    if(_frameTimeAccumulator >= 500) {
+        _currentFrameTime = (float)_frameTimeAccumulator / (float)_frameCount;
+        _currentFPS = (float)_frameCount * 1000.0f / (float)_frameTimeAccumulator;
+        _frameTimeAccumulator = 0;
+        _frameCount = 0;
+    }
+}
+```
+
+**Rendering** (src/application/CombatModule.cpp:517-564):
+```cpp
+// Render FPS and frame time stats if enabled
+if(g_Globals->World.bRenderStats) {
+    Color yellow(255,255,0);
+    char stats[64];
+    snprintf(stats, sizeof(stats), "FPS: %.1f  Frame: %.2fms", 
+             _currentFPS, _currentFrameTime);
+    // Position in top-right corner
+    g_Globals->World.Fonts->Render(screen, stats, screen->GetWidth() - 140, 10, &yellow);
+}
+
+// Render help text if enabled
+if(g_Globals->World.bRenderHelpText) {
+    Color yellow(255,255,0);
+    int y = 10;
+    int lineHeight = 14;
+    g_Globals->World.Fonts->Render(screen, "=== CONTROLS ===", 10, y, &yellow);
+    y += lineHeight;
+    g_Globals->World.Fonts->Render(screen, "F1: Toggle this help", 10, y, &yellow);
+    // ... (all F-key mappings listed)
+}
+```
+
+**Key Mappings** (legacy reference):
         _currentWorld->KeyUp(key);
         break;
     }
