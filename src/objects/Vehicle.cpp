@@ -17,7 +17,7 @@
 
 
 #define NORMALIZE_ANGLE(a) static_cast<float>(((a) < 0) ? ((a)+2.0f*M_PI) : (((a)>2.0f*M_PI) ? (a)-2.0f*M_PI : (a)))
-#define DA (M_PI/180.0f)
+constexpr float DA = static_cast<float>(M_PI) / 180.0f;
 
 Vehicle::Vehicle(void)
 : Object()

@@ -17,12 +17,12 @@
  * In a map, elevations are in units of 1m increments, so an elevation
  * of 1 unit is about three feet, 2 units is 6 feet, etc.
  */
-#define ELEVATION_METERS_PER_UNIT	1   /* 1 unit = 1 meter */
-#define MAX_LOS			0xFE
-#define MIN_LOS			0x01
-#define LOS_RLE_MARKER	0xFF
-#define LOS_END_MARKER	0x00
-#define HEIGHT_MODIFIER	1024
+constexpr int ELEVATION_METERS_PER_UNIT = 1;   /* 1 unit = 1 meter */
+constexpr unsigned char MAX_LOS = 0xFE;
+constexpr unsigned char MIN_LOS = 0x01;
+constexpr unsigned char LOS_RLE_MARKER = 0xFF;
+constexpr unsigned char LOS_END_MARKER = 0x00;
+constexpr int HEIGHT_MODIFIER = 1024;
 
 LineOfSight::LineOfSight(void)
 {

@@ -10,8 +10,8 @@
 #include <string>
 #include <filesystem>
 
-#define MAX_SOLDIERS_IN_SQUAD 32
-#define MAX_VEHICLES_IN_SQUAD 1
+constexpr int MAX_SOLDIERS_IN_SQUAD = 32;
+constexpr int MAX_VEHICLES_IN_SQUAD = 1;
 
 struct SquadSoldierAttributes {
 	SquadSoldierAttributes() { Slot=-1; }

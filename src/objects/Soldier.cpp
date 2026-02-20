@@ -17,8 +17,8 @@
 #include <objects/SoldierActionHandlers.h>
 
 // The old close combat used 5 pixels per meter
-#define MIN_DISTANCE_BETWEEN_SOLDIERS 5.0f
-#define DIRECTION_CHANGE_PAUSE 500
+constexpr float MIN_DISTANCE_BETWEEN_SOLDIERS = 5.0f;
+constexpr int DIRECTION_CHANGE_PAUSE = 500;
 
 Soldier::Soldier(void) : Object()
 {
@@ -646,7 +646,7 @@ Soldier::InsertWeapon(Weapon *weapon, int numClips)
 	_weaponsNumClips[0] = numClips;
 }
 
-#define MAX_PATH_AVERAGE 3
+constexpr int MAX_PATH_AVERAGE = 3;
 void
 Soldier::GetGeneralHeading(Vector2 *heading)
 {

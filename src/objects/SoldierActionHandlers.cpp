@@ -16,7 +16,7 @@ const static float _alignmentWeight = 1.0f;
 const static float _formationWeight = 3.0f;
 
 // Our velocity modifier for running
-#define RUNNING_VELOCITY_MODIFIER	3.0f
+constexpr float RUNNING_VELOCITY_MODIFIER = 3.0f;
 
 SoldierActionHandlers::SoldierActionHandler SoldierActionHandlers::_handlers[SoldierAction::NumActions] =
 {

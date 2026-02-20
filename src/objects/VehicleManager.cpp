@@ -10,8 +10,8 @@
 #include <objects/Vehicle.h>
 #include <application/Globals.h>
 
-#define MAX_TURRET_WEAPONS  8
-#define MAX_HULL_WEAPONS    8
+constexpr int MAX_TURRET_WEAPONS = 8;
+constexpr int MAX_HULL_WEAPONS = 8;
 
 struct WeaponAttributes {
     std::string Name;
