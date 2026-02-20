@@ -7,7 +7,7 @@
 #include <misc/Utilities.h>
 #include <world/Element.h>
 
-static float _currentHeadingAngles[8] = { 0.0f, 1.0f*2.0f*(float)M_PI/8.0f, 2.0f*2.0f*(float)M_PI/8.0f, 3.0f*2.0f*(float)M_PI/8.0f, 4.0f*2.0f*(float)M_PI/8.0f, 5.0f*2.0f*(float)M_PI/8.0f, 6.0f*2.0f*(float)M_PI/8.0f, 7.0f*2.0f*(float)M_PI/8.0f};
+static float _currentHeadingAngles[8] = { 0.0f, 1.0f*2.0f*static_cast<float>(M_PI)/8.0f, 2.0f*2.0f*static_cast<float>(M_PI)/8.0f, 3.0f*2.0f*static_cast<float>(M_PI)/8.0f, 4.0f*2.0f*static_cast<float>(M_PI)/8.0f, 5.0f*2.0f*static_cast<float>(M_PI)/8.0f, 6.0f*2.0f*static_cast<float>(M_PI)/8.0f, 7.0f*2.0f*static_cast<float>(M_PI)/8.0f};
 
 // Weights used for our various formation calculations
 const static float _cohesionWeight = 1.5f;
@@ -50,8 +50,8 @@ SoldierActionHandlers::AtDestination(Soldier *s, Point *p1, Point *p2)
 {
 	UNREFERENCED_PARAMETER(s);
 	Vector2 dest;
-	dest.x = (float)(p1->x - p2->x);
-	dest.y = (float)(p1->y - p2->y);
+	dest.x = static_cast<float>(p1->x - p2->x);
+	dest.y = static_cast<float>(p1->y - p2->y);
 	return (dest.Magnitude() < 3.0f);
 }
 
@@ -761,7 +761,7 @@ bool
 SoldierActionHandlers::TurnActionHandler(Soldier *soldier, Action *action, long dt)
 {
 	UNREFERENCED_PARAMETER(dt);
-	int direction = (int)(intptr_t)action->Data;
+	int direction = static_cast<int>(reinterpret_cast<intptr_t>(action->Data));
 	soldier->_currentHeading = (Direction)direction;
 	return true;
 }
@@ -896,13 +896,13 @@ SoldierActionHandlers::MoveSoldier(Soldier *soldier, long dt)
 	}
 
 	// Now we need to try moving this object to its new position
-	soldier->_position.x += soldier->_velocity.x*fabs(sin(_currentHeadingAngles[soldier->_currentHeading]))*dt*(float)(g_Globals->World.Constants.PixelsPerMeter)/1000.0f;
-	soldier->_position.y += soldier->_velocity.y*fabs(cos(_currentHeadingAngles[soldier->_currentHeading]))*dt*(float)(g_Globals->World.Constants.PixelsPerMeter)/1000.0f;
+	soldier->_position.x += soldier->_velocity.x*fabs(sin(_currentHeadingAngles[soldier->_currentHeading]))*dt*static_cast<float>(g_Globals->World.Constants.PixelsPerMeter)/1000.0f;
+	soldier->_position.y += soldier->_velocity.y*fabs(cos(_currentHeadingAngles[soldier->_currentHeading]))*dt*static_cast<float>(g_Globals->World.Constants.PixelsPerMeter)/1000.0f;
 
 	// Go ahead and move this fucker
 	Point oldPosition = soldier->Position;
-	soldier->Position.x = (int) soldier->_position.x;
-	soldier->Position.y = (int) soldier->_position.y;
+	soldier->Position.x = static_cast<int>(soldier->_position.x);
+	soldier->Position.y = static_cast<int>(soldier->_position.y);
 	g_Globals->World.CurrentWorld->MoveObject(soldier, &oldPosition, &soldier->Position);
 }
 
@@ -928,12 +928,12 @@ SoldierActionHandlers::CalculateSeparationForce(Soldier *soldier, Vector2 *force
 
 	if(nPos > 0)
 	{
-		pos.x /= (float)nPos;
-		pos.y /= (float)nPos;
+		pos.x /= static_cast<float>(nPos);
+		pos.y /= static_cast<float>(nPos);
 	}
 
-	force->x = ((float)soldier->Position.x)-pos.x;
-	force->y = ((float)soldier->Position.y)-pos.y;
+	force->x = static_cast<float>(soldier->Position.x)-pos.x;
+	force->y = static_cast<float>(soldier->Position.y)-pos.y;
 	force->Normalize();
 }
 
@@ -959,11 +959,11 @@ SoldierActionHandlers::CalculateCohesionForce(Soldier *soldier, Vector2 *force)
 
 	if(nPos > 0)
 	{
-		pos.x /= (float)nPos;
-		pos.y /= (float)nPos;
+		pos.x /= static_cast<float>(nPos);
+		pos.y /= static_cast<float>(nPos);
 	}
 
-	force->x = pos.x - ((float)soldier->Position.x);
-	force->y = pos.y - ((float)soldier->Position.y);
+	force->x = pos.x - static_cast<float>(soldier->Position.x);
+	force->y = pos.y - static_cast<float>(soldier->Position.y);
 	force->Normalize();
 }

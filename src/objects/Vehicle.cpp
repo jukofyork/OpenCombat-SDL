@@ -16,7 +16,7 @@
 #include <math.h>
 
 
-#define NORMALIZE_ANGLE(a) (float)(((a) < 0) ? ((a)+2.0f*M_PI) : (((a)>2.0f*M_PI) ? (a)-2.0f*M_PI : (a)))
+#define NORMALIZE_ANGLE(a) static_cast<float>(((a) < 0) ? ((a)+2.0f*M_PI) : (((a)>2.0f*M_PI) ? (a)-2.0f*M_PI : (a)))
 #define DA (M_PI/180.0f)
 
 Vehicle::Vehicle(void)
@@ -185,8 +185,8 @@ Vehicle::Simulate(long dt, World *world)
 	}
 
 	if(_turretRotating) {
-		_currentTurretAngle +=(float)( _turretRotationDirection*((float)dt)*2.0f*M_PI / (16.0f*_turretRotationRate));
-		_currentTurretAngle = (float)NORMALIZE_ANGLE(_currentTurretAngle);
+		_currentTurretAngle +=static_cast<float>( _turretRotationDirection*(static_cast<float>(dt))*2.0f*M_PI / (16.0f*_turretRotationRate));
+		_currentTurretAngle = static_cast<float>(NORMALIZE_ANGLE(_currentTurretAngle));
 		if(_currentTurretAngle<=(_turretTargetAngle+DA) && _currentTurretAngle>=(_turretTargetAngle-DA))
 		{
 			_turretRotating = false;
@@ -196,8 +196,8 @@ Vehicle::Simulate(long dt, World *world)
 	assert(_currentTurretAngle <= 2.0f*M_PI && _currentTurretAngle >= 0.0f);
 
 	if(_hullRotating) {
-		_currentHullAngle += (float)(_hullRotationDirection*((float)dt)*2.0f*M_PI / (16.0f*_hullRotationRate));
-		_currentHullAngle = (float)NORMALIZE_ANGLE(_currentHullAngle);
+		_currentHullAngle += static_cast<float>(_hullRotationDirection*(static_cast<float>(dt))*2.0f*M_PI / (16.0f*_hullRotationRate));
+		_currentHullAngle = static_cast<float>(NORMALIZE_ANGLE(_currentHullAngle));
 		if(_currentHullAngle<=(_hullTargetAngle+DA) && _currentHullAngle>=(_hullTargetAngle-DA))
 		{
 			_hullRotating = false;
@@ -250,7 +250,7 @@ Vehicle::PlanMovement(long dt)
 	if(_moving && !_hullRotating)
 	{
 		// Go ahead and head towards our destination
-		float secs = ((float)dt)/1000.0f;
+		float secs = static_cast<float>(dt)/1000.0f;
 		_velocity.x += -_acceleration*secs*sin(_currentHullAngle);
 		_velocity.y += -_acceleration*secs*cos(_currentHullAngle);
 
@@ -260,10 +260,10 @@ Vehicle::PlanMovement(long dt)
 		}
 
 		// Now we need to try moving this object to its new position
-		_position.x += _velocity.x*secs*(float)(g_Globals->World.Constants.PixelsPerMeter);
-		_position.y += _velocity.y*secs*(float)(g_Globals->World.Constants.PixelsPerMeter);
-		Position.x = (int)_position.x;
-		Position.y = (int)_position.y;
+		_position.x += _velocity.x*secs*static_cast<float>(g_Globals->World.Constants.PixelsPerMeter);
+		_position.y += _velocity.y*secs*static_cast<float>(g_Globals->World.Constants.PixelsPerMeter);
+		Position.x = static_cast<int>(_position.x);
+		Position.y = static_cast<int>(_position.y);
 	}
 }
 
@@ -314,8 +314,8 @@ bool
 Vehicle::HandleDestinationOrder(MoveOrder *order)
 {
 	Vector2 dist;
-	dist.x = (float)(Position.x - order->X);
-	dist.y = (float)(Position.y - order->Y);
+	dist.x = static_cast<float>(Position.x - order->X);
+	dist.y = static_cast<float>(Position.y - order->Y);
 
 	if(dist.Magnitude() < 5.01f) {
 		// Clear marks and play sound if we're the squad leader (matches infantry behavior)
@@ -391,8 +391,8 @@ void
 Vehicle::SetPosition(int x, int y)
 {
 	Object::SetPosition(x,y);
-	_position.x = (float) x;
-	_position.y = (float) y;
+	_position.x = static_cast<float>(x);
+	_position.y = static_cast<float>(y);
 }
 
 bool 
@@ -584,9 +584,9 @@ Vehicle::AimTurret(int x, int y)
 	_turretRotating = true;
 	float angle = Utilities::FindAngle(Position.x, Position.y, x, y);
 	if(angle < M_PI/2.0f) {
-		angle += (float)(3.0f*M_PI/2.0f);
+		angle += static_cast<float>(3.0f*M_PI/2.0f);
 	} else {
-		angle -= (float)(M_PI/2.0f);
+		angle -= static_cast<float>(M_PI/2.0f);
 	}
 	_turretTargetAngle = angle;
 	_hullTargetAngle = _turretTargetAngle;
@@ -612,7 +612,7 @@ Vehicle::AimTurret(Direction dir)
 	_turretRotating = true;
 	
 	// Convert Direction enum to radians (0 = South, going clockwise)
-	float targetAngle = (float)(dir * 2.0f * M_PI / 8.0f);
+	float targetAngle = static_cast<float>(dir * 2.0f * M_PI / 8.0f);
 	_hullTargetAngle = targetAngle;
 	_turretTargetAngle = targetAngle;
 	
