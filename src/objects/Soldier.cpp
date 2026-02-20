@@ -238,8 +238,8 @@ Soldier::SetPosition(int x, int y)
 	Point oldPosition = Position;
 	Object::SetPosition(x,y);	
 	g_Globals->World.CurrentWorld->MoveObject(this, &oldPosition, &Position);
-	_position.x = (float) x;
-	_position.y = (float) y;
+	_position.x = static_cast<float>(x);
+	_position.y = static_cast<float>(y);
 }
 
 bool
@@ -265,8 +265,8 @@ bool
 Soldier::HandleDestinationOrder(MoveOrder *order)
 {
 	Vector2 range;
-	range.x = (float)(Position.x-order->X);
-	range.y = (float)(Position.y-order->Y);
+	range.x = static_cast<float>(Position.x-order->X);
+	range.y = static_cast<float>(Position.y-order->Y);
 
 	if(range.Magnitude() < 5.01f) 
 	{
@@ -571,8 +571,8 @@ Soldier::CalculateShot(Soldier *shooter, Weapon *weapon)
 {
 	// How far away are we from the shooter?
 	Vector2 rangeVec;
-	rangeVec.x = (float)(shooter->Position.x - Position.x);
-	rangeVec.y = (float)(shooter->Position.y - Position.y);
+	rangeVec.x = static_cast<float>(shooter->Position.x - Position.x);
+	rangeVec.y = static_cast<float>(shooter->Position.y - Position.y);
 
 	// What's the max effective range of this weapon?
 	//int maxRange = weapon->GetMaxEffectiveRange();
@@ -721,8 +721,8 @@ Soldier::GetGeneralHeading(Vector2 *heading)
 	// Divide by the number of paths we saw
 	if(nPaths > 0)
 	{
-		heading->x /= (float)nPaths;
-		heading->y /= (float)nPaths;
+		heading->x /= static_cast<float>(nPaths);
+		heading->y /= static_cast<float>(nPaths);
 
 		// Normalize
 		// XXX/GWS: Is this necessary? I think we should already be normalized
