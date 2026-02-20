@@ -1,4 +1,6 @@
 #pragma once
+
+#include <array>
 #include <string>
 #include <objects/Object.h>
 #include <misc/Structs.h>
@@ -143,20 +145,20 @@ protected:
 	float _hullRotationDirection;
 
 	// The weapons on this vehicle
-	Weapon *_weapons[MAX_WEAPONS_PER_VEHICLE];
-	int _weaponsNumClips[MAX_WEAPONS_PER_VEHICLE];
+	std::array<Weapon*, MAX_WEAPONS_PER_VEHICLE> _weapons;
+	std::array<int, MAX_WEAPONS_PER_VEHICLE> _weaponsNumClips;
 	int _numWeapons;
 
 	// Keeps track of whether the weapons are on the hull
 	// or on the turret (true is on hull)
-	bool _weaponIsOnHull[MAX_WEAPONS_PER_VEHICLE];
+	std::array<bool, MAX_WEAPONS_PER_VEHICLE> _weaponIsOnHull;
 
 	// The crew on this vehicle
 	struct CrewSlot {
 		Soldier *soldier;
 		int weaponSlot;
 	};
-	CrewSlot _crew[MAX_CREW];
+	std::array<CrewSlot, MAX_CREW> _crew;
 	int _numCrew;
 
 	// The current action of this guy. Used only for reporting.

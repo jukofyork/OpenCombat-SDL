@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include <string>
 #include <SDL2/SDL_ttf.h>
 
@@ -35,7 +36,7 @@ public:
 	void GetTextSize(const std::string &msg, int *w, int *h, FontSize size = FontSize::Small);
 
 protected:
-    TTF_Font* _fonts[static_cast<int>(FontSize::Count)]; // Fonts at different sizes
+    std::array<TTF_Font*, static_cast<size_t>(FontSize::Count)> _fonts; // Fonts at different sizes
 	
 	// Load a font at a specific size
 	TTF_Font* LoadFont(int pointSize);

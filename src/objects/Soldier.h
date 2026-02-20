@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include <string>
 #include <objects/Object.h>
 #include <graphics/Animation.h>
@@ -222,14 +223,14 @@ protected:
 	AnimationState _currentAnimationState;
 
 	// The animation states of this object
-	Animation *_animations[NumStates];
+	std::array<Animation*, NumStates> _animations;
 
 	// The personal name of this soldier
 	std::string _personalName;
 
 	// The weapons this soldier carries
-	Weapon *_weapons[MAX_WEAPONS_PER_SOLDIER];
-	int _weaponsNumClips[MAX_WEAPONS_PER_SOLDIER];
+	std::array<Weapon*, MAX_WEAPONS_PER_SOLDIER> _weapons;
+	std::array<int, MAX_WEAPONS_PER_SOLDIER> _weaponsNumClips;
 	int _currentWeaponIdx;
 	int _numWeapons;
 
@@ -262,7 +263,7 @@ protected:
 
 	// This is our array of functions that implement the possible
 	// actions that a soldier can take
-	SoldierActionHandlers::SoldierActionHandler _actionHandlers[SoldierAction::NumActions];
+	std::array<SoldierActionHandlers::SoldierActionHandler, SoldierAction::NumActions> _actionHandlers;
 
 	// The current formation position for this soldier
 	int _formationPosition;

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include <string>
 #include <misc/Structs.h>
 
@@ -85,7 +86,7 @@ protected:
 	int _reloadTimeClip;
 	
 	// Effects
-	std::string _effects[static_cast<int>(Direction::NumDirections)];
+	std::array<std::string, static_cast<size_t>(Direction::NumDirections)> _effects;
 
 	// Goes big boom
 	bool _bGroundShaker;

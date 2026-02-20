@@ -60,13 +60,13 @@ protected:
 	std::string _name;
 
 	// The current animation frame number
-	int _currentFrameNums[static_cast<int>(Direction::NumDirections)];
+	std::array<int, static_cast<size_t>(Direction::NumDirections)> _currentFrameNums;
 
 	// The total time for the current animation
-	long _totalTimes[static_cast<int>(Direction::NumDirections)];
+	std::array<long, static_cast<size_t>(Direction::NumDirections)> _totalTimes;
 
 	// The incremental time for this animation
-	long _incrementalTimes[static_cast<int>(Direction::NumDirections)];
+	std::array<long, static_cast<size_t>(Direction::NumDirections)> _incrementalTimes;
 
 	// Play this animation in reverse
 	bool _reverse;

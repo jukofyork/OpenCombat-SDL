@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include <filesystem>
 #include <string>
 #include <misc/Color.h>
@@ -16,7 +17,7 @@ public:
 	void CopyColor(const std::string& name, Color *dest);
 
 private:
-	Color _colors[MAX_COLORS];
-	std::string _names[MAX_COLORS];
+	std::array<Color, MAX_COLORS> _colors;
+	std::array<std::string, MAX_COLORS> _names;
 	int _nColors;
 };

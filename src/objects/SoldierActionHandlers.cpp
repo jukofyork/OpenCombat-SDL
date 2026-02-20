@@ -18,32 +18,7 @@ const static float _formationWeight = 3.0f;
 // Our velocity modifier for running
 constexpr float RUNNING_VELOCITY_MODIFIER = 3.0f;
 
-SoldierActionHandlers::SoldierActionHandler SoldierActionHandlers::_handlers[SoldierAction::NumActions] =
-{
-	SoldierActionHandlers::StandingFireActionHandler,
-	SoldierActionHandlers::ProneFireActionHandler,
-	SoldierActionHandlers::RunActionHandler,
-	SoldierActionHandlers::WalkActionHandler,
-	SoldierActionHandlers::WalkSlowActionHandler,
-	SoldierActionHandlers::CrawlActionHandler,
-	SoldierActionHandlers::StandActionHandler,
-	SoldierActionHandlers::LieDownActionHandler,
-	SoldierActionHandlers::StopActionHandler,
-	SoldierActionHandlers::DestinationReachedActionHandler,
-	SoldierActionHandlers::ReloadActionHandler,
-	SoldierActionHandlers::FindCoverActionHandler,
-	SoldierActionHandlers::FollowActionHandler,
-	SoldierActionHandlers::FollowInFormationActionHandler,
-	SoldierActionHandlers::WalkToActionHandler,
-	SoldierActionHandlers::RunToActionHandler,
-	SoldierActionHandlers::WalkSlowToActionHandler,
-	SoldierActionHandlers::CrawlToActionHandler,
-	SoldierActionHandlers::TurnActionHandler,
-	SoldierActionHandlers::DefendActionHandler,
-	SoldierActionHandlers::AmbushActionHandler,
-	SoldierActionHandlers::WaitActionHandler,
 
-};
 
 bool
 SoldierActionHandlers::AtDestination(Soldier *s, Point *p1, Point *p2)
@@ -75,8 +50,32 @@ SoldierActionHandlers::Handle(Soldier *soldier, Action *action, long dt)
 		return false;
 	}
 
-	// Now call the individual handler
-	return _handlers[action->Index](soldier, action, dt);
+	// Dispatch to the appropriate handler
+	switch(action->Index) {
+		case SoldierAction::StandingFire: return StandingFireActionHandler(soldier, action, dt);
+		case SoldierAction::ProneFire: return ProneFireActionHandler(soldier, action, dt);
+		case SoldierAction::Run: return RunActionHandler(soldier, action, dt);
+		case SoldierAction::Walk: return WalkActionHandler(soldier, action, dt);
+		case SoldierAction::WalkSlow: return WalkSlowActionHandler(soldier, action, dt);
+		case SoldierAction::Crawl: return CrawlActionHandler(soldier, action, dt);
+		case SoldierAction::Stand: return StandActionHandler(soldier, action, dt);
+		case SoldierAction::LieDown: return LieDownActionHandler(soldier, action, dt);
+		case SoldierAction::Stop: return StopActionHandler(soldier, action, dt);
+		case SoldierAction::DestinationReached: return DestinationReachedActionHandler(soldier, action, dt);
+		case SoldierAction::Reload: return ReloadActionHandler(soldier, action, dt);
+		case SoldierAction::FindCover: return FindCoverActionHandler(soldier, action, dt);
+		case SoldierAction::Follow: return FollowActionHandler(soldier, action, dt);
+		case SoldierAction::FollowInFormation: return FollowInFormationActionHandler(soldier, action, dt);
+		case SoldierAction::RunTo: return RunToActionHandler(soldier, action, dt);
+		case SoldierAction::WalkTo: return WalkToActionHandler(soldier, action, dt);
+		case SoldierAction::WalkSlowTo: return WalkSlowToActionHandler(soldier, action, dt);
+		case SoldierAction::CrawlTo: return CrawlToActionHandler(soldier, action, dt);
+		case SoldierAction::Turn: return TurnActionHandler(soldier, action, dt);
+		case SoldierAction::Defend: return DefendActionHandler(soldier, action, dt);
+		case SoldierAction::Ambush: return AmbushActionHandler(soldier, action, dt);
+		case SoldierAction::Wait: return WaitActionHandler(soldier, action, dt);
+		default: return false;
+	}
 }
 
 bool 

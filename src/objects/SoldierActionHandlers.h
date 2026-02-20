@@ -103,6 +103,4 @@ private:
 	static bool DefendActionHandler(Soldier *soldier, Action *action, long dt);
 	static bool AmbushActionHandler(Soldier *soldier, Action *action, long dt);
 	static bool WaitActionHandler(Soldier *soldier, Action *action, long dt);
-	
-	static SoldierActionHandler _handlers[];
 };

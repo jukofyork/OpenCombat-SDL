@@ -5,7 +5,7 @@ Animation::Animation(const std::string &name)
 {
 	_reverse = false;
 	_name = name;
-	for(int i = 0; i < static_cast<int>(Direction::NumDirections); ++i) {
+	for(size_t i = 0; i < static_cast<size_t>(Direction::NumDirections); ++i) {
 		_currentFrameNums[i] = 0;
 		_totalTimes[i] = 0;
 		_incrementalTimes[i] = 0;
@@ -27,13 +27,13 @@ Animation::Clone()
 {
 	Animation *a = new Animation(_name);
 	a->_reverse = _reverse;
-	for(int dir = 0; dir < static_cast<int>(Direction::NumDirections); ++dir) {
+	for(size_t dir = 0; dir < static_cast<size_t>(Direction::NumDirections); ++dir) {
 		for(auto& frame : _frames[dir]) {
 			a->_frames[dir].push_back(std::unique_ptr<Frame>(frame->Clone()));
 		}
 	}
 
-	for(int i = 0; i < static_cast<int>(Direction::NumDirections); ++i) {
+	for(size_t i = 0; i < static_cast<size_t>(Direction::NumDirections); ++i) {
 		a->_incrementalTimes[i] = _incrementalTimes[i];
 		a->_totalTimes[i] = _totalTimes[i];
 	}
@@ -51,7 +51,7 @@ Animation::Render(Screen *screen, Direction heading, int x, int y, bool hilit, C
 void
 Animation::Update(long dt)
 {
-	for(int heading = 0; heading < static_cast<int>(Direction::NumDirections); ++ heading)
+	for(size_t heading = 0; heading < static_cast<size_t>(Direction::NumDirections); ++heading)
 	{
 		if(_frames[heading].empty()) continue;
 
@@ -102,7 +102,7 @@ Animation::GetCurrentFrameNumber(Direction heading)
 void
 Animation::Reset()
 {
-	for(int i = 0; i < static_cast<int>(Direction::NumDirections); ++i) {
+	for(size_t i = 0; i < static_cast<size_t>(Direction::NumDirections); ++i) {
 		_totalTimes[i] = 0;
 		_incrementalTimes[i] = 0;
 		if(_reverse && !_frames[i].empty())
