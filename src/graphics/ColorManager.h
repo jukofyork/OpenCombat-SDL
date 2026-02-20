@@ -1,11 +1,10 @@
 #pragma once
 
-#include <array>
 #include <filesystem>
 #include <string>
+#include <utility>
+#include <vector>
 #include <misc/Color.h>
-
-constexpr int MAX_COLORS = 1024;
 
 class ColorManager
 {
@@ -17,7 +16,5 @@ public:
 	void CopyColor(const std::string& name, Color *dest);
 
 private:
-	std::array<Color, MAX_COLORS> _colors;
-	std::array<std::string, MAX_COLORS> _names;
-	int _nColors;
+	std::vector<std::pair<std::string, Color>> _colors;
 };
