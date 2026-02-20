@@ -103,13 +103,13 @@ VehicleManager::Load(const std::filesystem::path& fileName)
         // Parse MaxRoadSpeed
         XMLElement* speedElem = vehicleElem->FirstChildElement("MaxRoadSpeed");
         if (speedElem && speedElem->GetText()) {
-            vehicle->MaxRoadSpeed = (float)atof(speedElem->GetText());
+            vehicle->MaxRoadSpeed = static_cast<float>(atof(speedElem->GetText()));
         }
         
         // Parse Acceleration
         XMLElement* accelElem = vehicleElem->FirstChildElement("Acceleration");
         if (accelElem && accelElem->GetText()) {
-            vehicle->Acceleration = (float)atof(accelElem->GetText());
+            vehicle->Acceleration = static_cast<float>(atof(accelElem->GetText()));
         }
         
         // Parse Hull

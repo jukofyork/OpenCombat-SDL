@@ -36,6 +36,6 @@ void Formation::GetFormationPosition(Type formationType, int formationIdx, float
     }
     
     float rad = angle * 3.14159f / 180.0f;
-    *x = src->x + (int)(offsetX * cos(rad) - offsetY * sin(rad));
-    *y = src->y + (int)(offsetX * sin(rad) + offsetY * cos(rad));
+    *x = src->x + static_cast<int>(offsetX * cos(rad) - offsetY * sin(rad));
+    *y = src->y + static_cast<int>(offsetX * sin(rad) + offsetY * cos(rad));
 }

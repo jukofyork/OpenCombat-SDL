@@ -200,7 +200,7 @@ SoldierAnimationManager::LoadAnimations(const std::filesystem::path& fileName)
 				c.Parse(dest[i].TransparentColor);
 
 				MaskFrame *frame = new MaskFrame(tga, mtga, dest[i].Time, tga->GetWidth(), tga->GetHeight(), 0, 0, &c);
-				a->AddFrame(frame, (Direction) (((int)firstDir+k) % NumDirections));
+				a->AddFrame(frame, static_cast<Direction>((static_cast<int>(firstDir) + k) % NumDirections));
 			}
 		}
 		_animations.push_back(a);

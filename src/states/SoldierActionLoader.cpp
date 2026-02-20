@@ -94,7 +94,7 @@ SoldierActionLoader::Load(const std::filesystem::path& fileName, ObjectActions *
 		
 		action->Requirements.clear();
 		action->Requirements.reserve(reqs.size());
-		for(i = 0; i < (int)reqs.size(); ++i)
+		for(i = 0; i < static_cast<int>(reqs.size()); ++i)
 		{
 			action->Requirements.push_back(find_state(reqs[i]));
 		}
@@ -116,7 +116,7 @@ SoldierActionLoader::Load(const std::filesystem::path& fileName, ObjectActions *
 		action->Subtracts.clear();
 		action->Adds.reserve(changes.size());
 		action->Subtracts.reserve(changes.size());
-		for(i = 0; i < (int)changes.size(); ++i)
+		for(i = 0; i < static_cast<int>(changes.size()); ++i)
 		{
 			const std::string& changeStr = changes[i];
 			char op = changeStr[0];

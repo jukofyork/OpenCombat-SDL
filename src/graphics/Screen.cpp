@@ -189,8 +189,8 @@ Screen::Blit(unsigned char *src, int dx, int dy, int dw, int dh, int sw, int sh,
 
 	for(int j = 0; j < dh; ++j) {
 		for(int i = 0; i < dw; ++i) {
-			xp = (int)((i-rotx)*cosT + (j-roty)*sinT);
-			yp = (int)((j-roty)*cosT - (i-rotx)*sinT);
+		xp = static_cast<int>((i-rotx)*cosT + (j-roty)*sinT);
+		yp = static_cast<int>((j-roty)*cosT - (i-rotx)*sinT);
 			r = src[(j)*sw*sbytes_per_pixel + (i)*sbytes_per_pixel + 2];
 			g =	src[(j)*sw*sbytes_per_pixel + (i)*sbytes_per_pixel + 1];
 			b = src[(j)*sw*sbytes_per_pixel + (i)*sbytes_per_pixel + 0];

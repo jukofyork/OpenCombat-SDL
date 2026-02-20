@@ -17,7 +17,7 @@ SoldierStateLoader::Load(const std::filesystem::path& fileName, ObjectStates *st
 		std::string trimmed = StringUtils::trim(line);
 		if(!trimmed.empty()) {
 			states->StateNames.push_back(trimmed);
-			states->States.push_back((int)states->States.size());
+			states->States.push_back(static_cast<int>(states->States.size()));
 		}
 	}
 	fp.close();
