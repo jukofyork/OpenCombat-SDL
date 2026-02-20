@@ -6,16 +6,16 @@
 
 // Simulation timestep in milliseconds (33ms = ~30 FPS simulation rate)
 // The game simulates at a fixed timestep independent of rendering
-#define SIMULATION_TIMESTEP_MS 33
+constexpr int SIMULATION_TIMESTEP_MS = 33;
 
 // Scroll repeat configuration
 // Scroll speed in pixels per second when holding arrow keys
 // The actual scroll per frame is calculated as: (SCROLL_SPEED_PPS * dt) / 1000
-#define SCROLL_SPEED_PPS 720
+constexpr int SCROLL_SPEED_PPS = 720;
 
 // Initial delay in milliseconds before scroll repeat starts
 // Set to 0 to start scrolling immediately when key is held
-#define SCROLL_INITIAL_DELAY_MS 100
+constexpr int SCROLL_INITIAL_DELAY_MS = 100;
 
 // Single press scroll multiplier (number of tiles to scroll per key press)
-#define KEY_MULTIPLIER_TILES 4
+constexpr int KEY_MULTIPLIER_TILES = 4;

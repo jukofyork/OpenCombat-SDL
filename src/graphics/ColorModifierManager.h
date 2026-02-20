@@ -3,7 +3,7 @@
 #include <filesystem>
 #include <misc/Color.h>
 
-#define MAX_COLOR_MODIFIERS 1024
+constexpr int MAX_COLOR_MODIFIERS = 1024;
 
 class ColorModifierManager
 {

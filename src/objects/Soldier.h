@@ -17,7 +17,7 @@ class World;
 class InterfaceState;
 class Weapon;
 
-#define MAX_WEAPONS_PER_SOLDIER	8
+constexpr int MAX_WEAPONS_PER_SOLDIER = 8;
 
 /**
  * Attribute rating for a soldier. Attributes are rated on a 0-100

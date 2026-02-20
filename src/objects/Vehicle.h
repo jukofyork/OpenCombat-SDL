@@ -14,8 +14,8 @@ class World;
 class DefendOrder;
 class AmbushOrder;
 
-#define MAX_WEAPONS_PER_VEHICLE	8
-#define MAX_CREW	8
+constexpr int MAX_WEAPONS_PER_VEHICLE = 8;
+constexpr int MAX_CREW = 8;
 
 class Vehicle :
 	public Object

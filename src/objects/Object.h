@@ -21,7 +21,7 @@ class InterfaceState;
 class Squad;
 struct Action;
 
-#define HEALTH_MAX 100
+constexpr int HEALTH_MAX = 100;
 
 class Object
 {

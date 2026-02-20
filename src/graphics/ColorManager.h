@@ -4,7 +4,7 @@
 #include <string>
 #include <misc/Color.h>
 
-#define MAX_COLORS 1024
+constexpr int MAX_COLORS = 1024;
 
 class ColorManager
 {

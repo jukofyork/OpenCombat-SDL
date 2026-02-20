@@ -28,8 +28,8 @@ class MiniMap;
 // This class is how the world communicates its state
 // about the objects in it to the user interface
 // above it
-#define MAX_UNITS		16
-#define MAX_SQUADS		32
+constexpr int MAX_UNITS = 16;
+constexpr int MAX_SQUADS = 32;
 
 class UnitState
 {

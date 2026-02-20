@@ -68,7 +68,7 @@ enum TeamController
  * The following defines an ID for each player and how many players
  * we are allowing in the game.
  */
-#define MAX_PLAYERS	32
+constexpr int MAX_PLAYERS = 32;
 typedef int PlayerID;
 
 /**
