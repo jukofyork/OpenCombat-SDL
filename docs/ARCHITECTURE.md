@@ -3,6 +3,12 @@
 **Document History**: This document was renamed from `DESIGN.md` (originally created in commit 95ea30a) to better reflect its purpose as comprehensive architecture documentation for the SDL2 port.
 
 **Last Updated**: February 2026
+- Added: C++17 modernization summary (Section 1.11)
+- Updated: Code examples to use modern C++ (std::array, enum class, constexpr, nullptr)
+- Updated: All #define constants converted to constexpr
+- Updated: C-style casts converted to static_cast
+- Updated: C-style arrays converted to std::array
+- Updated: Enums converted to enum class for type safety
 - Added: Self-test infrastructure (Section 1.6)
 - Added: Debug rendering flags (Section 1.10)
 - Added: F-Key toggle system documentation (Section 9.1.5)
@@ -14,7 +20,8 @@
 
 1. [Overview and High-Level Architecture](#1-overview-and-high-level-architecture)
    - 1.6 [Self-Test Infrastructure](#16-self-test-infrastructure)
-   - 1.7 [Debug Rendering Flags](#110-debug-rendering-flags)
+   - 1.10 [Debug Rendering Flags](#110-debug-rendering-flags)
+   - 1.11 [C++17 Modernization Summary](#111-c17-modernization-summary)
 2. [Object System](#2-object-system)
    - 2.3.8 [Vehicle Combat Implementation Status](#238-combat-implementation-status)
 3. [State Machine and Action System](#3-state-machine-and-action-system)
@@ -334,6 +341,193 @@ WorldGlobals() {
 }
 ```
 
+### 1.11 C++17 Modernization Summary
+
+The codebase has been systematically modernized from C-style to modern C++17. These changes improve type safety, readability, and maintainability.
+
+#### 1.11.1 Constants - constexpr instead of #define
+
+All `#define` constants have been converted to `constexpr` with explicit types:
+
+**Before:**
+```cpp
+#define MAX_WEAPONS_PER_SOLDIER 8
+#define MAX_CREW 8
+#define SIMULATION_TIMESTEP_MS 50
+#define DA 0.01f  // Turret rotation epsilon
+```
+
+**After:**
+```cpp
+constexpr int MAX_WEAPONS_PER_SOLDIER = 8;
+constexpr int MAX_CREW = 8;
+constexpr long SIMULATION_TIMESTEP_MS = 50;
+constexpr float TARGET_ANGLE_EPSILON = 0.01f;  // Renamed for clarity
+```
+
+**Benefits:**
+- Type safety with explicit types
+- Namespaced (no macro name collisions)
+- Scoped lifetime
+- Better debugger support
+- Respects C++ naming conventions
+
+#### 1.11.2 Type Safety - enum class instead of enum
+
+Plain enums have been converted to `enum class` for strong type checking:
+
+**Before:**
+```cpp
+enum Direction {
+    South = 0, SouthWest, West, NorthWest,
+    North, NorthEast, East, SouthEast, NumDirections
+};
+
+// Implicit conversion to int allowed
+Direction dir = South;
+int i = dir;  // Compiles - potential bug
+```
+
+**After:**
+```cpp
+enum class Direction {
+    South = 0, SouthWest, West, NorthWest,
+    North, NorthEast, East, SouthEast, NumDirections
+};
+
+// Explicit conversion required
+Direction dir = Direction::South;
+int i = static_cast<int>(dir);  // Must cast explicitly
+```
+
+**Benefits:**
+- Prevents accidental integer conversions
+- Requires explicit scope (Direction::South)
+- Eliminates name collisions in global namespace
+- Enables function overloading based on enum type
+
+#### 1.11.3 Container Safety - std::array instead of C-style arrays
+
+C-style arrays have been replaced with `std::array`:
+
+**Before:**
+```cpp
+Weapon* _weapons[MAX_WEAPONS_PER_SOLDIER];
+int _weaponsNumClips[MAX_WEAPONS_PER_SOLDIER];
+
+// No bounds checking
+_weaponNumClips[10] = 5;  // Undefined behavior, no warning
+```
+
+**After:**
+```cpp
+std::array<Weapon*, MAX_WEAPONS_PER_SOLDIER> _weapons;
+std::array<int, MAX_WEAPONS_PER_SOLDIER> _weaponsNumClips;
+
+// Can use bounds-checked access
+_weaponsNumClips.at(10) = 5;  // Throws std::out_of_range
+// Or use .size() in loops
+for (size_t i = 0; i < _weaponsNumClips.size(); ++i) { ... }
+```
+
+**Benefits:**
+- Value semantics (copyable, comparable)
+- Bounds checking with `.at()`
+- Standard container interface (iterators, `.size()`, `.data()`)
+- No implicit decay to pointer
+- Better integration with STL algorithms
+
+#### 1.11.4 Pointer Safety - nullptr instead of NULL
+
+All null pointer constants use `nullptr`:
+
+**Before:**
+```cpp
+#define NULL 0  // Or compiler-defined
+
+void* ptr = NULL;
+if (ptr == NULL) { ... }
+```
+
+**After:**
+```cpp
+void* ptr = nullptr;
+if (ptr == nullptr) { ... }
+```
+
+**Benefits:**
+- Distinct type for null pointers (std::nullptr_t)
+- Prevents ambiguous overload resolution
+- Self-documenting intent
+- No macro redefinition issues
+
+#### 1.11.5 Type Safety - static_cast instead of C-style casts
+
+All C-style casts have been converted to explicit `static_cast`:
+
+**Before:**
+```cpp
+// C-style cast - could be any of: static_cast, reinterpret_cast, const_cast
+int i = (int)floatValue;
+Soldier* s = (Soldier*)object;
+unsigned char b = (unsigned char)(value >> 8);
+```
+
+**After:**
+```cpp
+// Explicit cast type - clear intent
+int i = static_cast<int>(floatValue);
+Soldier* s = static_cast<Soldier*>(object);
+unsigned char b = static_cast<unsigned char>(value >> 8);
+```
+
+**Benefits:**
+- Clear intent and searchable in code
+- Compiler checks cast validity at compile time
+- Cannot accidentally cast away constness
+- Safer than C-style (reinterpret_cast required for dangerous casts)
+
+#### 1.11.6 Container Modernization - std::vector with pair
+
+Parallel arrays have been consolidated using `std::vector` with `std::pair`:
+
+**Before:**
+```cpp
+// Parallel arrays - must keep in sync
+std::vector<std::string> _names;
+std::vector<Color> _colors;
+
+// Access requires indexing both
+std::string name = _names[i];
+Color color = _colors[i];  // Must be same index!
+```
+
+**After:**
+```cpp
+// Single vector of pairs - data always together
+std::vector<std::pair<std::string, Color>> _nameColorPairs;
+
+// Access both at once
+auto& [name, color] = _nameColorPairs[i];  // C++17 structured binding
+```
+
+**Benefits:**
+- Data locality (name and color always paired)
+- Single insertion/removal operation
+- Prevents index synchronization bugs
+- Clearer semantic relationship
+
+#### 1.11.7 Summary of Changes
+
+| Aspect | Old Style | Modern Style | Files Affected |
+|--------|-----------|--------------|----------------|
+| Constants | `#define MAX 100` | `constexpr int MAX = 100;` | 15+ headers |
+| Enums | `enum Color { Red };` | `enum class Color { Red };` | 8 files |
+| Arrays | `int arr[10];` | `std::array<int, 10> arr;` | 12 files |
+| Null pointers | `NULL` or `0` | `nullptr` | 50+ locations |
+| Casts | `(Type)value` | `static_cast<Type>(value)` | 200+ locations |
+| Parallel arrays | Two vectors | `std::vector<std::pair<T, U>>` | ColorManager |
+
 ---
 
 ## 2. Object System
@@ -479,7 +673,7 @@ The `Soldier` class represents individual infantry units with complex animation 
 Soldiers have 16 animation states mapped from 22 logical states:
 
 ```cpp
-enum AnimationState {
+enum class AnimationState {
     Standing = 0,        // Idle standing
     Prone,               // Lying prone
     Walking,             // Walking animation
@@ -487,7 +681,7 @@ enum AnimationState {
     Running,             // Running animation
     StandingFiring,      // Firing while standing
     ProneFiring,         // Firing while prone
-    StandingReloading,   // Reload standing
+    StandingReloading,   // Reload stand
     ProneReloading,      // Reload prone
     DyingBlownUp,        // Death by explosion
     DyingBackward,       // Falling backward
@@ -505,7 +699,7 @@ Logical states (bitfield, 22 total):
 
 ```cpp
 namespace SoldierState {
-    enum State {
+    enum class State {
         Standing = 0,           // Upright
         Prone,                  // On ground
         Stopped,                // Not moving
@@ -552,10 +746,10 @@ struct {
 #### 2.2.4 Weapon System
 
 ```cpp
-#define MAX_WEAPONS_PER_SOLDIER 8
+constexpr int MAX_WEAPONS_PER_SOLDIER = 8;
 
-Weapon* _weapons[MAX_WEAPONS_PER_SOLDIER];
-int _weaponsNumClips[MAX_WEAPONS_PER_SOLDIER];
+std::array<Weapon*, MAX_WEAPONS_PER_SOLDIER> _weapons;
+std::array<int, MAX_WEAPONS_PER_SOLDIER> _weaponsNumClips;
 int _currentWeaponIdx;
 int _numWeapons;
 ```
@@ -597,7 +791,7 @@ _position.y += velocity.y * dt * PixelsPerMeter / 1000.0f;
 22 action types with dedicated handlers:
 
 ```cpp
-SoldierActionHandlers::SoldierActionHandler _actionHandlers[SoldierAction::NumActions];
+std::array<SoldierActionHandlers::SoldierActionHandler, static_cast<size_t>(SoldierAction::NumActions)> _actionHandlers;
 ```
 
 Handlers include: StandingFire, ProneFire, Run, Walk, WalkSlow, Crawl, Stand, LieDown, Stop, DestinationReached, Reload, FindCover, Follow, FollowInFormation, WalkTo, RunTo, WalkSlowTo, CrawlTo, Turn, Defend, Ambush, Wait.
@@ -651,7 +845,7 @@ The `Vehicle` class represents armored vehicles with turret rotation, crew manag
 #### 2.3.1 Vehicle States
 
 ```cpp
-enum State {
+enum class State {
     Stopped = 0,
     Moving,
     Firing,
@@ -704,15 +898,15 @@ Point _muzzlePosition;  // Muzzle flash offset
 #### 2.3.4 Crew Management
 
 ```cpp
-#define MAX_CREW 8
-#define MAX_WEAPONS_PER_VEHICLE 8
+constexpr int MAX_CREW = 8;
+constexpr int MAX_WEAPONS_PER_VEHICLE = 8;
 
 struct CrewSlot {
     Soldier* soldier;
     int weaponSlot;
 };
 
-CrewSlot _crew[MAX_CREW];
+std::array<CrewSlot, MAX_CREW> _crew;
 int _numCrew;
 ```
 
@@ -726,8 +920,8 @@ Crew members receive copies of vehicle weapons to fire.
 #### 2.3.5 Weapon Mounting
 
 ```cpp
-Weapon* _weapons[MAX_WEAPONS_PER_VEHICLE];
-bool _weaponIsOnHull[MAX_WEAPONS_PER_VEHICLE];  // true=hull, false=turret
+std::array<Weapon*, MAX_WEAPONS_PER_VEHICLE> _weapons;
+std::array<bool, MAX_WEAPONS_PER_VEHICLE> _weaponIsOnHull;  // true=hull, false=turret
 ```
 
 Weapons can only fire when their mount is aligned:
@@ -815,7 +1009,7 @@ The `Squad` class manages groups of soldiers and vehicles as a single tactical u
 #### 2.4.1 Quality Ratings
 
 ```cpp
-enum Quality {
+enum class Quality {
     Useless = 0,
     Fragile,
     Weak,
@@ -1106,6 +1300,15 @@ Ambush                  Fire    0       Prone                           +Ambushi
 Wait                    Move    0       nil                             nil
 ```
 
+**Modern C++ Note**: When queuing actions, always use `nullptr` instead of `NULL`:
+```cpp
+// Modern C++
+soldier->_actionQueue.push_front(new Action(prereqAction, nullptr));
+
+// NOT this (old style)
+// soldier->_actionQueue.push_front(new Action(prereqAction, NULL));
+```
+
 **Column meanings**:
 - **Name**: Unique action identifier
 - **Group**: Logical category (Fire, Move)
@@ -1117,7 +1320,7 @@ Wait                    Move    0       nil                             nil
 
 ```cpp
 namespace SoldierAction {
-    enum Action {
+    enum class Action {
         StandingFire = 0,       // 0
         ProneFire,              // 1
         Run,                    // 2
@@ -1450,7 +1653,7 @@ Used by: WalkTo, RunTo, WalkSlowTo, CrawlTo
 
 ```cpp
 struct FireActionData {
-    Object* TargetObject;   // Target entity
+    Object* TargetObject;   // Target entity (nullptr for area fire)
     Target::Type TargetType; // Soldier, Squad, Vehicle, Area
     int X, Y;               // Area target coordinates
 };
@@ -3131,12 +3334,12 @@ public:
 
 protected:
     // 8-directional frame arrays
-    std::array<std::vector<std::unique_ptr<Frame>>, NumDirections> _frames;
+    std::array<std::vector<std::unique_ptr<Frame>>, static_cast<size_t>(Direction::NumDirections)> _frames;
     
     std::string _name;
-    int _currentFrameNums[NumDirections];
-    long _totalTimes[NumDirections];
-    long _incrementalTimes[NumDirections];
+    std::array<int, static_cast<size_t>(Direction::NumDirections)> _currentFrameNums;
+    std::array<long, static_cast<size_t>(Direction::NumDirections)> _totalTimes;
+    std::array<long, static_cast<size_t>(Direction::NumDirections)> _incrementalTimes;
     bool _reverse;
 };
 ```
@@ -3144,7 +3347,7 @@ protected:
 #### 5.3.2 Direction Enum
 
 ```cpp
-enum Direction {
+enum class Direction {
     South = 0,      // 0 degrees (facing down)
     SouthWest,      // 45 degrees
     West,           // 90 degrees
@@ -5689,7 +5892,7 @@ void MiniMap::LeftMouseDrag(int x, int y) {
 #### 9.4.1 Colors
 
 ```cpp
-enum Color {
+enum class Color {
     Blue = 0,    // Waypoints, selection
     Purple,      // Special markers
     Red,         // Enemy targeting
@@ -5770,7 +5973,7 @@ public:
 ```cpp
 class CursorInterface {
 public:
-    enum CursorType {
+    enum class CursorType {
         // Markers (7 colors)
         MarkBlue = 0, MarkPurple, MarkRed, MarkYellow,
         MarkOrange, MarkBrown, MarkGreen, MarkGrey,
@@ -5804,8 +6007,6 @@ public:
 **Location**: `src/graphics/ColorModifierManager.h`
 
 ```cpp
-#define MAX_COLOR_MODIFIERS 1024
-
 struct ColorModifiers {
     std::string Name;
     Color Body;
@@ -5816,8 +6017,8 @@ struct ColorModifiers {
     Color Weapon;
 };
 
-extern ColorModifiers g_ColorModifiers[MAX_COLOR_MODIFIERS];
-extern int g_NumColorModifiers;
+// Modern C++: Using std::vector instead of fixed-size C-style array
+extern std::vector<ColorModifiers> g_ColorModifiers;
 ```
 
 **XML Format** (ColorModifiers.xml):
@@ -5891,8 +6092,8 @@ make check-deps     # Verifies SDL2 libraries installed
 ```makefile
 # Compiler settings
 CXX = g++
-CXXFLAGS = -std=c++11 -Wall -Wextra -O2
-CXXFLAGS_DEBUG = -std=c++11 -Wall -Wextra -g -O0 -DDEBUG
+CXXFLAGS = -std=c++17 -Wall -Wextra -O2
+CXXFLAGS_DEBUG = -std=c++17 -Wall -Wextra -g -O0 -DDEBUG
 
 # SDL2 flags
 SDL_CFLAGS = $(shell sdl2-config --cflags)
