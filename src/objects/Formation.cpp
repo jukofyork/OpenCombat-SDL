@@ -1,8 +1,11 @@
 #include "objects/Formation.h"
+#include <application/Globals.h>
 #include <math.h>
 
 void Formation::GetFormationPosition(Type formationType, int formationIdx, float formationSpread, int *x, int *y)
 {
+    UNREFERENCED_PARAMETER(formationType);
+    UNREFERENCED_PARAMETER(formationSpread);
     // TODO: Implement formation positioning logic
     // Stub implementation - places units in a simple line
     *x = formationIdx * 20;
@@ -11,6 +14,8 @@ void Formation::GetFormationPosition(Type formationType, int formationIdx, float
 
 void Formation::GetFormationPosition(Type formationType, int formationIdx, float formationSpread, Point *src, Direction heading, int *x, int *y)
 {
+    UNREFERENCED_PARAMETER(formationType);
+    UNREFERENCED_PARAMETER(formationSpread);
     // TODO: Implement formation positioning with direction
     // Stub implementation - places units relative to source point
     int offsetX = formationIdx * 20;

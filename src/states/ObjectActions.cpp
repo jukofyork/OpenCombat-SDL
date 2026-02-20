@@ -8,7 +8,7 @@ ObjectActions::CheckRequirements(ActionIdx actionID, State *state)
 {
 	assert(actionID < NumActions);
 	ObjectActions::Action *action = &(Actions[actionID]);
-	for(int i = 0; i < action->NumRequirements; ++i)
+	for(size_t i = 0; i < action->Requirements.size(); ++i)
 	{
 		if(!state->IsSet(action->Requirements[i]))
 		{
@@ -16,7 +16,7 @@ ObjectActions::CheckRequirements(ActionIdx actionID, State *state)
 			// that adds this state
 			for(int j = 0; j < NumActions; ++j)
 			{
-				for(int k = 0; k < Actions[j].NumAdds; ++k)
+				for(size_t k = 0; k < Actions[j].Adds.size(); ++k)
 				{
 					if(action->Requirements[i] == Actions[j].Adds[k])
 					{
@@ -36,15 +36,13 @@ ObjectActions::UpdateState(ActionIdx actionID, State *state)
 {
 	assert(actionID < NumActions);
 
-	for(int i = 0; i < Actions[actionID].NumAdds; ++i)
+	for(size_t i = 0; i < Actions[actionID].Adds.size(); ++i)
 	{
 		state->Set(Actions[actionID].Adds[i]);
 	}
 
-	for(int i = 0; i < Actions[actionID].NumSubtracts; ++i)
+	for(size_t i = 0; i < Actions[actionID].Subtracts.size(); ++i)
 	{
 		state->UnSet(Actions[actionID].Subtracts[i]);
 	}
 }
-
-

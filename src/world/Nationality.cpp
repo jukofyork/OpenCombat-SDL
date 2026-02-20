@@ -1,7 +1,7 @@
 #include "./Nationality.h"
 #include "misc/tinyxml2.h"
 #include "misc/TGA.h"
-#include <stdio.h>
+#include "misc/Error.h"
 #include <string.h>
 #include <string>
 #include <filesystem>
@@ -32,14 +32,12 @@ Nationality::Load(const std::filesystem::path& fileName, std::vector<Nationality
 {
 	XMLDocument doc;
 	if (doc.LoadFile(fileName.c_str()) != XML_SUCCESS) {
-		printf("Failed to load nationalities file: %s\n", fileName.c_str());
-		return;
+		ERROR("Failed to load nationalities file: " + fileName.string());
 	}
 
 	XMLElement* root = doc.FirstChildElement("Nationalities");
 	if (!root) {
-		printf("No Nationalities element found in %s\n", fileName);
-		return;
+		ERROR("No Nationalities element found in " + fileName.string());
 	}
 
 	for (XMLElement* natElem = root->FirstChildElement("Nationality");
@@ -59,7 +57,7 @@ Nationality::Load(const std::filesystem::path& fileName, std::vector<Nationality
 			std::filesystem::path fullPath = g_Globals->Application.GraphicsDirectory / flagElem->GetText();
 			nationality->VictoryLocation = TGA::Create(fullPath);
 			if (!nationality->VictoryLocation) {
-				printf("Failed to load victory location image: %s\n", fullPath.c_str());
+				ERROR("Failed to load victory location image: " + fullPath.string());
 			}
 		}
 
@@ -69,7 +67,7 @@ Nationality::Load(const std::filesystem::path& fileName, std::vector<Nationality
 			std::filesystem::path fullPath = g_Globals->Application.GraphicsDirectory / miniElem->GetText();
 			nationality->MiniMap = TGA::Create(fullPath);
 			if (!nationality->MiniMap) {
-				printf("Failed to load minimap image: %s\n", fullPath.c_str());
+				ERROR("Failed to load minimap image: " + fullPath.string());
 			}
 		}
 

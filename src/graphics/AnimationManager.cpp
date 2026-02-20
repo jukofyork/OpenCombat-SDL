@@ -1,6 +1,7 @@
 #include "./AnimationManager.h"
 #include "misc/tinyxml2.h"
 #include <misc/Color.h>
+#include <misc/Error.h>
 #include <string>
 #include <filesystem>
 
@@ -30,8 +31,7 @@ AnimationManager::LoadAnimations(const std::filesystem::path& fileName)
 
     XMLDocument doc;
     if (doc.LoadFile(fileName.c_str()) != XML_SUCCESS) {
-        printf("Failed to load animations file: %s\n", fileName.c_str());
-        return;
+        ERROR("Failed to load animations file: " + fileName.string());
     }
     
     std::vector<AnimationAttributes> dest;
@@ -127,5 +127,5 @@ AnimationManager::GetAnimation(const std::string& animationName)
             return animation->Clone();
         }
     }
-    return nullptr;
+	ERROR("Animation not found: " + animationName);
 }

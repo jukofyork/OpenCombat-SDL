@@ -17,6 +17,7 @@ Effect::Effect(const std::string &name)
 	Position.y = 0;
 	_sound.clear();
 	_bPlaceOnTurret = false;
+	_dynamic = false;
 }
 
 Effect::~Effect(void)

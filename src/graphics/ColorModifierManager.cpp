@@ -1,6 +1,6 @@
 #include "ColorModifierManager.h"
 #include <misc/tinyxml2.h>
-#include <stdio.h>
+#include <misc/Error.h>
 #include <filesystem>
 
 // Instantiate the global color modifier
@@ -21,8 +21,7 @@ ColorModifierManager::Load(const std::filesystem::path& configFile)
 {
 	tinyxml2::XMLDocument doc;
 	if (doc.LoadFile(configFile.c_str()) != tinyxml2::XML_SUCCESS) {
-		printf("Failed to load color modifier file: %s\n", configFile.c_str());
-		return;
+		ERROR("Failed to load color modifier file: " + configFile.string());
 	}
 	
 	g_NumColorModifiers = 0;

@@ -4,7 +4,7 @@
 #include <filesystem>
 
 #ifndef UNREFERENCED_PARAMETER
-#define UNREFERENCED_PARAMETER(P) (P)
+#define UNREFERENCED_PARAMETER(P) (void)(P)
 #endif
 
 #ifndef NULL

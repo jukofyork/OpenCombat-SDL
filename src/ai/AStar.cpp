@@ -1,261 +1,230 @@
 #include "./AStar.h"
-#include <assert.h>
-#include <stdlib.h>
-#include <math.h>
-#include <algorithm>
+#include <cmath>
+#include <limits>
 #include <application/Globals.h>
 
 AStar::AStar(void)
 {
-	_openNodes = new AStar::MinHeap(300*300, this);
-	_closedNodes = new Hash(60013,this);
 	_destX = -1;
 	_destY = -1;
-
-	// Let's allocate a bunch of free nodes that we
-	// can use for our path calculations
-	_freeNodes = NULL;
-	//assert(sizeof(Node) == 40);
-	for(int i = 0; i < 60000; ++i)
-	{
-		Node *n = (Node *)calloc(1, sizeof(Node));
-		n->MemNext = _freeNodes;
-		_freeNodes = n;
-	}
-	_nAllocatedNodes = 60000;
-	_nFreeNodes = 60000;
 }
 
 AStar::~AStar(void)
 {
-	// XXX/GWS: Need to do a deep delete
-	delete _openNodes;
-	delete _closedNodes;
-}
-
-AStar::Node *
-AStar::AllocateNode()
-{
-	Node *n = _freeNodes;
-	if(_freeNodes != NULL)
-	{
-		_freeNodes = _freeNodes->MemNext;
-		--_nFreeNodes;
-	}
-	else
-	{
-		// We are out of free nodes, so it looks like we need
-		// to allocate some more
-		n = (Node *)calloc(1, sizeof(Node));
-		++_nAllocatedNodes;
-	}
-	assert(_nFreeNodes >= 0);
-	return n;
-}
-
-void
-AStar::FreeNode(Node *node)
-{
-	memset(node, 0, sizeof(Node));
-	node->MemNext = _freeNodes;
-	_freeNodes = node;
-	++_nFreeNodes;
 }
 
 float
 AStar::Heuristic(int x, int y)
 {
 	// Weight diagonals slightly more
-	float diag = (float)(std::min(abs(x-_destX), abs(y-_destY)));
-	float straight = (float)((abs(x-_destX) + abs(y-_destY)));
-	return sqrt(2.0f)*diag + (straight - 2.0f*diag);
-}
-
-Path *
-AStar::FindPath(int x0, int y0, int x1, int y1, Element::Level level)
-{
-	Node *bestNode = NULL;
-	_level = level;
-
-	// Let's remember our destination
-	_destX = x1;
-	_destY = y1;
-
-	_closedNodes->DeepClear();
-	_openNodes->Clear();
-
-	// We need to create our initial node and add it to the open
-	// list
-	Node *node = AllocateNode();
-	node->G = 0;
-	node->H = Heuristic(x0, y0);
-	node->F = node->G + node->H;
-	node->X = x0;
-	node->Y = y0;
-	node->HeapIndex = _openNodes->Insert(node, node->F);
-
-	for(;;)
-	{
-		if(_openNodes->GetNumNodes() <= 0) {
-			// There are no more nodes to check, so the destination
-			// is unreachable.
-			return NULL;
-		}
-
-		// Get the best node
-		bestNode = GetBestNode();
-
-		// Are we done yet?
-		if(bestNode->X == x1 && bestNode->Y == y1)
-		{
-			break;
-		}
-
-		// Let's look at all the successors to this node
-		GenerateSuccessors(bestNode);
-	}
-
-	// Track backwards and create our path!
-	Path *path = NULL;
-	while(bestNode != NULL) {
-		Path *p = AllocatePath();
-		p->X = bestNode->X;
-		p->Y = bestNode->Y;
-		p->Next = path;
-		path = p;
-		bestNode = bestNode->Parent;
-		
-	}
-	return path;
-}
-
-AStar::Node *
-AStar::GetBestNode()
-{
-	Node *tmp;
-	assert(_openNodes->GetNumNodes() > 0);
-	tmp = _openNodes->ExtractMin();
-	_closedNodes->Insert(tmp);
-	return tmp;
-}
-
-void
-AStar::GenerateSuccessors(Node *node)
-{
-	int x, y;
-
-	// Upper left
-	x = node->X-1; y = node->Y-1;
-	if(CanMove(x,y)) {
-		DoMove(node, x, y);
-	}
-	// Upper
-	x = node->X; y = node->Y-1;
-	if(CanMove(x,y)) {
-		DoMove(node, x, y);
-	}
-	// Upper right
-	x = node->X+1; y = node->Y-1;
-	if(CanMove(x,y)) {
-		DoMove(node, x, y);
-	}
-
-	// Left
-	x = node->X-1; y = node->Y;
-	if(CanMove(x,y)) {
-		DoMove(node, x, y);
-	}
-	// Right
-	x = node->X+1; y = node->Y;
-	if(CanMove(x,y)) {
-		DoMove(node, x, y);
-	}
-
-	// Lower left
-	x = node->X-1; y = node->Y+1;
-	if(CanMove(x,y)) {
-		DoMove(node, x, y);
-	}
-	// Lower
-	x = node->X; y = node->Y+1;
-	if(CanMove(x,y)) {
-		DoMove(node, x, y);
-	}
-	// Lower right
-	x = node->X+1; y = node->Y+1;
-	if(CanMove(x,y)) {
-		DoMove(node, x, y);
-	}
-}
-
-bool
-AStar::CanMove(int x, int y)
-{
-	// Check the elements file to see if (x,y) is passable
-	if(x < 0 || y < 0 || x >= g_Globals->World.CurrentWorld->NumTiles.x || y >= g_Globals->World.CurrentWorld->NumTiles.y) {
-		return false;
-	}
-	bool passable = g_Globals->World.CurrentWorld->IsPassable(x,y);
-	if(!passable) {
-	}
-	return passable;
-}
-
-void
-AStar::DoMove(Node *node, int x, int y)
-{
-	Node *oldNode;
-	float g;
-
-	// First we need to calculate the terrain cost of the new tile
-	g = node->G + GetTerrainCost(x,y);
-
-	// If our current node is on the open list and the open list one is better,
-	// then we can discard and continue
-	if((oldNode = _openNodes->Find(x, y)) != NULL) {
-		// If our new g value is less than the old nodes g value, then
-		// the old node has a new parent
-		if(oldNode->G <= g) {
-			// We can discard and continue
-			return;
-		} else {
-			// Let's modify this node in place
-			_openNodes->RemoveIndex(oldNode->HeapIndex);
-			FreeNode(oldNode);
-		}
-	}
-	
-	// Do the same for the closed list
-	if((oldNode = _closedNodes->Find(x, y)) != NULL) {		
-		// If our new g value is less than the old nodes g value, then
-		// the old node has a new parent
-		if(oldNode->G <= g) {
-			return;
-		} else {
-			// We need to remove this node because we are going to add it
-			// back onto the open list
-			Node *n = _closedNodes->Remove(x,y);
-			FreeNode(n);
-		}
-	}
-
-	// Our node was not on any of the lists, so create a new
-	// node and add it as a child of the current node
-	Node *newNode = AllocateNode();
-	newNode->Parent = node;
-	newNode->G = g;
-	newNode->H = Heuristic(x,y);
-	newNode->F = g + newNode->H;
-	newNode->X = x;
-	newNode->Y = y;
-		
-	// Add the new node to the open list
-	_openNodes->Insert(newNode, newNode->F);
+	int dx = std::abs(x - _destX);
+	int dy = std::abs(y - _destY);
+	float diag = static_cast<float>(std::min(dx, dy));
+	float straight = static_cast<float>(dx + dy);
+	return sqrtf(2.0f) * diag + (straight - 2.0f * diag);
 }
 
 float
 AStar::GetTerrainCost(int x, int y)
 {
-	Element *e = g_Globals->World.CurrentWorld->GetTileElement(x,y);
-	return (float) e->Hindrance[_level] / 100.0f;
+	Element *e = g_Globals->World.CurrentWorld->GetTileElement(x, y);
+	return static_cast<float>(e->Hindrance[_level]) / 100.0f;
+}
+
+void
+AStar::HeapPush(size_t nodeIdx)
+{
+	_openHeap.push_back(nodeIdx);
+	_nodes[nodeIdx].InOpenSet = true;
+	HeapSiftUp(_openHeap.size() - 1);
+}
+
+size_t
+AStar::HeapPop()
+{
+	assert(!_openHeap.empty());
+	
+	size_t result = _openHeap[0];
+	_nodes[result].InOpenSet = false;
+	
+	// Move last to front and sift down
+	_openHeap[0] = _openHeap.back();
+	_nodes[_openHeap[0]].HeapIndex = 0;
+	_openHeap.pop_back();
+	
+	if (!_openHeap.empty()) {
+		HeapSiftDown(0);
+	}
+	
+	return result;
+}
+
+void
+AStar::HeapSiftUp(size_t heapIdx)
+{
+	_nodes[_openHeap[heapIdx]].HeapIndex = heapIdx;
+	
+	while (heapIdx > 0) {
+		size_t parentIdx = (heapIdx - 1) / 2;
+		if (_nodes[_openHeap[parentIdx]].F <= _nodes[_openHeap[heapIdx]].F) {
+			break;
+		}
+		
+		// Swap with parent
+		std::swap(_openHeap[parentIdx], _openHeap[heapIdx]);
+		_nodes[_openHeap[parentIdx]].HeapIndex = parentIdx;
+		_nodes[_openHeap[heapIdx]].HeapIndex = heapIdx;
+		
+		heapIdx = parentIdx;
+	}
+}
+
+void
+AStar::HeapSiftDown(size_t heapIdx)
+{
+	_nodes[_openHeap[heapIdx]].HeapIndex = heapIdx;
+	
+	while (true) {
+		size_t leftChild = 2 * heapIdx + 1;
+		size_t rightChild = 2 * heapIdx + 2;
+		size_t smallest = heapIdx;
+		
+		if (leftChild < _openHeap.size() && 
+		    _nodes[_openHeap[leftChild]].F < _nodes[_openHeap[smallest]].F) {
+			smallest = leftChild;
+		}
+		
+		if (rightChild < _openHeap.size() && 
+		    _nodes[_openHeap[rightChild]].F < _nodes[_openHeap[smallest]].F) {
+			smallest = rightChild;
+		}
+		
+		if (smallest == heapIdx) {
+			break;
+		}
+		
+		// Swap with smallest child
+		std::swap(_openHeap[heapIdx], _openHeap[smallest]);
+		_nodes[_openHeap[heapIdx]].HeapIndex = heapIdx;
+		_nodes[_openHeap[smallest]].HeapIndex = smallest;
+		
+		heapIdx = smallest;
+	}
+}
+
+Path *
+AStar::FindPath(int x0, int y0, int x1, int y1, Element::Level level)
+{
+	_level = level;
+	_destX = x1;
+	_destY = y1;
+	
+	// Clear previous state
+	_nodes.clear();
+	_nodeMap.clear();
+	_openHeap.clear();
+	
+	// Create start node
+	Node startNode;
+	startNode.X = x0;
+	startNode.Y = y0;
+	startNode.G = 0;
+	startNode.H = Heuristic(x0, y0);
+	startNode.F = startNode.G + startNode.H;
+	startNode.ParentIdx = std::numeric_limits<size_t>::max();
+	
+	_nodes.push_back(startNode);
+	_nodeMap[{x0, y0}] = 0;
+	HeapPush(0);
+	
+	// Directions: 8-connected grid
+	const int dx[8] = {-1, 0, 1, -1, 1, -1, 0, 1};
+	const int dy[8] = {-1, -1, -1, 0, 0, 1, 1, 1};
+	const float moveCost[8] = {1.414f, 1.0f, 1.414f, 1.0f, 1.0f, 1.414f, 1.0f, 1.414f};
+	
+	while (!_openHeap.empty()) {
+		size_t currentIdx = HeapPop();
+		Node& current = _nodes[currentIdx];
+		current.InClosedSet = true;
+		
+		// Check if we reached the destination
+		if (current.X == x1 && current.Y == y1) {
+			// Reconstruct path
+			Path *path = nullptr;
+			size_t idx = currentIdx;
+			
+			while (idx != std::numeric_limits<size_t>::max()) {
+				Node& n = _nodes[idx];
+				Path *p = AllocatePath();
+				p->X = n.X;
+				p->Y = n.Y;
+				p->Next = path;
+				path = p;
+				idx = n.ParentIdx;
+			}
+			return path;
+		}
+		
+		// Generate successors
+		for (int i = 0; i < 8; ++i) {
+			int nx = current.X + dx[i];
+			int ny = current.Y + dy[i];
+			
+			// Check bounds and passability
+			if (nx < 0 || ny < 0 || 
+			    nx >= g_Globals->World.CurrentWorld->NumTiles.x || 
+			    ny >= g_Globals->World.CurrentWorld->NumTiles.y) {
+				continue;
+			}
+			
+			if (!g_Globals->World.CurrentWorld->IsPassable(nx, ny)) {
+				continue;
+			}
+			
+			// Calculate new G score
+			float tentativeG = current.G + GetTerrainCost(nx, ny) * moveCost[i];
+			
+			// Check if this node exists
+			auto it = _nodeMap.find({nx, ny});
+			if (it != _nodeMap.end()) {
+				size_t neighborIdx = it->second;
+				Node& neighbor = _nodes[neighborIdx];
+				
+				if (neighbor.InClosedSet) {
+					continue;
+				}
+				
+				if (tentativeG < neighbor.G) {
+					// Better path found
+					neighbor.ParentIdx = currentIdx;
+					neighbor.G = tentativeG;
+					neighbor.F = neighbor.G + neighbor.H;
+					
+					if (neighbor.InOpenSet) {
+						// Update position in heap
+						HeapSiftUp(neighbor.HeapIndex);
+					} else {
+						HeapPush(neighborIdx);
+					}
+				}
+			} else {
+				// Create new node
+				Node newNode;
+				newNode.X = nx;
+				newNode.Y = ny;
+				newNode.G = tentativeG;
+				newNode.H = Heuristic(nx, ny);
+				newNode.F = newNode.G + newNode.H;
+				newNode.ParentIdx = currentIdx;
+				
+				size_t newIdx = _nodes.size();
+				_nodes.push_back(newNode);
+				_nodeMap[{nx, ny}] = newIdx;
+				HeapPush(newIdx);
+			}
+		}
+	}
+	
+	// No path found
+	return nullptr;
 }

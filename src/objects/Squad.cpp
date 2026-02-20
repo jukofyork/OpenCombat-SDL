@@ -1,6 +1,5 @@
 #include "./Squad.h"
 
-#include <stdio.h>
 #include <string.h>
 #include <string>
 #include <vector>
@@ -261,6 +260,12 @@ Squad::AddOrder(Order *o)
 				vehicle->AddOrder(o);
 			}
 			return;
+		case Orders::Smoke:
+		case Orders::Destination:
+		case Orders::Stop:
+		case Orders::Pause:
+			// TODO: Implement these order types
+			break;
 	}
 
 	for(auto* vehicle : _vehicles) {

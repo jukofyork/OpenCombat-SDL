@@ -41,7 +41,7 @@ Weapon::Fire()
 		_state = Firing;
 		_counter = 0;
 		_numRounds -= _roundsPerBurst;
-		g_Globals->World.SoundEffects->GetSound(_sound)->Play();	
+		g_Globals->World.SoundEffects->GetSound(_sound)->Play();
 	}
 }
 

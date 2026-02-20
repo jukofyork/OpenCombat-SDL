@@ -90,8 +90,30 @@ Screen::Blit(unsigned char *src, int dx, int dy, int dw, int dh, int sw, int sh,
 {
 	UNREFERENCED_PARAMETER(sh);
 	assert(_bytes_per_pixel == sbytes_per_pixel);
+
+	// Bounds checking - skip if completely off-screen
+	if (dx >= _width || dy >= _height || dx + dw <= 0 || dy + dh <= 0)
+		return;
+
+	// Clamp to screen bounds
+	int srcX = 0, srcY = 0;
+	if (dx < 0) {
+		srcX = -dx;
+		dw += dx;
+		dx = 0;
+	}
+	if (dy < 0) {
+		srcY = -dy;
+		dh += dy;
+		dy = 0;
+	}
+	if (dx + dw > _width)
+		dw = _width - dx;
+	if (dy + dh > _height)
+		dh = _height - dy;
+
 	for(int j = 0; j < dh; ++j) {
-		memcpy(&(_bits[(j+dy)*_pitch+dx*_bytes_per_pixel]), &(src[j*sw*sbytes_per_pixel]), dw*_bytes_per_pixel);
+		memcpy(&(_bits[(j+dy)*_pitch+dx*_bytes_per_pixel]), &(src[(j+srcY)*sw*sbytes_per_pixel + srcX*sbytes_per_pixel]), dw*_bytes_per_pixel);
 	}
 }
 
@@ -155,7 +177,7 @@ Screen::Blit(unsigned char *src, int dx, int dy, int dw, int dh, int sw, int sh,
 // The basic rotation matrix is given by:
 //
 // [x', y'] = [ x*cos(theta) + y*sin(theta) , y*cos(theta) - x*sin(theta) ]
-void 
+void
 Screen::Blit(unsigned char *src, int dx, int dy, int dw, int dh, int sw, int sh, int sbytes_per_pixel, Color *transparentColor, int rotx, int roty, double angle)
 {
 	int xp, yp;
@@ -174,9 +196,14 @@ Screen::Blit(unsigned char *src, int dx, int dy, int dw, int dh, int sw, int sh,
 			b = src[(j)*sw*sbytes_per_pixel + (i)*sbytes_per_pixel + 0];
 
 			if(r != transparentColor->red || g != transparentColor->green || b != transparentColor->blue) {
-				_bits[(yp+dy+roty)*_pitch+(xp+dx+rotx)*_bytes_per_pixel + 2] = r;
-				_bits[(yp+dy+roty)*_pitch+(xp+dx+rotx)*_bytes_per_pixel + 1] = g;
-				_bits[(yp+dy+roty)*_pitch+(xp+dx+rotx)*_bytes_per_pixel + 0] = b;
+				// Bounds check to prevent buffer overflow
+				int destX = xp + dx + rotx;
+				int destY = yp + dy + roty;
+				if(destX >= 0 && destX < _width && destY >= 0 && destY < _height) {
+					_bits[(destY)*_pitch+(destX)*_bytes_per_pixel + 2] = r;
+					_bits[(destY)*_pitch+(destX)*_bytes_per_pixel + 1] = g;
+					_bits[(destY)*_pitch+(destX)*_bytes_per_pixel + 0] = b;
+				}
 			}
 		}
 	}
@@ -187,6 +214,27 @@ Screen::Blit(unsigned char *src, int dx, int dy, int dw, int dh, int sx, int sy,
 {
 	UNREFERENCED_PARAMETER(sh);
 	assert(_bytes_per_pixel == sbytes_per_pixel);
+
+	// Bounds checking - skip if completely off-screen
+	if (dx >= _width || dy >= _height || dx + dw <= 0 || dy + dh <= 0)
+		return;
+
+	// Clamp to screen bounds
+	if (dx < 0) {
+		dw += dx;
+		sx -= dx;
+		dx = 0;
+	}
+	if (dy < 0) {
+		dh += dy;
+		sy -= dy;
+		dy = 0;
+	}
+	if (dx + dw > _width)
+		dw = _width - dx;
+	if (dy + dh > _height)
+		dh = _height - dy;
+
 	for(int j = 0; j < dh; ++j) {
 		memcpy(&(_bits[(j+dy)*_pitch+dx*_bytes_per_pixel]), &(src[(j+sy)*sw*sbytes_per_pixel + sx*sbytes_per_pixel]), dw*_bytes_per_pixel);
 	}
@@ -201,8 +249,29 @@ Screen::Blit(unsigned char *src, int dx, int dy, int dw, int dh, int sx, int sy,
 	} else {
 		unsigned char r,g,b,a,origR,origG,origB;
 
-		for(int j = 0; j < dh; ++j) {
-			for(int i = 0; i < dw; ++i) {
+		// Bounds checking - skip if completely off-screen
+		if (dx >= _width || dy >= _height || dx + dw <= 0 || dy + dh <= 0)
+			return;
+
+		// Calculate actual draw region
+		int startX = 0, startY = 0;
+		int endX = dw, endY = dh;
+		
+		if (dx < 0) {
+			startX = -dx;
+			sx += startX;
+		}
+		if (dy < 0) {
+			startY = -dy;
+			sy += startY;
+		}
+		if (dx + dw > _width)
+			endX = _width - dx;
+		if (dy + dh > _height)
+			endY = _height - dy;
+
+		for(int j = startY; j < endY; ++j) {
+			for(int i = startX; i < endX; ++i) {
 				// new pixel = (alpha)(pixel A color) + (1 - alpha)(pixel B color)
 				a = src[(sy+j)*sw*sbytes_per_pixel + (sx+i)*sbytes_per_pixel + 3];
 				r = src[(sy+j)*sw*sbytes_per_pixel + (sx+i)*sbytes_per_pixel + 2];
@@ -223,27 +292,49 @@ Screen::Blit(unsigned char *src, int dx, int dy, int dw, int dh, int sx, int sy,
 }
 
 // XXX/GWS: We can speed this one up a lot
-void 
-Screen::Blit(unsigned char *src, int dx, int dy, int dw, int dh, 
-			 int sx, int sy, int sw, int sh, 
+void
+Screen::Blit(unsigned char *src, int dx, int dy, int dw, int dh,
+			 int sx, int sy, int sw, int sh,
 			 Color *transparentColor, Color *shadowColor, Color *hilitColor, Color *hilitShadowColor,
 			 bool bHilit, int sbytes_per_pixel)
 {
 	UNREFERENCED_PARAMETER(sh);
 	unsigned char r,g,b;
-	for(int j = 0; j < dh; ++j) {
-		for(int i = 0; i < dw; ++i) {
+
+	// Bounds checking - skip if completely off-screen
+	if (dx >= _width || dy >= _height || dx + dw <= 0 || dy + dh <= 0)
+		return;
+
+	// Calculate actual draw region
+	int startX = 0, startY = 0;
+	int endX = dw, endY = dh;
+
+	if (dx < 0) {
+		startX = -dx;
+		sx += startX;
+	}
+	if (dy < 0) {
+		startY = -dy;
+		sy += startY;
+	}
+	if (dx + dw > _width)
+		endX = _width - dx;
+	if (dy + dh > _height)
+		endY = _height - dy;
+
+	for(int j = startY; j < endY; ++j) {
+		for(int i = startX; i < endX; ++i) {
 			r = src[(sy+j)*sw*sbytes_per_pixel + (sx+i)*sbytes_per_pixel + 2];
 			g =	src[(sy+j)*sw*sbytes_per_pixel + (sx+i)*sbytes_per_pixel + 1];
 			b = src[(sy+j)*sw*sbytes_per_pixel + (sx+i)*sbytes_per_pixel + 0];
-			
+
 			// First look at transparency
 			if(r != transparentColor->red || g != transparentColor->green || b != transparentColor->blue) {
 				// Next look at shadow
 				if(r == shadowColor->red && g == shadowColor->green && b == shadowColor->blue) {
 					(_bits[(dy+j)*_pitch+(dx+i)*_bytes_per_pixel + 2] >>= 2) *= 3;
 					(_bits[(dy+j)*_pitch+(dx+i)*_bytes_per_pixel + 1] >>= 2) *= 3;
-					(_bits[(dy+j)*_pitch+(dx+i)*_bytes_per_pixel + 0] >>= 2) *= 3;					
+					(_bits[(dy+j)*_pitch+(dx+i)*_bytes_per_pixel + 0] >>= 2) *= 3;
 				} else {
 					// Look at hiliting
 					if(bHilit) {
@@ -285,7 +376,8 @@ Screen::Blit(unsigned char *src, int dx, int dy, int dw, int dh,
 			 int sx, int sy, int sw, int sh, int sbytes_per_pixel, bool bUseShadow, bool bUseTransparency)
 {
 	unsigned int *isrc = (unsigned int *)src;
-	unsigned int pixel, msk;
+	[[maybe_unused]] unsigned int pixel;
+	unsigned int msk;
 	int r,g,b;
 	UNREFERENCED_PARAMETER(sh);
 	UNREFERENCED_PARAMETER(bUseShadow);
@@ -365,7 +457,7 @@ Screen::Blit(unsigned char *src, unsigned char *mask,
 {
 	unsigned int *isrc = (unsigned int *)src;
 	unsigned int *imask = (unsigned int *) mask;
-	unsigned int pixel;
+	[[maybe_unused]] unsigned int pixel;
 	unsigned int msk;
 	int r,g,b;
 	UNREFERENCED_PARAMETER(sh);
@@ -502,8 +594,8 @@ Screen::PointInRegion(int x, int y, Region *r)
 
 	for(i=0; i<polySides; i++) {
 		j++; if (j==polySides) j=0;
-		if (r->points[i].y < y && r->points[j].y >= y 
-			|| r->points[j].y < y && r->points[i].y >= y) 
+		if ((r->points[i].y < y && r->points[j].y >= y) 
+			|| (r->points[j].y < y && r->points[i].y >= y))
 		{
 			if (r->points[i].x + (y-r->points[i].y)/(r->points[j].y-r->points[i].y)*(r->points[j].x-r->points[i].x) < x) 
 			{
@@ -581,6 +673,24 @@ Screen::DrawRect(int x, int y, int w, int h, int width, Color *c)
 void
 Screen::FillRect(int x, int y, int w, int h, Color *c)
 {
+	// Bounds checking - skip if completely off-screen
+	if (x >= _width || y >= _height || x + w <= 0 || y + h <= 0)
+		return;
+
+	// Clamp to screen bounds
+	if (x < 0) {
+		w += x;
+		x = 0;
+	}
+	if (y < 0) {
+		h += y;
+		y = 0;
+	}
+	if (x + w > _width)
+		w = _width - x;
+	if (y + h > _height)
+		h = _height - y;
+
 	for(int j = 0; j < h; ++j) {
 		for(int i = 0; i < w; ++i) {
 			_bits[(j+y)*_pitch+(i+x)*_bytes_per_pixel + 0] = c->blue;

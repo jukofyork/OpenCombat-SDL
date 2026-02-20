@@ -7,7 +7,6 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_mixer.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -19,6 +18,7 @@
 #include "graphics/Screen.h"
 #include "misc/Color.h"
 #include "misc/TGA.h"
+#include "misc/Error.h"
 #include "graphics/FontManager.h"
 #include "application/Globals.h"
 #include "misc/GameConstants.h"
@@ -100,8 +100,7 @@ int main(int argc, char* argv[])
 	globals.Application.Cursor = (CursorInterface *)&app;
 
 	if(!app.Initialize()) {
-		fprintf(stderr, "Failed to initialize application\n");
-		return 1;
+		ERROR("Failed to initialize application");
 	}
 
 	// Run the main loop
@@ -163,14 +162,12 @@ bool CSDLApplication::Initialize()
 {
 	// Initialize SDL
 	if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER) < 0) {
-		fprintf(stderr, "SDL_Init failed: %s\n", SDL_GetError());
-		return false;
+		ERROR("SDL_Init failed: " + std::string(SDL_GetError()));
 	}
 
 	// Initialize SDL_ttf
 	if(TTF_Init() < 0) {
-		fprintf(stderr, "TTF_Init failed: %s\n", TTF_GetError());
-		// Continue anyway, we'll handle missing fonts gracefully
+		ERROR("TTF_Init failed: " + std::string(TTF_GetError()));
 	}
 
 	// Create window
@@ -200,9 +197,7 @@ bool CSDLApplication::Initialize()
 	_fontManager->Initialize(NULL);
 
 	// Load custom cursors
-	if(!LoadCursors()) {
-		fprintf(stderr, "Warning: Failed to load some cursors\n");
-	}
+	LoadCursors();
 
 	m_bLoadingApp = false;
 
@@ -225,8 +220,7 @@ bool CSDLApplication::CreateWindow()
 	);
 
 	if(m_window == NULL) {
-		fprintf(stderr, "SDL_CreateWindow failed: %s\n", SDL_GetError());
-		return false;
+		ERROR("SDL_CreateWindow failed: " + std::string(SDL_GetError()));
 	}
 
 	// Load and set window icon
@@ -236,7 +230,7 @@ bool CSDLApplication::CreateWindow()
 	if(iconTga != NULL) {
 		int width = iconTga->GetWidth();
 		int height = iconTga->GetHeight();
-		int depth = iconTga->GetDepth();
+		[[maybe_unused]] int depth = iconTga->GetDepth();
 		unsigned char* data = iconTga->GetData();
 		
 		if(width > 0 && height > 0 && data != NULL) {
@@ -294,8 +288,7 @@ bool CSDLApplication::CreateRenderer()
 		// Try software renderer
 		m_renderer = SDL_CreateRenderer(m_window, -1, SDL_RENDERER_SOFTWARE);
 		if(m_renderer == NULL) {
-			fprintf(stderr, "SDL_CreateRenderer failed: %s\n", SDL_GetError());
-			return false;
+			ERROR("SDL_CreateRenderer failed: " + std::string(SDL_GetError()));
 		}
 	}
 
@@ -310,8 +303,7 @@ bool CSDLApplication::CreateRenderer()
 	);
 
 	if(m_screenSurface == NULL) {
-		fprintf(stderr, "SDL_CreateRGBSurface failed: %s\n", SDL_GetError());
-		return false;
+		ERROR("SDL_CreateRGBSurface failed: " + std::string(SDL_GetError()));
 	}
 
 	// Create texture for presenting to screen
@@ -324,8 +316,7 @@ bool CSDLApplication::CreateRenderer()
 	);
 
 	if(m_screenTexture == NULL) {
-		fprintf(stderr, "SDL_CreateTexture failed: %s\n", SDL_GetError());
-		return false;
+		ERROR("SDL_CreateTexture failed: " + std::string(SDL_GetError()));
 	}
 
 	return true;
@@ -365,8 +356,7 @@ bool CSDLApplication::RecreateRendererResources(int newWidth, int newHeight)
 	);
 
 	if(m_screenSurface == NULL) {
-		fprintf(stderr, "SDL_CreateRGBSurface failed: %s\n", SDL_GetError());
-		return false;
+		ERROR("SDL_CreateRGBSurface failed: " + std::string(SDL_GetError()));
 	}
 
 	// Create new texture
@@ -379,8 +369,7 @@ bool CSDLApplication::RecreateRendererResources(int newWidth, int newHeight)
 	);
 
 	if(m_screenTexture == NULL) {
-		fprintf(stderr, "SDL_CreateTexture failed: %s\n", SDL_GetError());
-		return false;
+		ERROR("SDL_CreateTexture failed: " + std::string(SDL_GetError()));
 	}
 
 	// Update screen capabilities with new surface
@@ -435,8 +424,7 @@ bool CSDLApplication::InitAudio()
 {
 	// Initialize SDL_mixer
 	if(Mix_OpenAudio(22050, AUDIO_S16SYS, 2, 2048) < 0) {
-		fprintf(stderr, "Mix_OpenAudio failed: %s\n", Mix_GetError());
-		return false;
+		ERROR("Mix_OpenAudio failed: " + std::string(Mix_GetError()));
 	}
 	
 	// Allocate 8 mixing channels (default is usually sufficient)
@@ -918,9 +906,7 @@ bool CSDLApplication::LoadCursors()
 		// Load TGA file
 		TGA* tga = TGA::Create(path);
 		if(tga == NULL) {
-			fprintf(stderr, "Failed to load cursor: %s\n", path.c_str());
-			_cursors[i] = NULL;
-			continue;
+			ERROR("Failed to load cursor: " + path.string());
 		}
 		
 		// Get TGA properties
@@ -929,10 +915,7 @@ bool CSDLApplication::LoadCursors()
 		unsigned char* data = tga->GetData();
 		
 		if(width <= 0 || height <= 0 || data == NULL) {
-			fprintf(stderr, "Invalid cursor data: %s\n", path.c_str());
-			delete tga;
-			_cursors[i] = NULL;
-			continue;
+			ERROR("Invalid cursor data: " + path.string());
 		}
 		
 		// Create SDL surface in RGBA format
@@ -941,10 +924,7 @@ bool CSDLApplication::LoadCursors()
 		);
 		
 		if(surface == NULL) {
-			fprintf(stderr, "Failed to create surface for cursor: %s\n", SDL_GetError());
-			delete tga;
-			_cursors[i] = NULL;
-			continue;
+			ERROR("Failed to create surface for cursor: " + std::string(SDL_GetError()));
 		}
 		
 		// Lock surface before accessing pixels
@@ -979,7 +959,7 @@ bool CSDLApplication::LoadCursors()
 		_cursors[i] = SDL_CreateColorCursor(surface, hotspotX, hotspotY);
 		
 		if(_cursors[i] == NULL) {
-			fprintf(stderr, "Failed to create cursor from surface: %s\n", SDL_GetError());
+			ERROR("Failed to create cursor from surface: " + std::string(SDL_GetError()));
 		}
 		
 		// Clean up

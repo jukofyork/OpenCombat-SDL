@@ -1,6 +1,6 @@
 #include "./BuildingManager.h"
 #include <misc/tinyxml2.h>
-#include <stdio.h>
+#include <misc/Error.h>
 #include <math.h>
 #include <string>
 #include <filesystem>
@@ -14,8 +14,7 @@ BuildingManager::LoadBuildings(const std::filesystem::path& fileName, std::vecto
 {
 	tinyxml2::XMLDocument doc;
 	if (doc.LoadFile(fileName.c_str()) != tinyxml2::XML_SUCCESS) {
-		printf("Failed to load buildings file: %s\n", fileName.c_str());
-		return;
+		ERROR("Failed to load buildings file: " + fileName.string());
 	}
 	
 	tinyxml2::XMLElement* root = doc.FirstChildElement("Buildings");

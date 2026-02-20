@@ -1,8 +1,8 @@
 #include "./SoldierManager.h"
 #include "misc/tinyxml2.h"
+#include "misc/Error.h"
 
 #include <assert.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 #include <errno.h>
@@ -81,8 +81,7 @@ SoldierManager::LoadSoldiers(const std::filesystem::path& fileName, const std::f
 
 	XMLDocument doc;
 	if (doc.LoadFile(fileName.c_str()) != XML_SUCCESS) {
-		printf("Failed to load soldiers file: %s\n", fileName.c_str());
-		return;
+		ERROR("Failed to load soldiers file: " + fileName.string());
 	}
 	
 	XMLElement* root = doc.FirstChildElement("Soldiers");

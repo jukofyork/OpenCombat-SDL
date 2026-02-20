@@ -14,6 +14,10 @@ MiniMap::MiniMap(void)
 	_y = 0;
 	_visibleWidth = -1;
 	_visibleHeight = -1;
+	_calcWidth = -1;
+	_calcHeight = -1;
+	_tga = nullptr;
+	_parentWorld = nullptr;
 }
 
 MiniMap::~MiniMap(void)
@@ -176,6 +180,11 @@ MiniMap::LeftMouseUp(int x, int y)
 void
 MiniMap::LeftMouseDrag(int x, int y)
 {
+	// Guard against using uninitialized values if called before first render
+	if(_calcWidth < 0 || _calcHeight < 0) {
+		return;
+	}
+
 	_x = x - (Position.x+2) - _zoomWidth/2;
 	_y = y - (Position.y+2) - _zoomHeight/2;
 

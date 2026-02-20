@@ -1,6 +1,5 @@
 #include "./LegacyMapLoader.h"
 #include <assert.h>
-#include <stdlib.h>
 #include <string.h>
 #include <fstream>
 #include <sstream>
@@ -37,7 +36,7 @@ LegacyMapLoader::Load(const std::filesystem::path& mapFile)
 	assert(fp.is_open());
 
 	std::string line;
-	int mapIdx = 0;
+	[[maybe_unused]] int mapIdx = 0;
 
 	// Let's read the map index
 	assert(std::getline(fp, line));
@@ -65,8 +64,9 @@ LegacyMapLoader::Load(const std::filesystem::path& mapFile)
 	assert(std::getline(fp, line));
 	
 	// Allocate the elements and elevation
-	_elements = (unsigned short *) calloc(_nMacroblocksX*_nMacroblocksY*_nBlocksPerMacroblockX*_nBlocksPerMacroblockY, sizeof(short));
-	_elevation = (unsigned char *) calloc(_nMacroblocksX*_nMacroblocksY*_nBlocksPerMacroblockX*_nBlocksPerMacroblockY, sizeof(char));
+	int arraySize = _nMacroblocksX * _nMacroblocksY * _nBlocksPerMacroblockX * _nBlocksPerMacroblockY;
+	_elements = new unsigned short[arraySize]();
+	_elevation = new unsigned char[arraySize]();
 
 	// Now we are ready to start reading in data
 	for(int j = 0; j < _nMacroblocksY; ++j)

@@ -1,5 +1,6 @@
 #include "./WeaponManager.h"
 #include <misc/tinyxml2.h>
+#include <misc/Error.h>
 
 #include <filesystem>
 #include <objects/Weapon.h>
@@ -20,8 +21,7 @@ WeaponManager::LoadWeapons(const std::filesystem::path& fileName)
 
 	XMLDocument doc;
 	if (doc.LoadFile(fileName.c_str()) != XML_SUCCESS) {
-		printf("Failed to load weapons file: %s\n", fileName.c_str());
-		return;
+		ERROR("Failed to load weapons file: " + fileName.string());
 	}
 	
 	XMLElement* root = doc.FirstChildElement("Weapons");

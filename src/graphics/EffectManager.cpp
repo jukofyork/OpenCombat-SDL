@@ -1,5 +1,6 @@
 #include "./EffectManager.h"
 #include "misc/tinyxml2.h"
+#include "misc/Error.h"
 
 #include <string>
 #include <vector>
@@ -35,8 +36,7 @@ EffectManager::LoadEffects(const std::filesystem::path& fileName)
 {
 	XMLDocument doc;
 	if (doc.LoadFile(fileName.c_str()) != XML_SUCCESS) {
-		printf("Failed to load effects file: %s\n", fileName.c_str());
-		return;
+		ERROR("Failed to load effects file: " + fileName.string());
 	}
 
 	std::vector<EffectAttributes> dest;
@@ -99,8 +99,7 @@ EffectManager::LoadEffects(const std::filesystem::path& fileName)
 		for(size_t j = 0; j < dest[i].GraphicsFile.size(); ++j) {
 			TGA *tga = TGA::Create(dest[i].GraphicsFile[j]);
 			if (!tga) {
-				printf("Failed to load effect frame: %s\n", dest[i].GraphicsFile[j].c_str());
-				continue;
+				ERROR("Failed to load effect frame: " + dest[i].GraphicsFile[j]);
 			}
 			tga->SetTransparentColor(0,0,0);
 			_sourceImages.push_back(tga);
@@ -118,5 +117,5 @@ EffectManager::GetEffect(const std::string &effectName)
 			return effect->Clone();
 		}
 	}
-	return nullptr;
+	ERROR("Effect not found: " + effectName);
 }

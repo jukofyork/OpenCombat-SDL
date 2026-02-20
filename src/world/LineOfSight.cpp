@@ -1,6 +1,7 @@
 #include "./LineOfSight.h"
-#include <stdio.h>
+#include <fstream>
 #include <world/Map.h>
+#include <vector>
 
 /**
  * A LOS file is a binary RLE file that codes LOS attributes for every
@@ -42,21 +43,21 @@ LineOfSight::Export(Map *map, const std::filesystem::path& fileName)
 	map->GetNumTiles(&sx, &sy);
 
 	// Create the file for exporting
-	FILE *fp = fopen(fileName.c_str(), "wb");
+	std::ofstream file(fileName, std::ios::binary);
 
 	// Let's allocate a temporary array for LOS calculations. This array
 	// is large enough to hold the calculations for one tile only.
-	unsigned char *buffer = (unsigned char *) calloc(sx*sy, sizeof(unsigned char));
+	std::vector<unsigned char> buffer(sx * sy);
 
 	// Now, for each tile on the map, we need to calculate the LOS to all the other
-	// tiles. 
+	// tiles.
 	for(int j = 0; j < sy; ++j) {
 		for(int i = 0; i < sx; ++i) {
 			// We are at tile [i,j]
-			CalculateLOSForTile(i, j, sx, sy, map, buffer);
+			CalculateLOSForTile(i, j, sx, sy, map, buffer.data());
+			// TODO: Write buffer to file using file.write()
 		}
 	}
-	fclose(fp);
 }
 
 bool

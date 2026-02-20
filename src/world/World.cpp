@@ -1,7 +1,5 @@
 #include "./World.h"
 #include <assert.h>
-#include <stdio.h>
-#include <stdlib.h>
 #include <string>
 #include <filesystem>
 #include <application/CursorInterface.h>
@@ -30,10 +28,8 @@ World::World(void)
 	_contextMenu = new CombatContextMenu();
 	State.NumSquads = 0;
 	State.SelectedSquad = -1;
-	_maxMarks = 8;
-	_numMarks = 0;
-	_markPoints = (Point*)calloc(_maxMarks, sizeof(Point));
-	_markColors = (Mark::Color*) calloc(_maxMarks, sizeof(Mark::Color));
+	_markPoints.reserve(8);
+	_markColors.reserve(8);
 	_screenWidth = 0;
 	_screenHeight = 0;
 	_scrollLeft = false;
@@ -49,6 +45,32 @@ World::World(void)
 
 World::~World(void)
 {
+	// Free context menu
+	if (_contextMenu) {
+		delete _contextMenu;
+		_contextMenu = nullptr;
+	}
+
+	// Free line of sight calculator
+	if (_lineOfSight) {
+		delete _lineOfSight;
+		_lineOfSight = nullptr;
+	}
+
+	// Free current map
+	if (_currentMap) {
+		delete _currentMap;
+		_currentMap = nullptr;
+	}
+
+	// Clean up effects
+	for (auto* effect : _effects) {
+		delete effect;
+	}
+	_effects.clear();
+
+	// Note: _mobileObjects, _staticObjects, _selectedObjects are managed by their respective managers
+	// and should not be deleted here
 }
 
 void
@@ -131,7 +153,7 @@ World::Render(Screen *screen, Rect *clip)
 
 	// Render any of the marks
 	int x, y;
-	for(int i = 0; i < _numMarks; ++i) {
+	for(size_t i = 0; i < _markPoints.size(); ++i) {
 		x = _markPoints[i].x;
 		y = _markPoints[i].y;
 		if(x > (clip->x+_originX) && x < (clip->x+_originX+clip->w)
@@ -1008,25 +1030,19 @@ World::ConvertPositionToTile(int x, int y, int *i, int *j)
 }
 
 // Add a mark to a given position
-void 
+void
 World::AddMark(Mark::Color markColor, int x, int y)
 {
-	if(_numMarks >= _maxMarks)
-	{
-		_maxMarks*=2;
-		_markPoints = (Point*)realloc(_markPoints, _maxMarks*sizeof(Point));
-		_markColors = (Mark::Color*)realloc(_markColors, _maxMarks*sizeof(Mark::Color));
-	}
-	_markPoints[_numMarks].x = x;
-	_markPoints[_numMarks].y = y;
-	_markColors[_numMarks++] = markColor;
+	_markPoints.push_back({x, y});
+	_markColors.push_back(markColor);
 }
 
 // Clear all our marks
-void 
+void
 World::ClearMarks()
 {
-	_numMarks = 0;
+	_markPoints.clear();
+	_markColors.clear();
 }
 
 void

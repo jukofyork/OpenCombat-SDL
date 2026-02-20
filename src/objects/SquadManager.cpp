@@ -1,10 +1,10 @@
 #include "./SquadManager.h"
 #include "misc/tinyxml2.h"
+#include "misc/Error.h"
 #include <objects/SoldierManager.h>
 #include <objects/VehicleManager.h>
 #include <objects/WeaponManager.h>
 #include <objects/Squad.h>
-#include <stdio.h>
 #include <assert.h>
 #include <strings.h>
 #include <string>
@@ -56,8 +56,7 @@ SquadManager::LoadSquads(const std::filesystem::path& fileName)
 
 	XMLDocument doc;
 	if (doc.LoadFile(fileName.c_str()) != XML_SUCCESS) {
-		printf("Failed to load squads file: %s\n", fileName.c_str());
-		return;
+		ERROR("Failed to load squads file: " + fileName.string());
 	}
 	
 	XMLElement* root = doc.FirstChildElement("Squads");

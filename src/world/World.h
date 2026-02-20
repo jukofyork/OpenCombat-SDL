@@ -235,10 +235,8 @@ protected:
 	int _screenWidth, _screenHeight;
 
 	// Lists of marks that we have to render
-	Point *_markPoints;
-	Mark::Color *_markColors;
-	int _numMarks;
-	int _maxMarks;
+	std::vector<Point> _markPoints;
+	std::vector<Mark::Color> _markColors;
 
 	// A line of sight calculator
 	LineOfSight *_lineOfSight;

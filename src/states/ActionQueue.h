@@ -1,7 +1,6 @@
 #pragma once
 
-#include <stdlib.h>
-#include <string.h>
+#include <vector>
 #include <assert.h>
 
 // This class defines a queue of actions, where each action is defined
@@ -9,22 +8,16 @@
 class ActionQueue
 {
 public:
-	ActionQueue() 
+	ActionQueue()
 	{
-		_length = 1;
-		_data = (int *)calloc(_length, sizeof(int));
+		_data.resize(1);
 		_firstItem = 0;
 		_lastItem = 0;
 		_nItems = 0;
 	}
 
-	~ActionQueue() 
+	~ActionQueue()
 	{
-		if(_data != 0)
-		{
-			free(_data);
-			_data = 0;
-		}
 	}
 
 	// Enqueues a new action idx
@@ -33,23 +26,26 @@ public:
 		// Let's see if we have enough space to add another index
 		if(_firstItem == _lastItem && _nItems > 0)
 		{
-			// We need more space
-			int oldLength = _length;
-			int newLength = _length << 1;
-			int toMove = oldLength-_lastItem-1;
-			_data = (int *)realloc(_data, newLength*sizeof(int));
+			// We need more space - double the capacity
+			int oldLength = (int)_data.size();
+			int newLength = oldLength << 1;
+			int toMove = oldLength - _lastItem - 1;
+			_data.resize(newLength);
 			if(toMove > 0)
 			{
-				memmove(_data+newLength-toMove, _data+_lastItem+1, toMove*sizeof(int));
+				// Move wrapped elements to end of new buffer
+				for(int i = 0; i < toMove; ++i)
+				{
+					_data[newLength - toMove + i] = _data[_lastItem + 1 + i];
+				}
 			}
-			_firstItem = newLength-toMove-1;
-			_length = newLength;
+			_firstItem = newLength - toMove - 1;
 		}
 		_data[_firstItem] = actionIdx;
 		--_firstItem;
 		if(_firstItem < 0)
 		{
-			_firstItem += _length;
+			_firstItem += (int)_data.size();
 		}
 		++_nItems;
 	}
@@ -63,7 +59,7 @@ public:
 			--_lastItem;
 			if(_lastItem < 0)
 			{
-				_lastItem += _length;
+				_lastItem += (int)_data.size();
 			}
 			--_nItems;
 			return true;
@@ -82,7 +78,7 @@ public:
 			*rv = _data[_lastItem];
 			return true;
 		}
-		else 
+		else
 		{
 			return false;
 		}
@@ -97,7 +93,7 @@ public:
 		{
 			q1.Enqueue(i);
 		}
-		
+
 		int j = 0;
 		int rv = -1;
 		while(q1.Dequeue(&rv))
@@ -112,7 +108,7 @@ public:
 		{
 			q1.Enqueue(i);
 		}
-		
+
 		j = 0;
 		rv = -1;
 		while(q1.Dequeue(&rv))
@@ -125,8 +121,7 @@ public:
 	}
 
 protected:
-	int *_data;
-	int _length;
+	std::vector<int> _data;
 	int _firstItem;
 	int _lastItem;
 	int _nItems;

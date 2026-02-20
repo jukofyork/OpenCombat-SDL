@@ -89,7 +89,7 @@ public:
 	inline long GetID() { return _id; }
 
 	// Updates the interface state
-	virtual void UpdateInterfaceState(InterfaceState *state, int teamIdx, int unitIdx) {state;teamIdx;unitIdx;}
+	virtual void UpdateInterfaceState(InterfaceState *state, int teamIdx, int unitIdx) = 0;
 
 	// Kills this objects
 	virtual bool IsDead() { return true; }
@@ -118,7 +118,7 @@ public:
 
 	// Gets or sets the formation of this object
 	virtual Formation::Type GetFormation() { return Formation::Column; }
-	virtual void SetFormation(Formation::Type formation) { formation; }
+	virtual void SetFormation([[maybe_unused]] Formation::Type formation) {}
 
 	// Gets the current heading of this object
 	virtual Direction GetHeading() { return _currentHeading; }

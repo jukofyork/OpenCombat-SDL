@@ -48,6 +48,7 @@ SoldierActionHandlers::SoldierActionHandler SoldierActionHandlers::_handlers[Sol
 bool
 SoldierActionHandlers::AtDestination(Soldier *s, Point *p1, Point *p2)
 {
+	UNREFERENCED_PARAMETER(s);
 	Vector2 dest;
 	dest.x = (float)(p1->x - p2->x);
 	dest.y = (float)(p1->y - p2->y);
@@ -145,6 +146,11 @@ SoldierActionHandlers::ProneFireActionHandler(Soldier *soldier, Action *action, 
 		case Target::Area:
 			// Set my heading
 			soldier->_currentHeading = Utilities::FindHeading(soldier->Position.x, soldier->Position.y, fireData->X, fireData->Y);
+			break;
+		case Target::Vehicle:
+		case Target::NoTarget:
+		case Target::NumTargetTypes:
+			// TODO: Handle these target types
 			break;
 		}
 
@@ -465,6 +471,8 @@ SoldierActionHandlers::ReloadActionHandler(Soldier *soldier, Action *action, lon
 bool 
 SoldierActionHandlers::FindCoverActionHandler(Soldier *soldier, Action *action, long dt)
 {
+	UNREFERENCED_PARAMETER(soldier);
+	UNREFERENCED_PARAMETER(dt);
 	FindCoverData *data = (FindCoverData *) action->Data;
 
 	if(data->CoverFound)
@@ -569,6 +577,9 @@ SoldierActionHandlers::WalkToActionHandler(Soldier *soldier, Action *action, lon
 bool 
 SoldierActionHandlers::WalkSlowToActionHandler(Soldier *soldier, Action *action, long dt)
 {
+	UNREFERENCED_PARAMETER(soldier);
+	UNREFERENCED_PARAMETER(action);
+	UNREFERENCED_PARAMETER(dt);
 	return true;
 }
 
@@ -618,6 +629,9 @@ SoldierActionHandlers::CrawlToActionHandler(Soldier *soldier, Action *action, lo
 bool 
 SoldierActionHandlers::FollowActionHandler(Soldier *soldier, Action *action, long dt)
 {
+	UNREFERENCED_PARAMETER(soldier);
+	UNREFERENCED_PARAMETER(action);
+	UNREFERENCED_PARAMETER(dt);
 	return true;
 }
 
@@ -746,6 +760,7 @@ SoldierActionHandlers::FollowInFormationActionHandler(Soldier *soldier, Action *
 bool 
 SoldierActionHandlers::TurnActionHandler(Soldier *soldier, Action *action, long dt)
 {
+	UNREFERENCED_PARAMETER(dt);
 	int direction = (int)(intptr_t)action->Data;
 	soldier->_currentHeading = (Direction)direction;
 	return true;
@@ -754,16 +769,18 @@ SoldierActionHandlers::TurnActionHandler(Soldier *soldier, Action *action, long 
 bool 
 SoldierActionHandlers::DefendActionHandler(Soldier *soldier, Action *action, long dt)
 {
+	UNREFERENCED_PARAMETER(dt);
 	// Update our state
 	g_Globals->World.Actions.Soldiers.UpdateState(action->Index, &soldier->_currentState);
 
-	// XXX/GWS: Perform whatever AI we need to do this action!	
+	// XXX/GWS: Perform whatever AI we need to do this action!
 	return false;
 }
 
 bool 
 SoldierActionHandlers::AmbushActionHandler(Soldier *soldier, Action *action, long dt)
 {
+	UNREFERENCED_PARAMETER(dt);
 	// Update our state
 	g_Globals->World.Actions.Soldiers.UpdateState(action->Index, &soldier->_currentState);
 

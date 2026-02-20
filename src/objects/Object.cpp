@@ -21,6 +21,29 @@ Object::Object()
 	_moving = false;
 	_pathComplete = false;
 	_currentHeading = North;
+	
+	// Action states
+	_canFire = false;
+	_canMove = false;
+	_canMoveFast = false;
+	_canSneak = false;
+	_canDefend = false;
+	_canAmbush = false;
+	_canSmoke = false;
+	
+	// Target info
+	_currentTarget = nullptr;
+	_currentTargetType = Target::NoTarget;
+	_currentTargetX = 0;
+	_currentTargetY = 0;
+	
+	// Squad and team info
+	_currentSquad = nullptr;
+	_currentTeamID = -1;
+	_currentTileElement = nullptr;
+	
+	// Color
+	_highlightColor = Color(0, 0, 0);
 }
 
 Object::~Object(void)

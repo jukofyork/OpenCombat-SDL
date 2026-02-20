@@ -1,5 +1,6 @@
 #include "./SoundManager.h"
 #include "misc/tinyxml2.h"
+#include "misc/Error.h"
 
 #include <string>
 #include <filesystem>
@@ -27,8 +28,7 @@ SoundManager::LoadSounds(const std::filesystem::path& fileName)
 
 	XMLDocument doc;
 	if (doc.LoadFile(fileName.c_str()) != XML_SUCCESS) {
-		printf("Failed to load sounds file: %s\n", fileName.c_str());
-		return;
+		ERROR("Failed to load sounds file: " + fileName.string());
 	}
 	
 	std::vector<SoundAttributes> dest;
@@ -64,7 +64,7 @@ SoundManager::LoadSounds(const std::filesystem::path& fileName)
 	   // Load the WAV file using SDL_mixer
 	   s->_chunk = Mix_LoadWAV(s->_soundFileName.c_str());
 	   if (s->_chunk == NULL) {
-		   printf("Failed to load sound: %s - %s\n", s->_soundFileName.c_str(), Mix_GetError());
+		   ERROR("Failed to load sound: " + s->_soundFileName + " - " + Mix_GetError());
 	   }
 	   _sounds.push_back(s);
 	}
@@ -78,5 +78,5 @@ SoundManager::GetSound(const std::string &soundName)
 			return sound;
 		}
 	}
-	return NULL;
+	ERROR("Sound not found: " + soundName);
 }

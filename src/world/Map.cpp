@@ -23,13 +23,38 @@ Map::Map(void)
 {
 	_originX = 0;
 	_originY = 0;
+	_mapImage = nullptr;
+	_elements = nullptr;
+	_elevations = nullptr;
+	_objects = nullptr;
+	_buildingIndices = nullptr;
+	_nBlocksX = 0;
+	_nBlocksY = 0;
+	_nPixelsPerBlockX = 0;
+	_nPixelsPerBlockY = 0;
 }
 
 Map::~Map(void)
 {
-	free(_objects);
-	free(_elements);
-	free(_elevations);
+	delete[] _objects;
+	delete[] _elements;
+	delete[] _elevations;
+	delete[] _buildingIndices;
+
+	// Clean up buildings
+	for (auto* building : _buildings) {
+		delete building;
+	}
+	_buildings.clear();
+
+	// Clean up victory locations
+	for (auto* vl : _victoryLocations) {
+		delete vl;
+	}
+	_victoryLocations.clear();
+
+	// Clean up map image
+	delete _mapImage;
 }
 
 void 
@@ -104,11 +129,11 @@ Map::Render(Screen *screen, Rect *clip)
 				// Is there a building on this tile?
 				if(_buildingIndices[j*_nBlocksX+i] > 0)
 				{
-					// Is there a soldier in this building?
-					Building *b = _buildings[_buildingIndices[j*_nBlocksX+i]-1];
-					for(int k = 0; k < b->NumTiles; ++k)
-					{
-						if(_objects[b->Tiles[k]] != NULL || g_Globals->World.bRenderBuildingInteriors)
+				// Is there a soldier in this building?
+				Building *b = _buildings[_buildingIndices[j*_nBlocksX+i]-1];
+				for(size_t k = 0; k < b->Tiles.size(); ++k)
+				{
+					if(_objects[b->Tiles[k]] != NULL || g_Globals->World.bRenderBuildingInteriors)
 						{
 							// We have to draw this building. Make sure it is
 							// not already in our list
@@ -200,15 +225,15 @@ Map::Create(const std::filesystem::path& fileName)
 	m->_miniName = attr->Mini;
 	m->_overlandName = attr->Overland;
 	m->_mapImage = TGA::Create(attr->Background);
-	
+
 	LegacyMapLoader *l = new LegacyMapLoader();
 	l->Load(attr->Elements);
 	m->_elements = l->GetElements();
 	m->_elevations = l->GetElevations();
 	l->GetNumPixelsPerBlock(&(m->_nPixelsPerBlockX), &(m->_nPixelsPerBlockY));
 	l->GetNumBlocks(&(m->_nBlocksX), &(m->_nBlocksY));
-	m->_objects = (Object **) calloc(m->_nBlocksX*m->_nBlocksY, sizeof(Object *));
-	m->_buildingIndices = (unsigned short *) calloc(m->_nBlocksX*m->_nBlocksY, sizeof(short));
+	m->_objects = new Object*[m->_nBlocksX * m->_nBlocksY]();
+	m->_buildingIndices = new unsigned short[m->_nBlocksX * m->_nBlocksY]();
 
 	// Load the buildings into this map.
 	BuildingManager::LoadBuildings(attr->Buildings, &m->_buildings);
@@ -383,19 +408,8 @@ Map::PopulateBuildingsIndices()
 									 &(building->BoundaryPoints)))
 				{
 					_buildingIndices[n*_nBlocksX+m] = (unsigned short)i+1;
-					// Now add this tile index into the building
-					if(building->NumTiles == 0)
-					{
-						building->Tiles = (int *)calloc(1, sizeof(int));
-						building->Tiles[0] = n*_nBlocksX+m;
-						building->NumTiles++;
-					}
-					else
-					{
-						building->Tiles = (int *)realloc(building->Tiles, (building->NumTiles+1)*sizeof(int));
-						building->Tiles[building->NumTiles] = n*_nBlocksX+m;
-						building->NumTiles++;
-					}
+				// Now add this tile index into the building
+				building->Tiles.push_back(n*_nBlocksX+m);
 				}
 			}
 		}

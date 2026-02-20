@@ -3,6 +3,11 @@
 
 GameApplication::GameApplication()
 {
+	_currentModule = Introduction;
+	for (int i = 0; i < NumAvailableModules; ++i) {
+		_modules[i] = nullptr;
+	}
+	_app = nullptr;
 }
 
 GameApplication::~GameApplication(void)

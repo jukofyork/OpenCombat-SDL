@@ -28,6 +28,50 @@ Vehicle::Vehicle(void)
 	_hullRotating = false;
 	_numWeapons = 0;
 	_numCrew = 0;
+	_currentState = Stopped;
+	
+	// Graphics
+	_hullGraphics = nullptr;
+	_turretGraphics = nullptr;
+	_wreckGraphics = nullptr;
+	
+	// Squad
+	_currentSquad = nullptr;
+	
+	// Position and movement
+	_velocity.x = _velocity.y = 0.0f;
+	_position.x = _position.y = 0.0f;
+	_destination.x = _destination.y = 0;
+	_shortDestination.x = _shortDestination.y = 0;
+	_maxRoadSpeed = 0.0f;
+	_acceleration = 0.0f;
+	
+	// Turret
+	_turretPosition.x = _turretPosition.y = 0;
+	_muzzlePosition.x = _muzzlePosition.y = 0;
+	_turretRotationRate = 0;
+	_hullRotationRate = 0;
+	_turretTargetAngle = 0.0f;
+	_hullTargetAngle = 0.0f;
+	_turretRotationDirection = 0.0f;
+	_hullRotationDirection = 0.0f;
+	
+	// Weapons
+	for (int i = 0; i < MAX_WEAPONS_PER_VEHICLE; ++i) {
+		_weapons[i] = nullptr;
+		_weaponsNumClips[i] = 0;
+		_weaponIsOnHull[i] = false;
+	}
+	
+	// Crew
+	for (int i = 0; i < MAX_CREW; ++i) {
+		_crew[i].soldier = nullptr;
+		_crew[i].weaponSlot = -1;
+	}
+	
+	// Action/Status
+	_currentAction = Unit::Defending;
+	_currentStatus = Unit::Healthy;
 }
 
 Vehicle::~Vehicle(void)
@@ -458,6 +502,11 @@ Vehicle::Shoot(Weapon *weapon, Object *target, Target::Type targetType, int targ
 		case Target::Area:
 			// Set my heading
 			effectHeading = Utilities::FindHeading(Position.x, Position.y, targetX, targetY);
+			break;
+		case Target::Vehicle:
+		case Target::NoTarget:
+		case Target::NumTargetTypes:
+			// TODO: Implement these target types
 			break;
 	}
 	weapon->Fire();

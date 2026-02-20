@@ -40,6 +40,30 @@ Soldier::Soldier(void) : Object()
 
 	// Initialize the speeds and accelerations
 	_runningAccel = _walkingAccel = _walkingSlowAccel = _crawlingAccel = 0.0f;
+
+	// Initialize animation array
+	for (int i = 0; i < NumStates; ++i) {
+		_animations[i] = nullptr;
+	}
+
+	// Initialize animation tracking
+	_currentFrameCurrentState = 0;
+	_currentAnimationMarker = false;
+
+	// Initialize position and velocity
+	_velocity.x = _velocity.y = 0.0f;
+	_position.x = _position.y = 0.0f;
+
+	// Initialize weapons
+	for (int i = 0; i < MAX_WEAPONS_PER_SOLDIER; ++i) {
+		_weapons[i] = nullptr;
+		_weaponsNumClips[i] = 0;
+	}
+
+	// Initialize action handlers
+	for (int i = 0; i < SoldierAction::NumActions; ++i) {
+		_actionHandlers[i] = nullptr;
+	}
 }
 
 Soldier::~Soldier(void)
@@ -528,6 +552,11 @@ Soldier::Shoot(Weapon *weapon, Object *target, Target::Type targetType, int targ
 		case Target::Area:
 			// Set my heading
 			_currentHeading = Utilities::FindHeading(Position.x, Position.y, targetX, targetY);
+			break;
+		case Target::Vehicle:
+		case Target::NoTarget:
+		case Target::NumTargetTypes:
+			// TODO: Implement these target types
 			break;
 	}
 	weapon->Fire();

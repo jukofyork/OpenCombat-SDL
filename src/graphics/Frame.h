@@ -15,7 +15,20 @@ class Screen;
 class Frame
 {
 public:
-	Frame() {}
+	Frame() 
+	{
+		_displayTime = 0;
+		_tga = nullptr;
+		_width = 0;
+		_height = 0;
+		_sourceX = 0;
+		_sourceY = 0;
+		_minBounds.x0 = _minBounds.y0 = _minBounds.x1 = _minBounds.y1 = 0;
+		_transparentColor = Color(0, 0, 0);
+		_shadowColor = Color(0, 0, 0);
+		_hilitColor = Color(0, 0, 0);
+		_hilitShadowColor = Color(0, 0, 0);
+	}
 	Frame(TGA *source, int displayTime, int width, int height, int sourceX, int sourceY, Color *transparentColor);
 	virtual ~Frame(void);
 

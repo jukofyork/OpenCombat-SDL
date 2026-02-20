@@ -1,9 +1,9 @@
 #include "./MapManager.h"
 #include "misc/tinyxml2.h"
+#include "misc/Error.h"
 
 #include <string>
 #include <filesystem>
-#include <stdio.h>
 #include <math.h>
 #include <application/Globals.h>
 
@@ -24,8 +24,7 @@ MapManager::Parse(const std::filesystem::path& fileName)
 {
     XMLDocument doc;
     if (doc.LoadFile(fileName.c_str()) != XML_SUCCESS) {
-        printf("Failed to load map file: %s\n", fileName.c_str());
-        return nullptr;
+        ERROR("Failed to load map file: " + fileName.string());
     }
     
     XMLElement* root = doc.FirstChildElement("Map");

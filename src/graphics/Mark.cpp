@@ -6,6 +6,9 @@
 
 Mark::Mark(void)
 {
+	for (int i = 0; i < NumColors; ++i) {
+		_marks[i] = nullptr;
+	}
 }
 
 Mark::~Mark(void)

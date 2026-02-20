@@ -1,9 +1,9 @@
 #include "./VehicleManager.h"
 #include "misc/tinyxml2.h"
+#include "misc/Error.h"
 
 #include <string>
 #include <filesystem>
-#include <stdio.h>
 #include <math.h>
 #include <misc/TGA.h>
 #include <misc/Structs.h>
@@ -71,8 +71,7 @@ VehicleManager::Load(const std::filesystem::path& fileName)
 
     XMLDocument doc;
     if (doc.LoadFile(fileName.c_str()) != XML_SUCCESS) {
-        printf("Failed to load vehicles file: %s\n", fileName.c_str());
-        return;
+        ERROR("Failed to load vehicles file: " + fileName.string());
     }
     
     XMLElement* root = doc.FirstChildElement("Vehicles");

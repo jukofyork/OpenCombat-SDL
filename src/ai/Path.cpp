@@ -1,26 +1,25 @@
 #include "./Path.h"
-#include <stdlib.h>
 
 // XXX/GWS: Both of these need to use a memory pool allocator!!!
 Path *
 AllocatePath()
 {
-	return (Path *) calloc(1, sizeof(Path));
+	return new Path();
 }
 
-void 
+void
 FreePath(Path *path, bool recurse)
 {
-	if(NULL == path) return;
+	if(nullptr == path) return;
 
 	if(recurse) {
-		Path *t = NULL;
-		while(path != NULL) {
+		Path *t = nullptr;
+		while(path != nullptr) {
 			t = path->Next;
-			free(path);
+			delete path;
 			path = t;
 		}
 	} else {
-		free(path);
+		delete path;
 	}
 }

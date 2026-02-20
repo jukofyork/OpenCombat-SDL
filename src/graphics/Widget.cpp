@@ -7,6 +7,7 @@ Widget::Widget(const std::string &name, TGA *tga)
 {
 	_name = name;
 	_tga = tga;
+	_index = -1;
 }
 
 Widget::~Widget(void)

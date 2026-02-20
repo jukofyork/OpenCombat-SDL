@@ -1,7 +1,7 @@
 #include "ColorManager.h"
 #include "misc/tinyxml2.h"
+#include "misc/Error.h"
 #include <vector>
-#include <stdio.h>
 #include <string>
 #include <filesystem>
 
@@ -41,8 +41,7 @@ ColorManager::Load(const std::filesystem::path& configFile)
 	
 	XMLDocument doc;
 	if (doc.LoadFile(configFile.c_str()) != XML_SUCCESS) {
-		printf("Failed to load color file: %s\n", configFile.c_str());
-		return;
+		ERROR("Failed to load color file: " + configFile.string());
 	}
 	
 	std::vector<ColorAttributes> dest;

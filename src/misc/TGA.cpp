@@ -1,9 +1,9 @@
 #include "./TGA.h"
-#include <stdlib.h>
-#include <stdio.h>
+#include "Error.h"
 #include <string.h>
 #include <string>
 #include <filesystem>
+#include <fstream>
 #include <assert.h>
 
 /**
@@ -36,8 +36,8 @@ TGA::TGA(void)
 
 TGA::~TGA(void)
 {
-	if(!_data) {
-		free(_data);
+	if(_data) {
+		delete[] _data;
 	}
 }
 
@@ -45,7 +45,6 @@ TGA *
 TGA::Create(const std::filesystem::path& filePath)
 {
 	HEADER header;
-	FILE *fptr;
 	TGA *tga;
     int n=0,i,j;
     unsigned int bytes2read;
@@ -55,44 +54,48 @@ TGA::Create(const std::filesystem::path& filePath)
 	int w=0, h=0;
 
 	// Open the file
-    if ((fptr = fopen(filePath.c_str(),"rb")) == NULL) {
-       return NULL;
+	std::ifstream file(filePath, std::ios::binary);
+    if (!file.is_open()) {
+		ERROR("Failed to open TGA file: " + filePath.string());
+		return NULL;
     }
 
 	// Create the return value
 	tga = new TGA();
 
     // Read in the header
-    header.idlength = (char)fgetc(fptr);
-    header.colourmaptype = (char)fgetc(fptr);
-    header.datatypecode = (char)fgetc(fptr);
-    fread(&header.colourmaporigin,2,1,fptr);
-    fread(&header.colourmaplength,2,1,fptr);
-    header.colourmapdepth = (char)fgetc(fptr);
-    fread(&header.x_origin,2,1,fptr);
-    fread(&header.y_origin,2,1,fptr);
-    fread(&header.width,2,1,fptr);
-    fread(&header.height,2,1,fptr);
-    header.bitsperpixel = (char)fgetc(fptr);
-    header.imagedescriptor = (char)fgetc(fptr);
+    header.idlength = static_cast<char>(file.get());
+    header.colourmaptype = static_cast<char>(file.get());
+    header.datatypecode = static_cast<char>(file.get());
+    file.read(reinterpret_cast<char*>(&header.colourmaporigin), 2);
+    file.read(reinterpret_cast<char*>(&header.colourmaplength), 2);
+    header.colourmapdepth = static_cast<char>(file.get());
+    file.read(reinterpret_cast<char*>(&header.x_origin), 2);
+    file.read(reinterpret_cast<char*>(&header.y_origin), 2);
+    file.read(reinterpret_cast<char*>(&header.width), 2);
+    file.read(reinterpret_cast<char*>(&header.height), 2);
+    header.bitsperpixel = static_cast<char>(file.get());
+    header.imagedescriptor = static_cast<char>(file.get());
 	tga->_width = header.width;
 	tga->_height = header.height;
 	tga->_depth = 4;
 
 	// Stored as 32 bit ARGB
-    if((tga->_data = (unsigned char*)malloc(header.width*header.height*sizeof(char)*4)) == NULL) {
+    tga->_data = new unsigned char[header.width*header.height*4]();
+    if(tga->_data == NULL) {
 	   return NULL;
     }
     ptr = tga->_data;
 	
 	skipover += header.idlength;
     skipover += header.colourmaptype * header.colourmaplength;
-    fseek(fptr,skipover,SEEK_CUR);
+    file.seekg(skipover, std::ios::cur);
 
 	bytes2read = header.bitsperpixel / 8;
     while(n < header.width * header.height) {
 		if(header.datatypecode == 2) {
-			if (fread(p,1,bytes2read,fptr) != bytes2read) {
+			file.read(reinterpret_cast<char*>(p), bytes2read);
+			if (!file.good()) {
 				return NULL;
 			}
 			if(w >= header.width) {
@@ -121,7 +124,8 @@ TGA::Create(const std::filesystem::path& filePath)
 		} else if (header.datatypecode == 10) {
 			// Compressed
 			assert(0); // Not implemented yet, needs to flip the bits
-			if (fread(p,1,bytes2read+1,fptr) != bytes2read+1) {
+			file.read(reinterpret_cast<char*>(p), bytes2read + 1);
+			if (!file.good()) {
 				return NULL;
 			}
 	        j = p[0] & 0x7f;
@@ -137,17 +141,17 @@ TGA::Create(const std::filesystem::path& filePath)
 				}
 			} else {                   /* Normal chunk */
 				for (i=0;i<j;i++) {
-					if (fread(p,1,bytes2read,fptr) != bytes2read) {
+					file.read(reinterpret_cast<char*>(p), bytes2read);
+					if (!file.good()) {
 						return NULL;
 					}
 					memcpy(ptr, p, bytes2read);
 					ptr += bytes2read;
-	                n++;
+                	n++;
 				}
 			}
         }
     }
-    fclose(fptr);
 
 	// Let's find our origin, if it is embedded in the filename.
 	// Format: name.x.y.tga where x and y are origin coordinates

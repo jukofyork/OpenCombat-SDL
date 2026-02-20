@@ -39,6 +39,13 @@ CombatModule::CombatModule()
 	_frameCount = 0;
 	_currentFPS = 0.0f;
 	_currentFrameTime = 0.0f;
+	_longBottomBackground = NULL;
+	_unitBackground = NULL;
+	_teamBarBlank = NULL;
+	_airstrikeNeg = NULL;
+	_artilleryNeg = NULL;
+	_bombardNeg = NULL;
+	_activeTeamPanel = NULL;
 }
 
 CombatModule::~CombatModule(void)
@@ -227,14 +234,19 @@ CombatModule::Render(Screen *screen)
 {
 	int dwidth;
 	int squadPanelDY = 7;
-	int x, y;
+	int x = 0, y = 0;
+
+	// Guard against NULL pointers if widget loading failed
+	if(!_longBottomBackground) {
+		return;
+	}
 
 	// Render the world
 	Rect clip;
 	clip.x = 0;
 	clip.y = 0;
 	clip.w = screen->GetWidth();
-	clip.h = screen->GetHeight() - _longBottomBackground->GetHeight() - (_showTeamPanel ? _unitBackground->GetHeight()-squadPanelDY : 0);
+	clip.h = screen->GetHeight() - _longBottomBackground->GetHeight() - (_showTeamPanel && _unitBackground ? _unitBackground->GetHeight()-squadPanelDY : 0);
 	screen->SetClippingRectangle(clip.x, clip.y, clip.w, clip.h);
 	_currentWorld->Render(screen, &clip);
 	screen->SetClippingRectangle(0, 0, screen->GetWidth(), screen->GetHeight());
@@ -242,7 +254,7 @@ CombatModule::Render(Screen *screen)
 	// Render the mini map
 	if(_showMiniMap) {
 		x = 0;
-		y = screen->GetHeight() - _longBottomBackground->GetHeight() - (_showTeamPanel ? _unitBackground->GetHeight()-squadPanelDY : 0) - _currentMiniMap->GetHeight();
+		y = screen->GetHeight() - _longBottomBackground->GetHeight() - (_showTeamPanel && _unitBackground ? _unitBackground->GetHeight()-squadPanelDY : 0) - _currentMiniMap->GetHeight();
 		_currentMiniMap->SetPosition(x, y);
 		// Tell the minimap the actual visible map area (accounting for panels)
 		_currentMiniMap->SetVisibleArea(clip.w, clip.h);
@@ -251,7 +263,8 @@ CombatModule::Render(Screen *screen)
 
 	// Render the unit panel
 	if(_currentWorld->State.SelectedSquad >= 0 && _showUnitPanel) {
-		x, y=screen->GetHeight() - _longBottomBackground->GetHeight() - (_showTeamPanel ? _unitBackground->GetHeight()-squadPanelDY : 0);
+		x = 0;
+		y = screen->GetHeight() - _longBottomBackground->GetHeight() - (_showTeamPanel && _unitBackground ? _unitBackground->GetHeight()-squadPanelDY : 0);
 		int dy;
 		for(int i = _currentWorld->State.SquadStates[_currentWorld->State.SelectedSquad].NumUnits-1; i >= 0 ; --i) {
 			Widget *w = _uiManager->GetWidget("Unit Panel");
@@ -314,13 +327,13 @@ Color white(255,255,255);
 			case Unit::Crawling:
 				w = _iconManager->GetWidget("Unit Action Crawling Green");
 				break;
-		case Unit::MovingFast:
+			case Unit::MovingFast:
 				w = _iconManager->GetWidget("Unit Action Running Green");
 				break;
-		case Unit::Ambushing:
+			case Unit::Ambushing:
 				w = _iconManager->GetWidget("Unit Action Defending Green");
 				break;
-		case Unit::Sneaking:
+			case Unit::Sneaking:
 				w = _iconManager->GetWidget("Unit Action Crawling Green");
 				break;
 			default:
@@ -349,10 +362,10 @@ Color white(255,255,255);
 	}
 
 	// Now the blank tile for the squads.
-	if(_showTeamPanel) {
+	if(_showTeamPanel && _unitBackground && _activeTeamPanel) {
 		dwidth = 0;
 		while(dwidth < screen->GetWidth()) {
-			screen->Blit(_unitBackground->GetData(), 
+			screen->Blit(_unitBackground->GetData(),
 				dwidth, screen->GetHeight() - _longBottomBackground->GetHeight() - _unitBackground->GetHeight() + squadPanelDY,
 				((dwidth+_unitBackground->GetWidth()) < screen->GetWidth()) ? _unitBackground->GetWidth() : screen->GetWidth() - dwidth, _unitBackground->GetHeight()-squadPanelDY,
 				_unitBackground->GetWidth(), _unitBackground->GetHeight(),
@@ -361,7 +374,8 @@ Color white(255,255,255);
 		}
 
 		// Render the active team panel
-		x=0, y=screen->GetHeight() - _longBottomBackground->GetHeight() - _unitBackground->GetHeight() + squadPanelDY;
+		x = 0;
+		y = screen->GetHeight() - _longBottomBackground->GetHeight() - _unitBackground->GetHeight() + squadPanelDY;
 		for(int i = 0, j = 0; i < _currentWorld->State.NumSquads; ++i) {
 			screen->Blit(_activeTeamPanel->GetData(), x, y,
 				_activeTeamPanel->GetWidth(), _activeTeamPanel->GetHeight(),
@@ -436,39 +450,42 @@ Color white(255,255,255);
 	}
 
 	// Render the long panel on the bottom
-	dwidth = 0;
-	while(dwidth < screen->GetWidth()) {
-		screen->Blit(_longBottomBackground->GetData(), 
-			dwidth, screen->GetHeight() - _longBottomBackground->GetHeight(),
-			((dwidth+_longBottomBackground->GetWidth()) < screen->GetWidth()) ? _longBottomBackground->GetWidth() : screen->GetWidth() - dwidth, _longBottomBackground->GetHeight(),
-			_longBottomBackground->GetWidth(), _longBottomBackground->GetHeight(),
-			_longBottomBackground->GetDepth());
-		dwidth += _longBottomBackground->GetWidth();
+	// Guard against NULL pointers if widget loading failed
+	if(_longBottomBackground && _airstrikeNeg && _artilleryNeg && _bombardNeg && _teamBarBlank) {
+		dwidth = 0;
+		while(dwidth < screen->GetWidth()) {
+			screen->Blit(_longBottomBackground->GetData(), 
+				dwidth, screen->GetHeight() - _longBottomBackground->GetHeight(),
+				((dwidth+_longBottomBackground->GetWidth()) < screen->GetWidth()) ? _longBottomBackground->GetWidth() : screen->GetWidth() - dwidth, _longBottomBackground->GetHeight(),
+				_longBottomBackground->GetWidth(), _longBottomBackground->GetHeight(),
+				_longBottomBackground->GetDepth());
+			dwidth += _longBottomBackground->GetWidth();
+		}
+
+		screen->Blit(_airstrikeNeg->GetData(),
+			47, screen->GetHeight() - _longBottomBackground->GetHeight()+ 4,
+			_airstrikeNeg->GetWidth(), _airstrikeNeg->GetHeight(),
+			_airstrikeNeg->GetWidth(), _airstrikeNeg->GetHeight(),
+			_airstrikeNeg->GetDepth());
+		screen->Blit(_artilleryNeg->GetData(),
+			47+_airstrikeNeg->GetWidth(), screen->GetHeight() - _longBottomBackground->GetHeight()+ 4,
+			_artilleryNeg->GetWidth(), _artilleryNeg->GetHeight(),
+			_artilleryNeg->GetWidth(), _artilleryNeg->GetHeight(),
+			_artilleryNeg->GetDepth());
+		screen->Blit(_bombardNeg->GetData(),
+			47+_artilleryNeg->GetWidth()+_airstrikeNeg->GetWidth(), screen->GetHeight() - _longBottomBackground->GetHeight()+ 4,
+			_bombardNeg->GetWidth(), _bombardNeg->GetHeight(),
+			_bombardNeg->GetWidth(), _bombardNeg->GetHeight(),
+			_bombardNeg->GetDepth());
+
+		// Render the team bar
+		x = 47+_artilleryNeg->GetWidth()+_airstrikeNeg->GetWidth()+_bombardNeg->GetWidth()+10;
+		y = screen->GetHeight() - _longBottomBackground->GetHeight() + 4;
+		screen->Blit(_teamBarBlank->GetData(), x, y,
+			_teamBarBlank->GetWidth(), _teamBarBlank->GetHeight(),
+			_teamBarBlank->GetWidth(), _teamBarBlank->GetHeight(),
+			_teamBarBlank->GetDepth());
 	}
-
-	screen->Blit(_airstrikeNeg->GetData(),
-		47, screen->GetHeight() - _longBottomBackground->GetHeight()+ 4,
-		_airstrikeNeg->GetWidth(), _airstrikeNeg->GetHeight(),
-		_airstrikeNeg->GetWidth(), _airstrikeNeg->GetHeight(),
-		_airstrikeNeg->GetDepth());
-	screen->Blit(_artilleryNeg->GetData(),
-		47+_airstrikeNeg->GetWidth(), screen->GetHeight() - _longBottomBackground->GetHeight()+ 4,
-		_artilleryNeg->GetWidth(), _artilleryNeg->GetHeight(),
-		_artilleryNeg->GetWidth(), _artilleryNeg->GetHeight(),
-		_artilleryNeg->GetDepth());
-	screen->Blit(_bombardNeg->GetData(),
-		47+_artilleryNeg->GetWidth()+_airstrikeNeg->GetWidth(), screen->GetHeight() - _longBottomBackground->GetHeight()+ 4,
-		_bombardNeg->GetWidth(), _bombardNeg->GetHeight(),
-		_bombardNeg->GetWidth(), _bombardNeg->GetHeight(),
-		_bombardNeg->GetDepth());
-
-	// Render the team bar
-	x = 47+_artilleryNeg->GetWidth()+_airstrikeNeg->GetWidth()+_bombardNeg->GetWidth()+10;
-	y = screen->GetHeight() - _longBottomBackground->GetHeight() + 4;
-	screen->Blit(_teamBarBlank->GetData(), x, y,
-		_teamBarBlank->GetWidth(), _teamBarBlank->GetHeight(),
-		_teamBarBlank->GetWidth(), _teamBarBlank->GetHeight(),
-		_teamBarBlank->GetDepth());
 
 	if(_currentWorld->State.SelectedSquad >= 0) {
 		Widget *w = _iconManager->GetWidget(_currentWorld->State.SquadStates[_currentWorld->State.SelectedSquad].Icon);

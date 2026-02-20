@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 #include <states/State.h>
 
 class ObjectActions
@@ -14,16 +15,23 @@ public:
 		std::string Name;
 		std::string Group;
 		long Time;
-		StateIdx *Requirements;
-		int NumRequirements;
-		StateIdx *Adds;
-		int NumAdds;
-		StateIdx *Subtracts;
-		int NumSubtracts;
+		std::vector<StateIdx> Requirements;
+		std::vector<StateIdx> Adds;
+		std::vector<StateIdx> Subtracts;
+
+		Action() = default;
+		~Action() = default;
 	};
 
 	Action *Actions;
 	int NumActions;
+
+	ObjectActions() : Actions(nullptr), NumActions(0) {}
+
+	~ObjectActions()
+	{
+		delete[] Actions;
+	}
 
 	// Checks our requirements for a given action. Returns -1 if we satisfy
 	// our requirements, otherwise the first action index we are missing

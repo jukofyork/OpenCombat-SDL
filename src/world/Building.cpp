@@ -2,8 +2,9 @@
 
 Building::Building()
 {
-	NumTiles = 0;
-	Tiles = 0;
+	_interiorGraphic = nullptr;
+	_exteriorGraphic = nullptr;
+	Position.x = Position.y = 0;
 }
 
 Building::~Building()

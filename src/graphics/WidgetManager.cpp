@@ -1,7 +1,7 @@
 #include "./WidgetManager.h"
 #include "misc/tinyxml2.h"
+#include "misc/Error.h"
 
-#include <stdio.h>
 #include <math.h>
 #include <string>
 #include <filesystem>
@@ -31,8 +31,7 @@ WidgetManager::LoadWidgets(const std::filesystem::path& fileName)
 {
 	XMLDocument doc;
 	if (doc.LoadFile(fileName.c_str()) != XML_SUCCESS) {
-		printf("Failed to load widgets file: %s\n", fileName.c_str());
-		return;
+		ERROR("Failed to load widgets file: " + fileName.string());
 	}
 
 	std::vector<WidgetAttributes> dest;
@@ -90,7 +89,7 @@ WidgetManager::GetWidget(const std::string& widgetName)
 			return widget->Clone();
 		}
 	}
-	return nullptr;
+	ERROR("Widget not found: " + widgetName);
 }
 
 Widget *

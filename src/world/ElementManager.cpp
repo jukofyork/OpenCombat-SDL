@@ -48,9 +48,15 @@ ElementManager::Load(const std::filesystem::path& configFile)
             element->Height = atoi(heightElem->GetText());
         }
         
-        XMLElement* blockElem = elem->FirstChildElement("Block_Height");
+        XMLElement* blockElem = elem->FirstChildElement("Blocks_Height");
         if (blockElem && blockElem->GetText()) {
-            element->BlocksHeight = (atoi(blockElem->GetText()) != 0);
+            const char* blockText = blockElem->GetText();
+            // Handle both "true"/"false" and "1"/"0"
+            if (strcmp(blockText, "true") == 0 || strcmp(blockText, "1") == 0) {
+                element->BlocksHeight = true;
+            } else {
+                element->BlocksHeight = false;
+            }
         }
         
         XMLElement* passElem = elem->FirstChildElement("Passable");

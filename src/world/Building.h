@@ -17,8 +17,7 @@ public:
 	std::vector<Point> BoundaryPoints;
 
 	// An array of tile indices that this building resides on
-	int *Tiles;
-	int NumTiles;
+	std::vector<int> Tiles;
 
 	// Adds a point to the boundary
 	void AddBoundaryPoint(Point *p) { BoundaryPoints.push_back(*p); }

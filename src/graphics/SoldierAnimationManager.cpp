@@ -1,7 +1,7 @@
 #include "./SoldierAnimationManager.h"
 #include "misc/tinyxml2.h"
+#include "misc/Error.h"
 
-#include <stdio.h>
 #include <math.h>
 #include <dirent.h>
 #include <string.h>
@@ -38,8 +38,7 @@ SoldierAnimationManager::LoadAnimations(const std::filesystem::path& fileName)
 
 	XMLDocument doc;
 	if (doc.LoadFile(fileName.c_str()) != XML_SUCCESS) {
-		printf("Failed to load animations file: %s\n", fileName.c_str());
-		return;
+		ERROR("Failed to load soldier animations file: " + fileName.string());
 	}
 	
 	std::vector<AnimationAttributes> dest;
@@ -64,8 +63,7 @@ SoldierAnimationManager::LoadAnimations(const std::filesystem::path& fileName)
 		 animElem != nullptr; 
 		 animElem = animElem->NextSiblingElement("Animation")) 
 	{
-		AnimationAttributes attr;
-		memset(&attr, 0, sizeof(AnimationAttributes));
+		AnimationAttributes attr{};
 		
 		XMLElement* nameElem = animElem->FirstChildElement("Name");
 		if (nameElem && nameElem->GetText()) {
@@ -155,8 +153,7 @@ SoldierAnimationManager::LoadAnimations(const std::filesystem::path& fileName)
 			}
 			
 		} else {
-			printf("Failed to open directory: %s\n", searchDir.c_str());
-			assert(0);
+			ERROR("Failed to open directory: " + searchDir);
 		}
 	}
 
