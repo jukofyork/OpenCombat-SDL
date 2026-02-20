@@ -16,8 +16,18 @@
 #include <math.h>
 
 
-#define NORMALIZE_ANGLE(a) static_cast<float>(((a) < 0) ? ((a)+2.0f*M_PI) : (((a)>2.0f*M_PI) ? (a)-2.0f*M_PI : (a)))
 constexpr float DA = static_cast<float>(M_PI) / 180.0f;
+
+constexpr float NormalizeAngle(float angle)
+{
+	if (angle < 0.0f) {
+		return angle + 2.0f * static_cast<float>(M_PI);
+	} else if (angle > 2.0f * static_cast<float>(M_PI)) {
+		return angle - 2.0f * static_cast<float>(M_PI);
+	} else {
+		return angle;
+	}
+}
 
 Vehicle::Vehicle(void)
 : Object()
@@ -186,7 +196,7 @@ Vehicle::Simulate(long dt, World *world)
 
 	if(_turretRotating) {
 		_currentTurretAngle +=static_cast<float>( _turretRotationDirection*(static_cast<float>(dt))*2.0f*M_PI / (16.0f*_turretRotationRate));
-		_currentTurretAngle = static_cast<float>(NORMALIZE_ANGLE(_currentTurretAngle));
+		_currentTurretAngle = NormalizeAngle(_currentTurretAngle);
 		if(_currentTurretAngle<=(_turretTargetAngle+DA) && _currentTurretAngle>=(_turretTargetAngle-DA))
 		{
 			_turretRotating = false;
@@ -197,7 +207,7 @@ Vehicle::Simulate(long dt, World *world)
 
 	if(_hullRotating) {
 		_currentHullAngle += static_cast<float>(_hullRotationDirection*(static_cast<float>(dt))*2.0f*M_PI / (16.0f*_hullRotationRate));
-		_currentHullAngle = static_cast<float>(NORMALIZE_ANGLE(_currentHullAngle));
+		_currentHullAngle = NormalizeAngle(_currentHullAngle);
 		if(_currentHullAngle<=(_hullTargetAngle+DA) && _currentHullAngle>=(_hullTargetAngle-DA))
 		{
 			_hullRotating = false;
@@ -594,14 +604,14 @@ Vehicle::AimTurret(int x, int y)
 	// Set the direction of rotation
 	float ta1 = _currentTurretAngle - _turretTargetAngle;
 	float ta2 = -ta1;
-	ta1 = NORMALIZE_ANGLE(ta1);
-	ta2 = NORMALIZE_ANGLE(ta2);
+	ta1 = NormalizeAngle(ta1);
+	ta2 = NormalizeAngle(ta2);
 	_turretRotationDirection = (ta1 < ta2) ? -1.0f : 1.0f;
 
 	ta1 = _currentHullAngle - _hullTargetAngle;
 	ta2 = -ta1;
-	ta1 = NORMALIZE_ANGLE(ta1);
-	ta2 = NORMALIZE_ANGLE(ta2);
+	ta1 = NormalizeAngle(ta1);
+	ta2 = NormalizeAngle(ta2);
 	_hullRotationDirection = (ta1 < ta2) ? -1.0f : 1.0f;
 }
 
