@@ -10,6 +10,7 @@
 #include <orders/Orders.h>
 #include <graphics/Screen.h>
 #include <objects/Squad.h>
+#include <objects/Soldier.h>
 #include <misc/Structs.h>
 #include <graphics/AnimationManager.h>
 #include <graphics/ColorManager.h>
@@ -175,8 +176,24 @@ World::Render(Screen *screen, Rect *clip)
 
 	if(g_Globals->World.bWeaponFan && _selectedObjects.size() > 0) {
 		// Show the weapon fan. This is really time consuming!!!
-		int sx = _selectedObjects[0]->Position.x/10;
-		int sy = _selectedObjects[0]->Position.y/10;
+		int sx, sy;
+		
+		// Check if we have a squad selected and use the selected soldier's position
+		if(_selectedObjects[0]->GetType() == Target::Squad && State.SelectedSquad >= 0) {
+			Squad* squad = (Squad*)_selectedObjects[0];
+			int selectedIdx = State.SquadStates[State.SelectedSquad].SelectedSoldierIdx;
+			std::vector<Soldier*>* soldiers = squad->GetSoldiers();
+			if(selectedIdx >= 0 && selectedIdx < (int)soldiers->size()) {
+				sx = (*soldiers)[selectedIdx]->Position.x/10;
+				sy = (*soldiers)[selectedIdx]->Position.y/10;
+			} else {
+				sx = _selectedObjects[0]->Position.x/10;
+				sy = _selectedObjects[0]->Position.y/10;
+			}
+		} else {
+			sx = _selectedObjects[0]->Position.x/10;
+			sy = _selectedObjects[0]->Position.y/10;
+		}
 		int ox, oy, oz;
 
 		int m=0,n=0;
