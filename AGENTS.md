@@ -2,9 +2,9 @@
 
 ## Project Overview
 
-OpenCombat SDL is a C++ tactical wargame being ported from DirectX/Windows to SDL2/cross-platform.
+OpenCombat SDL is a C++17 tactical wargame being ported from DirectX/Windows to SDL2/cross-platform.
 - **Language**: C++17
-- **Lines**: ~14,000 lines across 158 source files
+- **Lines**: ~21,500 lines across 139 source files
 - **Status**: Active SDL2 port complete, testing phase
 
 ---
@@ -14,7 +14,7 @@ OpenCombat SDL is a C++ tactical wargame being ported from DirectX/Windows to SD
 ### Setup
 ```bash
 # Ubuntu/Debian
-sudo apt-get install -y build-essential libsdl2-dev libsdl2-mixer-dev libsdl2-ttf-dev
+sudo apt-get install -y build-essential libsdl2-dev libsdl2-mixer-dev libsdl2-ttf-dev libtinyxml2-dev
 
 # Check dependencies
 make check-deps
@@ -53,8 +53,8 @@ make distclean  # Full cleanup including backups
 Tests run and then exit without starting the game.
 
 ### Available Self-Tests
-- `Screen::SelfTest()` - src/graphics/Screen.cpp:702
-- `ActionQueue::SelfTest()` - src/states/ActionQueue.h:92
+- `Screen::SelfTest()` - src/graphics/Screen.cpp:812
+- `ActionQueue::SelfTest()` - src/states/ActionQueue.h:88
 
 ---
 
@@ -67,7 +67,7 @@ Tests run and then exit without starting the game.
 | Methods | PascalCase | `Initialize()`, `Render()` |
 | Members | underscore prefix | `_width`, `_device` |
 | Locals | camelCase | `localVar`, `tempValue` |
-| Constants | UPPER_SNAKE_CASE | `MAX_WEAPONS` |
+| Constants | UPPER_SNAKE_CASE | `MAX_WEAPONS_PER_SOLDIER` |
 | Files | PascalCase | `Screen.cpp`, `GameApplication.h` |
 
 ### Formatting
@@ -107,13 +107,15 @@ MyClass::Initialize(void)
 
 // 2. System headers
 #include <stdio.h>
+#include <vector>
+#include <string>
 
 // 3. Third-party (SDL2)
 #include <SDL2/SDL.h>
 
 // 4. Project headers (forward slashes)
 #include "graphics/Screen.h"
-#include "misc/Array.h"
+#include "misc/Structs.h"
 ```
 
 ### Header Guards
@@ -124,9 +126,10 @@ Use `#pragma once` (not #ifdef guards)
 ## Types & Conventions
 
 ### Memory Management
-- Use raw pointers, manual `new`/`delete` (legacy codebase)
-- Use `Array<T>` template for dynamic arrays
-- Use `calloc`/`free` for C-style arrays
+- Use standard containers: `std::vector<T>`, `std::array<T, N>`, `std::string`
+- Use `std::unique_ptr<T>` for owned heap objects
+- Raw pointers for non-owning references (legacy compatibility)
+- Use `calloc`/`free` for C-style arrays only when necessary
 
 ### Error Handling
 ```cpp
@@ -135,6 +138,10 @@ assert(device != NULL);
 
 // Return false on failure
 if (!Initialize()) return false;
+
+// Use Error.h macros for logging
+LOG_INFO("Message");
+LOG_ERROR("Error message");
 ```
 
 ### Booleans
@@ -149,7 +156,7 @@ if (!Initialize()) return false;
 - Graphics: Direct3D → SDL2 (Screen.cpp, FontManager.cpp)
 - Input: Win32 messages → SDL2 events
 - Audio: DirectSound → SDL2_mixer
-- XML: MSXML4 → tinyxml2
+- XML: MSXML4 → tinyxml2 (included in src/misc/)
 
 ### Path Handling
 ```cpp
@@ -173,7 +180,8 @@ Linux filesystem is case-sensitive:
 | src/graphics/FontManager.cpp | Text rendering |
 | src/application/GameApplication.cpp | Game state management |
 | src/world/World.cpp | Game world simulation |
-| src/misc/Array.h | Dynamic array template |
+| src/misc/tinyxml2.cpp | XML parsing |
+| src/misc/Structs.h | Common structs (Point, Rect, Region) |
 
 ---
 
@@ -183,8 +191,10 @@ Linux filesystem is case-sensitive:
 2. **Minimize changes** - Focus only on the specific task
 3. **Run SelfTest()** after modifications to graphics/states
 4. **Build frequently** - Run `make` after each change
-5. **No smart pointers** - Keep raw pointer style for consistency
-6. **Forward slashes** - Use `/` in all paths (not `\`)
+5. **Forward slashes** - Use `/` in all paths (not `\`)
+6. **Use STL containers** - Prefer `std::vector`, `std::array` over raw arrays
+7. **Do not modify tinyxml2** - `src/misc/tinyxml2.cpp` and `src/misc/tinyxml2.h` are third-party library files
+8. **C-style conversions** - Currently using `atoi`, `atof` for string conversions; plan to migrate to C++ exception-based versions later
 
 ---
 
