@@ -43,12 +43,12 @@ MiniMap::Render(Screen *screen)
 		g_Globals->World.CurrentWorld->GetVictoryLocation(i, &x, &y, &nationality);
 		if(nationality != nullptr && nationality->MiniMap != nullptr)
 		{
-			float xpct = ((float) x / (float) _parentWorld->GetWidth());
-			float ypct = ((float) y / (float) _parentWorld->GetHeight());
+			float xpct = static_cast<float>(x) / static_cast<float>(_parentWorld->GetWidth());
+			float ypct = static_cast<float>(y) / static_cast<float>(_parentWorld->GetHeight());
 			Color white(255,255,255);
 			TGA *tga = nationality->MiniMap;
-			x = Position.x + 2 + (int)(xpct*(float)_tga->GetWidth()) - (tga->GetWidth()>>1);
-			y = Position.y + 2 + (int)(ypct*(float)_tga->GetHeight()) - (tga->GetHeight()>>1);
+			x = Position.x + 2 + static_cast<int>(xpct*static_cast<float>(_tga->GetWidth())) - (tga->GetWidth()>>1);
+			y = Position.y + 2 + static_cast<int>(ypct*static_cast<float>(_tga->GetHeight())) - (tga->GetHeight()>>1);
 			screen->Blit(tga->GetData(), x, y, tga->GetWidth(), tga->GetHeight(), tga->GetWidth(), tga->GetHeight(), tga->GetDepth(), &white);
 			
 			// Skip text on minimap to avoid clutter and corruption
@@ -64,9 +64,9 @@ MiniMap::Render(Screen *screen)
 	auto& objs = g_Globals->World.Teams[g_Globals->World.CurrentPlayer].Objects;
 	for(size_t i = 0; i < objs.size(); ++i) {
 		// Draw a small circle
-		float xpct = ((float) objs[i]->Position.x / (float) _parentWorld->GetWidth());
-		float ypct = ((float) objs[i]->Position.y / (float) _parentWorld->GetHeight());
-		screen->FillRect(Position.x + 2 + (int)(xpct*(float)_tga->GetWidth()), Position.y + 2 + (int)(ypct*(float)_tga->GetHeight()), 5, 5, &blue);
+		float xpct = static_cast<float>(objs[i]->Position.x) / static_cast<float>(_parentWorld->GetWidth());
+		float ypct = static_cast<float>(objs[i]->Position.y) / static_cast<float>(_parentWorld->GetHeight());
+		screen->FillRect(Position.x + 2 + static_cast<int>(xpct*static_cast<float>(_tga->GetWidth())), Position.y + 2 + static_cast<int>(ypct*static_cast<float>(_tga->GetHeight())), 5, 5, &blue);
 	}
 
 	// Now allied objects
@@ -77,9 +77,9 @@ MiniMap::Render(Screen *screen)
 		auto& teamObjs = g_Globals->World.Teams[id].Objects;
 		for(size_t i = 0; i < teamObjs.size(); ++i) {
 			// Draw a small circle
-			float xpct = ((float) teamObjs[i]->Position.x / (float) _parentWorld->GetWidth());
-			float ypct = ((float) teamObjs[i]->Position.y / (float) _parentWorld->GetHeight());
-			screen->FillRect(Position.x + 2 + (int)(xpct*(float)_tga->GetWidth()), Position.y + 2 + (int)(ypct*(float)_tga->GetHeight()), 5, 5, &green);
+			float xpct = static_cast<float>(teamObjs[i]->Position.x) / static_cast<float>(_parentWorld->GetWidth());
+			float ypct = static_cast<float>(teamObjs[i]->Position.y) / static_cast<float>(_parentWorld->GetHeight());
+			screen->FillRect(Position.x + 2 + static_cast<int>(xpct*static_cast<float>(_tga->GetWidth())), Position.y + 2 + static_cast<int>(ypct*static_cast<float>(_tga->GetHeight())), 5, 5, &green);
 		}
 	}
 
@@ -91,9 +91,9 @@ MiniMap::Render(Screen *screen)
 		auto& teamObjs = g_Globals->World.Teams[id].Objects;
 		for(size_t i = 0; i < teamObjs.size(); ++i) {
 			// Draw a small circle
-			float xpct = ((float) teamObjs[i]->Position.x / (float) _parentWorld->GetWidth());
-			float ypct = ((float) teamObjs[i]->Position.y / (float) _parentWorld->GetHeight());
-			screen->FillRect(Position.x + 2 + (int)(xpct*(float)_tga->GetWidth()), Position.y + 2 + (int)(ypct*(float)_tga->GetHeight()), 5, 5, &red);
+			float xpct = static_cast<float>(teamObjs[i]->Position.x) / static_cast<float>(_parentWorld->GetWidth());
+			float ypct = static_cast<float>(teamObjs[i]->Position.y) / static_cast<float>(_parentWorld->GetHeight());
+			screen->FillRect(Position.x + 2 + static_cast<int>(xpct*static_cast<float>(_tga->GetWidth())), Position.y + 2 + static_cast<int>(ypct*static_cast<float>(_tga->GetHeight())), 5, 5, &red);
 		}
 	}
 
@@ -104,12 +104,12 @@ MiniMap::Render(Screen *screen)
 	
 	// Recalculate zoom extents if visible area changed
 	if(_zoomWidth < 0 || _calcWidth != viewWidth || _calcHeight != viewHeight) {
-		_widthPct = (float) viewWidth / (float) _parentWorld->GetWidth();
-		_heightPct = (float) viewHeight / (float) _parentWorld->GetHeight();
+		_widthPct = static_cast<float>(viewWidth) / static_cast<float>(_parentWorld->GetWidth());
+		_heightPct = static_cast<float>(viewHeight) / static_cast<float>(_parentWorld->GetHeight());
 		_calcWidth = viewWidth;
 		_calcHeight = viewHeight;
-		_zoomWidth = (int)(_widthPct * (float) _tga->GetWidth());
-		_zoomHeight = (int)(_heightPct * (float) _tga->GetHeight());
+		_zoomWidth = static_cast<int>(_widthPct * static_cast<float>(_tga->GetWidth()));
+		_zoomHeight = static_cast<int>(_heightPct * static_cast<float>(_tga->GetHeight()));
 	}
 	
 	// Calculate yellow rectangle position based on current world origin
@@ -120,13 +120,13 @@ MiniMap::Render(Screen *screen)
 	if(originX + _calcWidth >= _parentWorld->GetWidth()) {
 		_x = _tga->GetWidth() - _zoomWidth;
 	} else {
-		_x = (int)(((float) originX / (float) _parentWorld->GetWidth()) * (float) _tga->GetWidth());
+		_x = static_cast<int>((static_cast<float>(originX) / static_cast<float>(_parentWorld->GetWidth())) * static_cast<float>(_tga->GetWidth()));
 	}
 	
 	if(originY + _calcHeight >= _parentWorld->GetHeight()) {
 		_y = _tga->GetHeight() - _zoomHeight;
 	} else {
-		_y = (int)(((float) originY / (float) _parentWorld->GetHeight()) * (float) _tga->GetHeight());
+		_y = static_cast<int>((static_cast<float>(originY) / static_cast<float>(_parentWorld->GetHeight())) * static_cast<float>(_tga->GetHeight()));
 	}
 	
 	// Clamp to minimap bounds (safety check)
@@ -194,8 +194,8 @@ MiniMap::LeftMouseDrag(int x, int y)
 	if(_y > (_tga->GetHeight()-_zoomHeight)) { _y = _tga->GetHeight() - _zoomHeight; }
 
 	// Now we need to update where the world is!
-	int ox = (int)((float)_parentWorld->GetWidth() * ((float)_x/(float)_tga->GetWidth()));
-	int oy = (int)((float)_parentWorld->GetHeight() * ((float)_y/(float)_tga->GetHeight()));
+	int ox = static_cast<int>(static_cast<float>(_parentWorld->GetWidth()) * (static_cast<float>(_x)/static_cast<float>(_tga->GetWidth())));
+	int oy = static_cast<int>(static_cast<float>(_parentWorld->GetHeight()) * (static_cast<float>(_y)/static_cast<float>(_tga->GetHeight())));
 	if((ox+_calcWidth) >= _parentWorld->GetWidth()) {
 		ox = _parentWorld->GetWidth() - _calcWidth;
 	}
@@ -215,8 +215,8 @@ MiniMap::Update()
 
 	// Now, where is our rectangle going to go? It is based on a percentage
 	// of our extents and our origin
-	float xp = ((float)x) / ((float)_parentWorld->GetWidth());
-	float yp = ((float)y) / ((float)_parentWorld->GetHeight());
-	_x = (int)(xp*_tga->GetWidth());
-	_y = (int)(yp*_tga->GetHeight());
+	float xp = static_cast<float>(x) / static_cast<float>(_parentWorld->GetWidth());
+	float yp = static_cast<float>(y) / static_cast<float>(_parentWorld->GetHeight());
+	_x = static_cast<int>(xp*static_cast<float>(_tga->GetWidth()));
+	_y = static_cast<int>(yp*static_cast<float>(_tga->GetHeight()));
 }

@@ -183,7 +183,7 @@ World::Render(Screen *screen, Rect *clip)
 			Squad* squad = (Squad*)_selectedObjects[0];
 			int selectedIdx = State.SquadStates[State.SelectedSquad].SelectedSoldierIdx;
 			std::vector<Soldier*>* soldiers = squad->GetSoldiers();
-			if(selectedIdx >= 0 && selectedIdx < (int)soldiers->size()) {
+			if(selectedIdx >= 0 && selectedIdx < static_cast<int>(soldiers->size())) {
 				sx = (*soldiers)[selectedIdx]->Position.x/10;
 				sy = (*soldiers)[selectedIdx]->Position.y/10;
 			} else {
@@ -333,9 +333,9 @@ World::Render(Screen *screen, Rect *clip)
 				c.green = 255;
 				screen->DrawLine(_rangerX, _rangerY, screen->GetCursorX(), screen->GetCursorY(), 3, &c);
 			Vector2 v;
-			v.x = (float)(screen->GetCursorX()-_rangerX);
-			v.y = (float)(screen->GetCursorY()- _rangerX);
-			std::string msg = std::to_string((int)v.Magnitude()/g_Globals->World.Constants.PixelsPerMeter) + "m";
+			v.x = static_cast<float>(screen->GetCursorX()-_rangerX);
+			v.y = static_cast<float>(screen->GetCursorY()- _rangerX);
+			std::string msg = std::to_string(static_cast<int>(v.Magnitude())/g_Globals->World.Constants.PixelsPerMeter) + "m";
 			// Position text just outside SE corner of 32x32 cursor
 			// Cursor is 32x32 centered on hotspot, so corners are at +/-16
 			// Text goes at (16+2, 16+2) = (18, 18) from center for small margin
@@ -344,21 +344,21 @@ World::Render(Screen *screen, Rect *clip)
 		} else {
 			// Find the distance to the blocked element
 			Vector2 vb;
-			vb.x = (float)((ox*10+5)-x0*10);
-			vb.y = (float)((oy*10+5)-y0*10);
+			vb.x = static_cast<float>((ox*10+5)-x0*10);
+			vb.y = static_cast<float>((oy*10+5)-y0*10);
 			float bdist = vb.Magnitude();
 			// Find the total distance
 			Vector2 vt;
-			vt.x = (float)(x1*10-x0*10);
-			vt.y = (float)(y1*10-y0*10);
+			vt.x = static_cast<float>(x1*10-x0*10);
+			vt.y = static_cast<float>(y1*10-y0*10);
 			float tdist = vt.Magnitude();
-			int bx = (int)(_rangerX + (screen->GetCursorX() - _rangerX)*bdist/tdist);
-			int by = (int)(_rangerY + (screen->GetCursorY() - _rangerY)*bdist/tdist);
+			int bx = static_cast<int>(_rangerX + (screen->GetCursorX() - _rangerX)*bdist/tdist);
+			int by = static_cast<int>(_rangerY + (screen->GetCursorY() - _rangerY)*bdist/tdist);
 
 			Vector2 v;
-			v.x = (float)(bx-_rangerX);
-			v.y = (float)(by-_rangerY);
-			std::string msg = std::to_string((int)v.Magnitude()/g_Globals->World.Constants.PixelsPerMeter) + "m";
+			v.x = static_cast<float>(bx-_rangerX);
+			v.y = static_cast<float>(by-_rangerY);
+			std::string msg = std::to_string(static_cast<int>(v.Magnitude())/g_Globals->World.Constants.PixelsPerMeter) + "m";
 			// Position text at SE corner of blocked line end
 			const int textOffset = 10;
 			g_Globals->World.Fonts->Render(screen, msg, bx + textOffset, by + textOffset, &white);
@@ -366,9 +366,9 @@ World::Render(Screen *screen, Rect *clip)
 				c.blue = 0;
 				c.green = 255;
 				screen->DrawLine(_rangerX, _rangerY, bx, by, 3, &c);
-				v.x = (float)(screen->GetCursorX()-_rangerX);
-				v.y = (float)(screen->GetCursorY()- _rangerX);
-				msg = std::to_string((int)v.Magnitude()/g_Globals->World.Constants.PixelsPerMeter) + "m";
+				v.x = static_cast<float>(screen->GetCursorX()-_rangerX);
+				v.y = static_cast<float>(screen->GetCursorY()- _rangerX);
+				msg = std::to_string(static_cast<int>(v.Magnitude())/g_Globals->World.Constants.PixelsPerMeter) + "m";
 			g_Globals->World.Fonts->Render(screen, msg, screen->GetCursorX() + textOffset, screen->GetCursorY() + textOffset, &white);
 				c.red = 255;
 				c.blue = 0;
@@ -1080,8 +1080,8 @@ World::CalculateHitChance(int shooterX, int shooterY, int targetX, int targetY, 
 	
 	// Calculate distance
 	Vector2 v;
-	v.x = (float)(targetX - shooterX);
-	v.y = (float)(targetY - shooterY);
+	v.x = static_cast<float>(targetX - shooterX);
+	v.y = static_cast<float>(targetY - shooterY);
 	float distance = v.Magnitude();
 	float distanceMeters = distance / g_Globals->World.Constants.PixelsPerMeter;
 	
