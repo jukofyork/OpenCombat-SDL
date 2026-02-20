@@ -141,17 +141,17 @@ ElementManager::Load(const std::filesystem::path& configFile)
         // Parse Movement values
         XMLElement* moveProne = elem->FirstChildElement("Soldier_Move_Prone");
         if (moveProne && moveProne->GetText()) {
-            element->Movement[0] = (float)atof(moveProne->GetText());
+            element->Movement[0] = static_cast<float>(atof(moveProne->GetText()));
         }
         
         XMLElement* moveCrouch = elem->FirstChildElement("Soldier_Move_Crouch");
         if (moveCrouch && moveCrouch->GetText()) {
-            element->Movement[1] = (float)atof(moveCrouch->GetText());
+            element->Movement[1] = static_cast<float>(atof(moveCrouch->GetText()));
         }
         
         XMLElement* moveStand = elem->FirstChildElement("Soldier_Move_Standing");
         if (moveStand && moveStand->GetText()) {
-            element->Movement[2] = (float)atof(moveStand->GetText());
+            element->Movement[2] = static_cast<float>(atof(moveStand->GetText()));
         }
         
         _elements.push_back(element);

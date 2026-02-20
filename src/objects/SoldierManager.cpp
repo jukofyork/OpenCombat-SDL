@@ -114,39 +114,39 @@ SoldierManager::LoadSoldiers(const std::filesystem::path& fileName, const std::f
 		if (attrsElem) {
 			XMLElement* walkElem = attrsElem->FirstChildElement("WalkingSpeed");
 			if (walkElem && walkElem->GetText()) {
-				soldier->WalkingSpeed = (float)atof(walkElem->GetText());
+				soldier->WalkingSpeed = static_cast<float>(atof(walkElem->GetText()));
 			}
 			
 			XMLElement* walkAccElem = attrsElem->FirstChildElement("WalkingAcceleration");
 			if (walkAccElem && walkAccElem->GetText()) {
-				soldier->WalkingAcceleration = (float)atof(walkAccElem->GetText());
+				soldier->WalkingAcceleration = static_cast<float>(atof(walkAccElem->GetText()));
 			} else {
 			}
 			
 			XMLElement* runElem = attrsElem->FirstChildElement("RunningSpeed");
 			if (runElem && runElem->GetText()) {
-				soldier->RunningSpeed = (float)atof(runElem->GetText());
+				soldier->RunningSpeed = static_cast<float>(atof(runElem->GetText()));
 			}
 			
 			XMLElement* runAccElem = attrsElem->FirstChildElement("RunningAcceleration");
 			if (runAccElem && runAccElem->GetText()) {
-				soldier->RunningAcceleration = (float)atof(runAccElem->GetText());
+				soldier->RunningAcceleration = static_cast<float>(atof(runAccElem->GetText()));
 			} else {
 			}
 			
 			XMLElement* crawlElem = attrsElem->FirstChildElement("CrawlingSpeed");
 			if (crawlElem && crawlElem->GetText()) {
-				soldier->CrawlingSpeed = (float)atof(crawlElem->GetText());
+				soldier->CrawlingSpeed = static_cast<float>(atof(crawlElem->GetText()));
 			}
 			
 			XMLElement* sneakElem = attrsElem->FirstChildElement("SneakingSpeed");
 			if (sneakElem && sneakElem->GetText()) {
-				soldier->SneakingSpeed = (float)atof(sneakElem->GetText());
+				soldier->SneakingSpeed = static_cast<float>(atof(sneakElem->GetText()));
 			}
 			
 			XMLElement* sneakAccElem = attrsElem->FirstChildElement("SneakingAcceleration");
 			if (sneakAccElem && sneakAccElem->GetText()) {
-				soldier->SneakingAcceleration = (float)atof(sneakAccElem->GetText());
+				soldier->SneakingAcceleration = static_cast<float>(atof(sneakAccElem->GetText()));
 			} else {
 			}
 			

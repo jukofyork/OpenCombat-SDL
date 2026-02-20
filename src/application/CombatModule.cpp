@@ -222,8 +222,8 @@ CombatModule::Simulate(long dt)
 	
 	// Update FPS display every 500ms
 	if(_frameTimeAccumulator >= 500) {
-		_currentFrameTime = (float)_frameTimeAccumulator / (float)_frameCount;
-		_currentFPS = (float)_frameCount * 1000.0f / (float)_frameTimeAccumulator;
+		_currentFrameTime = static_cast<float>(_frameTimeAccumulator) / static_cast<float>(_frameCount);
+		_currentFPS = static_cast<float>(_frameCount) * 1000.0f / static_cast<float>(_frameTimeAccumulator);
 		_frameTimeAccumulator = 0;
 		_frameCount = 0;
 	}
