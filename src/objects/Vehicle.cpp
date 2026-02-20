@@ -16,7 +16,7 @@
 #include <math.h>
 
 
-constexpr float DA = static_cast<float>(M_PI) / 180.0f;
+constexpr float TARGET_ANGLE_EPSILON = static_cast<float>(M_PI) / 180.0f;  // ~1 degree tolerance
 
 constexpr float NormalizeAngle(float angle)
 {
@@ -197,7 +197,7 @@ Vehicle::Simulate(long dt, World *world)
 	if(_turretRotating) {
 		_currentTurretAngle +=static_cast<float>( _turretRotationDirection*(static_cast<float>(dt))*2.0f*M_PI / (16.0f*_turretRotationRate));
 		_currentTurretAngle = NormalizeAngle(_currentTurretAngle);
-		if(_currentTurretAngle<=(_turretTargetAngle+DA) && _currentTurretAngle>=(_turretTargetAngle-DA))
+		if(_currentTurretAngle<=(_turretTargetAngle+TARGET_ANGLE_EPSILON) && _currentTurretAngle>=(_turretTargetAngle-TARGET_ANGLE_EPSILON))
 		{
 			_turretRotating = false;
 			_currentTurretAngle = _turretTargetAngle;
@@ -208,7 +208,7 @@ Vehicle::Simulate(long dt, World *world)
 	if(_hullRotating) {
 		_currentHullAngle += static_cast<float>(_hullRotationDirection*(static_cast<float>(dt))*2.0f*M_PI / (16.0f*_hullRotationRate));
 		_currentHullAngle = NormalizeAngle(_currentHullAngle);
-		if(_currentHullAngle<=(_hullTargetAngle+DA) && _currentHullAngle>=(_hullTargetAngle-DA))
+		if(_currentHullAngle<=(_hullTargetAngle+TARGET_ANGLE_EPSILON) && _currentHullAngle>=(_hullTargetAngle-TARGET_ANGLE_EPSILON))
 		{
 			_hullRotating = false;
 			_currentHullAngle = _hullTargetAngle;
