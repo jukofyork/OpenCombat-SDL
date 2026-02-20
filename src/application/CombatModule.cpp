@@ -21,31 +21,31 @@
 
 CombatModule::CombatModule()
 {
-	_animationManager = NULL;
-	_soldierManager = NULL;
-	_terrainManager = NULL;
-	_currentWorld = NULL;
-	_soundManager = NULL;
-	_soundEffectsManager = NULL;
-	_uiManager = NULL;
-	_iconManager = NULL;
-	_weaponIconManager = NULL;
+	_animationManager = nullptr;
+	_soldierManager = nullptr;
+	_terrainManager = nullptr;
+	_currentWorld = nullptr;
+	_soundManager = nullptr;
+	_soundEffectsManager = nullptr;
+	_uiManager = nullptr;
+	_iconManager = nullptr;
+	_weaponIconManager = nullptr;
 	_showUnitPanel = false;
 	_showMiniMap = false;
 	_showTeamPanel = false;
-	_colorModifierManager = NULL;
-	_marks = NULL;
+	_colorModifierManager = nullptr;
+	_marks = nullptr;
 	_frameTimeAccumulator = 0;
 	_frameCount = 0;
 	_currentFPS = 0.0f;
 	_currentFrameTime = 0.0f;
-	_longBottomBackground = NULL;
-	_unitBackground = NULL;
-	_teamBarBlank = NULL;
-	_airstrikeNeg = NULL;
-	_artilleryNeg = NULL;
-	_bombardNeg = NULL;
-	_activeTeamPanel = NULL;
+	_longBottomBackground = nullptr;
+	_unitBackground = nullptr;
+	_teamBarBlank = nullptr;
+	_airstrikeNeg = nullptr;
+	_artilleryNeg = nullptr;
+	_bombardNeg = nullptr;
+	_activeTeamPanel = nullptr;
 }
 
 CombatModule::~CombatModule(void)
@@ -236,7 +236,7 @@ CombatModule::Render(Screen *screen)
 	int squadPanelDY = 7;
 	int x = 0, y = 0;
 
-	// Guard against NULL pointers if widget loading failed
+	// Guard against nullptr pointers if widget loading failed
 	if(!_longBottomBackground) {
 		return;
 	}
@@ -286,7 +286,7 @@ Color white(255,255,255);
 			g_Globals->World.Fonts->Render(screen, _currentWorld->State.SquadStates[_currentWorld->State.SelectedSquad].UnitStates[i].Name, x+3+10, y-dy+3, &white);
 
 			// Do the status
-			w = NULL;
+			w = nullptr;
 			switch(_currentWorld->State.SquadStates[_currentWorld->State.SelectedSquad].UnitStates[i].CurrentStatus)
 			{
 			case Unit::Healthy:
@@ -306,7 +306,7 @@ Color white(255,255,255);
 			delete w;
 
 			// Do the action
-			w = NULL;
+			w = nullptr;
 			switch(_currentWorld->State.SquadStates[_currentWorld->State.SelectedSquad].UnitStates[i].CurrentAction)
 			{
 			case Unit::Defending:
@@ -404,7 +404,7 @@ Color white(255,255,255);
 			g_Globals->World.Fonts->Render(screen, _currentWorld->State.SquadStates[i].Name, x+44,y+3, &black);
 
 			// Now render the current action
-			w = NULL;
+			w = nullptr;
 			switch(_currentWorld->State.SquadStates[i].CurrentAction) {
 				case Team::Moving:
 					w = _iconManager->GetWidget("Team Action Moving Green");
@@ -450,7 +450,7 @@ Color white(255,255,255);
 	}
 
 	// Render the long panel on the bottom
-	// Guard against NULL pointers if widget loading failed
+	// Guard against nullptr pointers if widget loading failed
 	if(_longBottomBackground && _airstrikeNeg && _artilleryNeg && _bombardNeg && _teamBarBlank) {
 		dwidth = 0;
 		while(dwidth < screen->GetWidth()) {
@@ -655,7 +655,7 @@ CombatModule::KeyUp(int key)
 			_showUnitPanel = !_showUnitPanel;
 			break;
 		case 119: /* F8 */
-			// The order is Interiors->Outlines->Elevation->NULL and back
+			// The order is Interiors->Outlines->Elevation->nullptr and back
 			if(g_Globals->World.bRenderBuildingInteriors)
 			{
 				g_Globals->World.bRenderBuildingOutlines = true;

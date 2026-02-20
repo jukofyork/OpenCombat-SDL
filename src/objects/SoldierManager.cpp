@@ -192,7 +192,7 @@ SoldierManager::LoadSoldiers(const std::filesystem::path& fileName, const std::f
 	// Now read in the soldier names file
 	std::ifstream fp(soldierNames.c_str());
 	std::string line;
-	srand(time(NULL));
+	srand(time(nullptr));
 	while(std::getline(fp, line)) {
 		if(!line.empty() && line[0] == '#') {
 			break;

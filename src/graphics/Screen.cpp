@@ -12,8 +12,8 @@
 
 Screen::Screen(void)
 {
-	_surface = NULL;
-	_renderer = NULL;
+	_surface = nullptr;
+	_renderer = nullptr;
 	Origin.x = 0;
 	Origin.y = 0;
 }
@@ -27,8 +27,8 @@ void
 Screen::Cleanup()
 {
 	// SDL resources are managed externally
-	_surface = NULL;
-	_renderer = NULL;
+	_surface = nullptr;
+	_renderer = nullptr;
 }
 
 void
@@ -730,7 +730,7 @@ Screen::PointInRegion(int x, int y, std::vector<Point> *points)
 void
 Screen::BlitSurface(SDL_Surface *src, int dx, int dy)
 {
-	if(src == NULL || _bits == NULL) {
+	if(src == nullptr || _bits == nullptr) {
 		return;
 	}
 

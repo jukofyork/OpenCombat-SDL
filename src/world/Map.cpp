@@ -133,7 +133,7 @@ Map::Render(Screen *screen, Rect *clip)
 				Building *b = _buildings[_buildingIndices[j*_nBlocksX+i]-1];
 				for(size_t k = 0; k < b->Tiles.size(); ++k)
 				{
-					if(_objects[b->Tiles[k]] != NULL || g_Globals->World.bRenderBuildingInteriors)
+					if(_objects[b->Tiles[k]] != nullptr || g_Globals->World.bRenderBuildingInteriors)
 						{
 							// We have to draw this building. Make sure it is
 							// not already in our list
@@ -208,7 +208,7 @@ Map::RenderElements(Screen *screen, Rect *clip)
 	Widget *w;
 	for(int j = startY; j < (startY+ny); ++j) {
 		for(int i = startX; i < (startX+nx); ++i) {
-			if((w = g_Globals->World.Terrain->GetWidget(_elements[j*_nBlocksX + i], false)) != NULL) {
+			if((w = g_Globals->World.Terrain->GetWidget(_elements[j*_nBlocksX + i], false)) != nullptr) {
 				w->Render(screen, (i-startX)*_nPixelsPerBlockX - rx + (_nPixelsPerBlockX>>1), (j-startY)*_nPixelsPerBlockY - ry + (_nPixelsPerBlockY>>1), &c);
 			}
 		}
@@ -289,10 +289,10 @@ Map::MoveObject(Object *object, Point *from, Point *to)
 	if(oi != ni || oj != nj)
 	{
 		// Remove from the old pile
-		if(object->PrevObject != NULL)
+		if(object->PrevObject != nullptr)
 		{
 			object->PrevObject->NextObject = object->NextObject;
-			if(object->NextObject != NULL)
+			if(object->NextObject != nullptr)
 			{
 				object->NextObject->PrevObject = object->PrevObject;
 			}
@@ -303,9 +303,9 @@ Map::MoveObject(Object *object, Point *from, Point *to)
 		}
 
 		// Now add to the new pile
-		object->PrevObject = NULL;
+		object->PrevObject = nullptr;
 		object->NextObject = _objects[nj*_nBlocksX+ni];
-		if(object->NextObject != NULL)
+		if(object->NextObject != nullptr)
 		{
 			object->NextObject->PrevObject = object;
 		}
@@ -322,9 +322,9 @@ Map::PlaceObject(Object *object, Point *to)
 	int nj = to->y / _nPixelsPerBlockY;
 
 	// Now add to the new pile
-	object->PrevObject = NULL;
+	object->PrevObject = nullptr;
 	object->NextObject = _objects[nj*_nBlocksX+ni];
-	if(object->NextObject != NULL)
+	if(object->NextObject != nullptr)
 	{
 		object->NextObject->PrevObject = object;
 	}
@@ -347,7 +347,7 @@ Map::SelectObjects(int x, int y, std::vector<Object*> *dest)
 		for(int i = si; i <= di; ++i)
 		{
 			Object *object = _objects[j*_nBlocksX+i];
-			while(object != NULL)
+			while(object != nullptr)
 			{
 				// XXX/GWS: We are going to do way too many Contains() calls
 				//          in the call stack here. If you trace it down

@@ -31,7 +31,7 @@
 //-----------------------------------------------------------------------------
 // Global variables
 //-----------------------------------------------------------------------------
-ApplicationType* g_pApp = NULL;
+ApplicationType* g_pApp = nullptr;
 Globals* g_Globals;
 
 //-----------------------------------------------------------------------------
@@ -40,7 +40,7 @@ Globals* g_Globals;
 long GetTickCount()
 {
 	struct timeval tv;
-	gettimeofday(&tv, NULL);
+	gettimeofday(&tv, nullptr);
 	return (tv.tv_sec * 1000) + (tv.tv_usec / 1000);
 }
 
@@ -119,31 +119,31 @@ int main(int argc, char* argv[])
 CSDLApplication::CSDLApplication()
 {
 	m_bLoadingApp = true;
-	m_pFont = NULL;
-	m_pSoundManager = NULL;
+	m_pFont = nullptr;
+	m_pSoundManager = nullptr;
 
-	m_window = NULL;
-	m_renderer = NULL;
-	m_screenSurface = NULL;
-	m_screenTexture = NULL;
+	m_window = nullptr;
+	m_renderer = nullptr;
+	m_screenSurface = nullptr;
+	m_screenTexture = nullptr;
 
 	m_windowWidth = 800;
 	m_windowHeight = 600;
 
-	_game = NULL;
-	_screen = NULL;
-	_fontManager = NULL;
+	_game = nullptr;
+	_screen = nullptr;
+	_fontManager = nullptr;
 	_millis = 0;
 
 	memset(&_oldMouseState, 0, sizeof(MouseState));
 	memset(&_currentMouseState, 0, sizeof(MouseState));
 	_statusText = "Loading... Please wait";
 
-	// Initialize cursor array to NULL
+	// Initialize cursor array to nullptr
 	for(int i = 0; i < CursorInterface::NumCursorTypes; i++) {
-		_cursors[i] = NULL;
+		_cursors[i] = nullptr;
 	}
-	_defaultCursor = NULL;
+	_defaultCursor = nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -194,7 +194,7 @@ bool CSDLApplication::Initialize()
 	_game->ChooseModule(GameApplication::AvailableModules::Combat);
 
 	// Initialize font manager
-	_fontManager->Initialize(NULL);
+	_fontManager->Initialize(nullptr);
 
 	// Load custom cursors
 	LoadCursors();
@@ -219,7 +219,7 @@ bool CSDLApplication::CreateWindow()
 		SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE
 	);
 
-	if(m_window == NULL) {
+	if(m_window == nullptr) {
 		ERROR("SDL_CreateWindow failed: " + std::string(SDL_GetError()));
 	}
 
@@ -227,18 +227,18 @@ bool CSDLApplication::CreateWindow()
 	std::filesystem::path iconPath = g_Globals->Application.CurrentDirectory / "graphics/Resources/app_icon.tga";
 
 	TGA* iconTga = TGA::Create(iconPath);
-	if(iconTga != NULL) {
+	if(iconTga != nullptr) {
 		int width = iconTga->GetWidth();
 		int height = iconTga->GetHeight();
 		[[maybe_unused]] int depth = iconTga->GetDepth();
 		unsigned char* data = iconTga->GetData();
 		
-		if(width > 0 && height > 0 && data != NULL) {
+		if(width > 0 && height > 0 && data != nullptr) {
 			SDL_Surface* iconSurface = SDL_CreateRGBSurfaceWithFormat(
 				0, width, height, 32, SDL_PIXELFORMAT_RGBA32
 			);
 			
-			if(iconSurface != NULL) {
+			if(iconSurface != nullptr) {
 				// Lock surface
 				if(SDL_MUSTLOCK(iconSurface)) {
 					SDL_LockSurface(iconSurface);
@@ -284,10 +284,10 @@ bool CSDLApplication::CreateRenderer()
 {
 	// Create renderer
 	m_renderer = SDL_CreateRenderer(m_window, -1, SDL_RENDERER_ACCELERATED);
-	if(m_renderer == NULL) {
+	if(m_renderer == nullptr) {
 		// Try software renderer
 		m_renderer = SDL_CreateRenderer(m_window, -1, SDL_RENDERER_SOFTWARE);
-		if(m_renderer == NULL) {
+		if(m_renderer == nullptr) {
 			ERROR("SDL_CreateRenderer failed: " + std::string(SDL_GetError()));
 		}
 	}
@@ -302,7 +302,7 @@ bool CSDLApplication::CreateRenderer()
 		SDL_PIXELFORMAT_ARGB8888
 	);
 
-	if(m_screenSurface == NULL) {
+	if(m_screenSurface == nullptr) {
 		ERROR("SDL_CreateRGBSurface failed: " + std::string(SDL_GetError()));
 	}
 
@@ -315,7 +315,7 @@ bool CSDLApplication::CreateRenderer()
 		m_windowHeight
 	);
 
-	if(m_screenTexture == NULL) {
+	if(m_screenTexture == nullptr) {
 		ERROR("SDL_CreateTexture failed: " + std::string(SDL_GetError()));
 	}
 
@@ -335,7 +335,7 @@ bool CSDLApplication::RecreateRendererResources(int newWidth, int newHeight)
 	// Destroy old resources
 	if(m_screenTexture) {
 		SDL_DestroyTexture(m_screenTexture);
-		m_screenTexture = NULL;
+		m_screenTexture = nullptr;
 	}
 
 	if(m_screenSurface) {
@@ -343,7 +343,7 @@ bool CSDLApplication::RecreateRendererResources(int newWidth, int newHeight)
 			SDL_UnlockSurface(m_screenSurface);
 		}
 		SDL_FreeSurface(m_screenSurface);
-		m_screenSurface = NULL;
+		m_screenSurface = nullptr;
 	}
 
 	// Create new surface
@@ -355,7 +355,7 @@ bool CSDLApplication::RecreateRendererResources(int newWidth, int newHeight)
 		SDL_PIXELFORMAT_ARGB8888
 	);
 
-	if(m_screenSurface == NULL) {
+	if(m_screenSurface == nullptr) {
 		ERROR("SDL_CreateRGBSurface failed: " + std::string(SDL_GetError()));
 	}
 
@@ -368,7 +368,7 @@ bool CSDLApplication::RecreateRendererResources(int newWidth, int newHeight)
 		m_windowHeight
 	);
 
-	if(m_screenTexture == NULL) {
+	if(m_screenTexture == nullptr) {
 		ERROR("SDL_CreateTexture failed: " + std::string(SDL_GetError()));
 	}
 
@@ -455,18 +455,18 @@ void CSDLApplication::Shutdown()
 	if(_fontManager) {
 		_fontManager->Cleanup();
 		delete _fontManager;
-		_fontManager = NULL;
+		_fontManager = nullptr;
 	}
 
 	if(_screen) {
 		_screen->Cleanup();
 		delete _screen;
-		_screen = NULL;
+		_screen = nullptr;
 	}
 
 	if(_game) {
 		delete _game;
-		_game = NULL;
+		_game = nullptr;
 	}
 
 	// Cleanup SDL resources in proper order
@@ -477,7 +477,7 @@ void CSDLApplication::Shutdown()
 
 	if(m_screenTexture) {
 		SDL_DestroyTexture(m_screenTexture);
-		m_screenTexture = NULL;
+		m_screenTexture = nullptr;
 	}
 
 	// Unlock surface if it was left locked (prevents crash on FreeSurface)
@@ -487,19 +487,19 @@ void CSDLApplication::Shutdown()
 			SDL_UnlockSurface(m_screenSurface);
 		}
 		SDL_FreeSurface(m_screenSurface);
-		m_screenSurface = NULL;
+		m_screenSurface = nullptr;
 	}
 
 	// Destroy renderer after texture and surface are gone
 	if(m_renderer) {
 		SDL_DestroyRenderer(m_renderer);
-		m_renderer = NULL;
+		m_renderer = nullptr;
 	}
 
 	// Destroy window last
 	if(m_window) {
 		SDL_DestroyWindow(m_window);
-		m_window = NULL;
+		m_window = nullptr;
 	}
 
 	// Cleanup audio
@@ -668,7 +668,7 @@ void CSDLApplication::Render()
 	_screen->SetCursorPosition(_currentMouseState.X, _currentMouseState.Y);
 
 	// Clear the screen
-	SDL_FillRect(m_screenSurface, NULL, SDL_MapRGB(m_screenSurface->format, 0, 0, 0));
+	SDL_FillRect(m_screenSurface, nullptr, SDL_MapRGB(m_screenSurface->format, 0, 0, 0));
 
 	// Render the game
 	_game->Render(_screen);
@@ -677,11 +677,11 @@ void CSDLApplication::Render()
 	SDL_UnlockSurface(m_screenSurface);
 
 	// Update the texture with the surface content
-	SDL_UpdateTexture(m_screenTexture, NULL, m_screenSurface->pixels, m_screenSurface->pitch);
+	SDL_UpdateTexture(m_screenTexture, nullptr, m_screenSurface->pixels, m_screenSurface->pitch);
 
 	// Clear the renderer and copy the texture
 	SDL_RenderClear(m_renderer);
-	SDL_RenderCopy(m_renderer, m_screenTexture, NULL, NULL);
+	SDL_RenderCopy(m_renderer, m_screenTexture, nullptr, nullptr);
 	SDL_RenderPresent(m_renderer);
 }
 
@@ -854,7 +854,7 @@ void CSDLApplication::ShowCursor(bool bShow, CursorType type)
 		if(type == CursorInterface::CursorType::Regular) {
 			// Use system default cursor
 			SDL_SetCursor(_defaultCursor);
-		} else if(type >= 0 && type < CursorInterface::NumCursorTypes && _cursors[type] != NULL) {
+		} else if(type >= 0 && type < CursorInterface::NumCursorTypes && _cursors[type] != nullptr) {
 			SDL_SetCursor(_cursors[type]);
 		}
 	}
@@ -889,14 +889,14 @@ bool CSDLApplication::LoadCursors()
 		"graphics/UI/Cursors/Empty Crosshairs Red.tga",   // CrosshairsEmptyRed
 		"graphics/UI/Cursors/Empty Crosshairs Yellow.tga", // CrosshairsEmptyYellow
 		"graphics/UI/Cursors/Empty Crosshairs Green.tga", // CrosshairsEmptyGreen
-		NULL                                              // Regular (use system default)
+		nullptr                                              // Regular (use system default)
 	};
 	
 	// Load each cursor
 	for(int i = 0; i < CursorInterface::NumCursorTypes; i++) {
-		if(cursorFiles[i] == NULL) {
+		if(cursorFiles[i] == nullptr) {
 			// Skip Regular cursor - use system default
-			_cursors[i] = NULL;
+			_cursors[i] = nullptr;
 			continue;
 		}
 		
@@ -905,7 +905,7 @@ bool CSDLApplication::LoadCursors()
 
 		// Load TGA file
 		TGA* tga = TGA::Create(path);
-		if(tga == NULL) {
+		if(tga == nullptr) {
 			ERROR("Failed to load cursor: " + path.string());
 		}
 		
@@ -914,7 +914,7 @@ bool CSDLApplication::LoadCursors()
 		int height = tga->GetHeight();
 		unsigned char* data = tga->GetData();
 		
-		if(width <= 0 || height <= 0 || data == NULL) {
+		if(width <= 0 || height <= 0 || data == nullptr) {
 			ERROR("Invalid cursor data: " + path.string());
 		}
 		
@@ -923,7 +923,7 @@ bool CSDLApplication::LoadCursors()
 			0, width, height, 32, SDL_PIXELFORMAT_RGBA32
 		);
 		
-		if(surface == NULL) {
+		if(surface == nullptr) {
 			ERROR("Failed to create surface for cursor: " + std::string(SDL_GetError()));
 		}
 		
@@ -958,7 +958,7 @@ bool CSDLApplication::LoadCursors()
 		int hotspotY = height / 2;
 		_cursors[i] = SDL_CreateColorCursor(surface, hotspotX, hotspotY);
 		
-		if(_cursors[i] == NULL) {
+		if(_cursors[i] == nullptr) {
 			ERROR("Failed to create cursor from surface: " + std::string(SDL_GetError()));
 		}
 		
@@ -978,9 +978,9 @@ void CSDLApplication::FreeCursors()
 {
 	// Free all loaded cursors
 	for(int i = 0; i < CursorInterface::NumCursorTypes; i++) {
-		if(_cursors[i] != NULL) {
+		if(_cursors[i] != nullptr) {
 			SDL_FreeCursor(_cursors[i]);
-			_cursors[i] = NULL;
+			_cursors[i] = nullptr;
 		}
 	}
 }

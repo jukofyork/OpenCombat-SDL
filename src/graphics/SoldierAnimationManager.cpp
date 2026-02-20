@@ -112,7 +112,7 @@ SoldierAnimationManager::LoadAnimations(const std::filesystem::path& fileName)
 		DIR* dir = opendir(searchDir.c_str());
 		if (dir) {
 			struct dirent* entry;
-			while ((entry = readdir(dir)) != NULL) {
+			while ((entry = readdir(dir)) != nullptr) {
 				// Skip . and .. entries
 				if (entry->d_name[0] == '.') continue;
 				

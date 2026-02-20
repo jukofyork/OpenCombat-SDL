@@ -20,7 +20,7 @@ struct WeaponAttributes {
 };
 
 struct TurretAttributes {
-    TurretAttributes() { Tga = NULL; NumWeapons = 0; RotationRate = 0; }
+    TurretAttributes() { Tga = nullptr; NumWeapons = 0; RotationRate = 0; }
     std::string Graphic;
     TGA *Tga;
     WeaponAttributes Weapons[MAX_TURRET_WEAPONS];
@@ -31,7 +31,7 @@ struct TurretAttributes {
 };
 
 struct HullAttributes {
-    HullAttributes() { Tga = NULL; NumWeapons = 0; RotationRate = 0; }
+    HullAttributes() { Tga = nullptr; NumWeapons = 0; RotationRate = 0; }
     std::string Graphic;
     TGA *Tga;
     WeaponAttributes Weapons[MAX_HULL_WEAPONS];
@@ -40,7 +40,7 @@ struct HullAttributes {
 };
 
 struct WreckAttributes {
-    WreckAttributes() { Tga = NULL; }
+    WreckAttributes() { Tga = nullptr; }
     std::string Graphic;
     TGA *Tga;
 };

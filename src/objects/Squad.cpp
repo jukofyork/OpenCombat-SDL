@@ -19,7 +19,7 @@ Squad::Squad() : Object()
 	_currentAction = Team::Defending;
 	_quality = Average;
 	_type = Target::Squad;
-	_currentTarget = NULL;
+	_currentTarget = nullptr;
 	_selectedSoldierIdx = -1;
 	_selectedVehicleIdx = -1;
 	_currentPointManIdx = 0;
@@ -30,7 +30,7 @@ Squad::Squad() : Object()
 	_canAmbush = true;
 	_canSneak = true;
 	_canFire = true;
-	_currentPath = NULL;
+	_currentPath = nullptr;
 	_bShowMark = false;
 	_bMarkTargetPosition = false;
 	_currentFormationSpread = 2.0f;
@@ -55,9 +55,9 @@ Squad::Render(Screen *screen, Rect *clip)
 	}
 
 	// Render our current path as a series of filled blocks
-	if(g_Globals->World.bRenderPaths && _currentPath != NULL) {
+	if(g_Globals->World.bRenderPaths && _currentPath != nullptr) {
 		Path *p = _currentPath;
-		while(p != NULL) {
+		while(p != nullptr) {
 			Color red(128,0,0);
 
 			// We need to clip the path rectangles
@@ -316,7 +316,7 @@ Squad::HandleMoveOrder(MoveOrder *order, SoldierAction::Action movementStyle, Ma
 	}
 
 	_currentPath = g_Globals->World.Pathing.FindPath(i, j, di, dj, level);
-	if(NULL == _currentPath) {
+	if(nullptr == _currentPath) {
 		g_Globals->World.Voices->GetSound("no clear path")->Play();
 		return;
 	}

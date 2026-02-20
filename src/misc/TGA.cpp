@@ -28,7 +28,7 @@ static long m_tgaIndex = 0;
 
 TGA::TGA(void)
 {
-	_data = NULL;
+	_data = nullptr;
 	_originX = 0;
 	_originY = 0;
 	_idx = m_tgaIndex++;
@@ -57,7 +57,7 @@ TGA::Create(const std::filesystem::path& filePath)
 	std::ifstream file(filePath, std::ios::binary);
     if (!file.is_open()) {
 		ERROR("Failed to open TGA file: " + filePath.string());
-		return NULL;
+		return nullptr;
     }
 
 	// Create the return value
@@ -82,8 +82,8 @@ TGA::Create(const std::filesystem::path& filePath)
 
 	// Stored as 32 bit ARGB
     tga->_data = new unsigned char[header.width*header.height*4]();
-    if(tga->_data == NULL) {
-	   return NULL;
+    if(tga->_data == nullptr) {
+	   return nullptr;
     }
     ptr = tga->_data;
 	
@@ -96,7 +96,7 @@ TGA::Create(const std::filesystem::path& filePath)
 		if(header.datatypecode == 2) {
 			file.read(reinterpret_cast<char*>(p), bytes2read);
 			if (!file.good()) {
-				return NULL;
+				return nullptr;
 			}
 			if(w >= header.width) {
 				w -= header.width;
@@ -126,7 +126,7 @@ TGA::Create(const std::filesystem::path& filePath)
 			assert(0); // Not implemented yet, needs to flip the bits
 			file.read(reinterpret_cast<char*>(p), bytes2read + 1);
 			if (!file.good()) {
-				return NULL;
+				return nullptr;
 			}
 	        j = p[0] & 0x7f;
 			memcpy(ptr, &(p[1]), bytes2read);
@@ -143,7 +143,7 @@ TGA::Create(const std::filesystem::path& filePath)
 				for (i=0;i<j;i++) {
 					file.read(reinterpret_cast<char*>(p), bytes2read);
 					if (!file.good()) {
-						return NULL;
+						return nullptr;
 					}
 					memcpy(ptr, p, bytes2read);
 					ptr += bytes2read;

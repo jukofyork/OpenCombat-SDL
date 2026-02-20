@@ -23,7 +23,7 @@
 Soldier::Soldier(void) : Object()
 {
 	_moving = false;
-	_currentSquad = NULL;
+	_currentSquad = nullptr;
 	_currentStatus = Unit::Healthy;
 	_currentAction = Unit::Defending;
 	_camoIdx = 0;
@@ -94,7 +94,7 @@ Soldier::Render(Screen *screen, Rect *clip)
 			}
 		}
 
-		if(_animations[_currentAnimationState] != NULL) {
+		if(_animations[_currentAnimationState] != nullptr) {
 			if(_bHighlight) {
 				_animations[_currentAnimationState]->Render(screen, _currentHeading, Position.x-screen->Origin.x, Position.y-screen->Origin.y, true, &_highlightColor, _camoIdx);
 			} else {
@@ -286,7 +286,7 @@ Soldier::HandleStopOrder(StopOrder *order)
 	// Let's choose an action to implement this order
 	Action *action = new Action();
 	action->Index = SoldierAction::Stop;
-	action->Data = NULL;
+	action->Data = nullptr;
 	
 	// Clear our orders and our actions
 	// XXX/GWS: This needs to clean up memory!!!
@@ -302,13 +302,13 @@ void
 Soldier::FollowPath(Path *path, SoldierAction::Action movementStyle)
 {
 	// Let's first stop
-	HandleStopOrder(NULL);
+	HandleStopOrder(nullptr);
 
 	// Wait for a little bit
 	Wait();
 
 	// Follow our path
-	while(path != NULL)
+	while(path != nullptr)
 	{
 		Action *action = new Action();
 		action->Index = movementStyle;
@@ -323,9 +323,9 @@ Soldier::FollowPath(Path *path, SoldierAction::Action movementStyle)
 	}
 
 	// Add an action for our destination reached
-	Action *action = new Action(SoldierAction::DestinationReached, NULL);
+	Action *action = new Action(SoldierAction::DestinationReached, nullptr);
 	_actionQueue.push_back(action);
-	action = new Action(SoldierAction::Stop, NULL);
+	action = new Action(SoldierAction::Stop, nullptr);
 	_actionQueue.push_back(action);
 }
 
@@ -334,13 +334,13 @@ void
 Soldier::Follow(Object *object, Formation::Type formationType, float formationSpread, int formationIdx, SoldierAction::Action movementStyle)
 {
 	// Let's first stop
-	HandleStopOrder(NULL);
+	HandleStopOrder(nullptr);
 
 	// Wait for a little bit
 	Wait();
 
 	// Add our follow in formation action
-	Action *action = new Action(SoldierAction::FollowInFormation, NULL);
+	Action *action = new Action(SoldierAction::FollowInFormation, nullptr);
 	SoldierActionHandlers::FollowFormationData *data = new SoldierActionHandlers::FollowFormationData();
 	data->TargetObject = object;
 	data->TargetFormation = formationType;
@@ -352,9 +352,9 @@ Soldier::Follow(Object *object, Formation::Type formationType, float formationSp
 
 	// Add an action for our destination reached
 	_pathComplete = false;
-	action = new Action(SoldierAction::DestinationReached, NULL);
+	action = new Action(SoldierAction::DestinationReached, nullptr);
 	_actionQueue.push_back(action);
-	action = new Action(SoldierAction::Stop, NULL);
+	action = new Action(SoldierAction::Stop, nullptr);
 	_actionQueue.push_back(action);
 
 }
@@ -363,7 +363,7 @@ void
 Soldier::Ambush(Direction heading)
 {
 	// Let's first stop whatever we were doing
-	HandleStopOrder(NULL);
+	HandleStopOrder(nullptr);
 
 	// Now setup the action to perform. First turn in the direction
 	// we need. Then start ambushing. We add a little bit of a wait time
@@ -382,7 +382,7 @@ void
 Soldier::Defend(Direction heading)
 {
 	// Let's first stop whatever we were doing
-	HandleStopOrder(NULL);
+	HandleStopOrder(nullptr);
 
 	// Now setup the action to perform
 	// XXX/GWS: Let's have better modeling of soldier reaction times.
@@ -405,7 +405,7 @@ Soldier::Wait()
 void
 Soldier::Wait(long time)
 {
-	Action * action = new Action(SoldierAction::Wait, NULL);
+	Action * action = new Action(SoldierAction::Wait, nullptr);
 	SoldierActionHandlers::WaitData *data = new SoldierActionHandlers::WaitData();
 	data->ElapsedTime = 0;
 	data->WaitTime = time;
@@ -432,7 +432,7 @@ Soldier::HandleFireOrder(FireOrder *order)
 	action->Data = data;
 
 	// Let's first stop
-	HandleStopOrder(NULL);
+	HandleStopOrder(nullptr);
 
 	// Add our action
 	_actionQueue.push_back(action);
@@ -482,7 +482,7 @@ void
 Soldier::Kill()
 {
 	// Stop the soldier
-	HandleStopOrder(NULL);
+	HandleStopOrder(nullptr);
 
 	// Kills this soldier
 	switch(rand()%3)
@@ -519,7 +519,7 @@ Soldier::Shoot(Weapon *weapon, Object *target, Target::Type targetType, int targ
 {
 	switch(targetType) {
 		case Target::Soldier:
-			if(target != NULL) {
+			if(target != nullptr) {
 				// Make sure my target is not already dead or dying!
 				Soldier *s = (Soldier *) target;
 				if(s->_currentState.IsSet(SoldierState::Dead)
@@ -544,7 +544,7 @@ Soldier::Shoot(Weapon *weapon, Object *target, Target::Type targetType, int targ
 			// Find a target in the squad
 			_currentTarget = FindTarget((Squad *) target);
 			_currentTargetType = Target::Soldier;
-			if(_currentTarget == NULL) {
+			if(_currentTarget == nullptr) {
 				_currentAction = Unit::NoTarget;
 				_currentState.UnSet(SoldierState::Firing);
 			}
@@ -587,8 +587,8 @@ Soldier::CalculateShot(Soldier *shooter, Weapon *weapon)
 Soldier *
 Soldier::FindTarget(Squad *squad)
 {
-	if(NULL == squad) {
-		return NULL;
+	if(nullptr == squad) {
+		return nullptr;
 	}
 
 	bool anyAlive = false;
@@ -609,7 +609,7 @@ Soldier::FindTarget(Squad *squad)
 			}
 		}
 	}
-	return NULL;
+	return nullptr;
 }
 
 Unit::Status 
@@ -695,16 +695,16 @@ Soldier::GetGeneralHeading(Vector2 *heading)
 #if 0
 	// We need to look at our current path and average the next couple
 	// of paths we are going to follow
-	Path *path = _currentSquad->GetCurrentPath(), *prevPath = NULL;
+	Path *path = _currentSquad->GetCurrentPath(), *prevPath = nullptr;
 
 	// Initialize our return value
 	heading->x = 0.0f;
 	heading->y = 0.0f;
 	
 	int nPaths = 0;
-	for(int i = 0; i < MAX_PATH_AVERAGE && path != NULL; ++i)
+	for(int i = 0; i < MAX_PATH_AVERAGE && path != nullptr; ++i)
 	{
-		if(prevPath != NULL)
+		if(prevPath != nullptr)
 		{
 			Vector2 dir;
 			dir.x = path->X-prevPath->X;

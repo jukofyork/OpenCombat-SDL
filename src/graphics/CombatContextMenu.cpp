@@ -27,35 +27,35 @@ CombatContextMenu::Initialize(const std::filesystem::path& widgetsFile)
 	_widgetManager->LoadWidgets(widgetsFile);
 
 	// Set the individual widgets
-	assert((_bg = _widgetManager->GetWidget("Order Background")) != NULL);
+	assert((_bg = _widgetManager->GetWidget("Order Background")) != nullptr);
 
-	assert((_moveLight = _widgetManager->GetWidget("Order Move Light")) != NULL);
-	assert((_moveDark = _widgetManager->GetWidget("Order Move Dark")) != NULL);
-	assert((_moveNeg = _widgetManager->GetWidget("Order Move Neg")) != NULL);
+	assert((_moveLight = _widgetManager->GetWidget("Order Move Light")) != nullptr);
+	assert((_moveDark = _widgetManager->GetWidget("Order Move Dark")) != nullptr);
+	assert((_moveNeg = _widgetManager->GetWidget("Order Move Neg")) != nullptr);
 
-	assert((_moveFastLight = _widgetManager->GetWidget("Order Move Fast Light")) != NULL);
-	assert((_moveFastDark = _widgetManager->GetWidget("Order Move Fast Dark")) != NULL);
-	assert((_moveFastNeg = _widgetManager->GetWidget("Order Move Fast Neg")) != NULL);
+	assert((_moveFastLight = _widgetManager->GetWidget("Order Move Fast Light")) != nullptr);
+	assert((_moveFastDark = _widgetManager->GetWidget("Order Move Fast Dark")) != nullptr);
+	assert((_moveFastNeg = _widgetManager->GetWidget("Order Move Fast Neg")) != nullptr);
 
-	assert((_ambushLight = _widgetManager->GetWidget("Order Ambush Light")) != NULL);
-	assert((_ambushDark = _widgetManager->GetWidget("Order Ambush Dark")) != NULL);
-	assert((_ambushNeg = _widgetManager->GetWidget("Order Ambush Neg")) != NULL);
+	assert((_ambushLight = _widgetManager->GetWidget("Order Ambush Light")) != nullptr);
+	assert((_ambushDark = _widgetManager->GetWidget("Order Ambush Dark")) != nullptr);
+	assert((_ambushNeg = _widgetManager->GetWidget("Order Ambush Neg")) != nullptr);
 
-	assert((_defendLight = _widgetManager->GetWidget("Order Defend Light")) != NULL);
-	assert((_defendDark = _widgetManager->GetWidget("Order Defend Dark")) != NULL);
-	assert((_defendNeg = _widgetManager->GetWidget("Order Defend Neg")) != NULL);
+	assert((_defendLight = _widgetManager->GetWidget("Order Defend Light")) != nullptr);
+	assert((_defendDark = _widgetManager->GetWidget("Order Defend Dark")) != nullptr);
+	assert((_defendNeg = _widgetManager->GetWidget("Order Defend Neg")) != nullptr);
 
-	assert((_smokeLight = _widgetManager->GetWidget("Order Smoke Light")) != NULL);
-	assert((_smokeDark = _widgetManager->GetWidget("Order Smoke Dark")) != NULL);
-	assert((_smokeNeg = _widgetManager->GetWidget("Order Smoke Neg")) != NULL);
+	assert((_smokeLight = _widgetManager->GetWidget("Order Smoke Light")) != nullptr);
+	assert((_smokeDark = _widgetManager->GetWidget("Order Smoke Dark")) != nullptr);
+	assert((_smokeNeg = _widgetManager->GetWidget("Order Smoke Neg")) != nullptr);
 
-	assert((_sneakLight = _widgetManager->GetWidget("Order Sneak Light")) != NULL);
-	assert((_sneakDark = _widgetManager->GetWidget("Order Sneak Dark")) != NULL);
-	assert((_sneakNeg = _widgetManager->GetWidget("Order Sneak Neg")) != NULL);
+	assert((_sneakLight = _widgetManager->GetWidget("Order Sneak Light")) != nullptr);
+	assert((_sneakDark = _widgetManager->GetWidget("Order Sneak Dark")) != nullptr);
+	assert((_sneakNeg = _widgetManager->GetWidget("Order Sneak Neg")) != nullptr);
 
-	assert((_fireLight = _widgetManager->GetWidget("Order Fire Light")) != NULL);
-	assert((_fireDark = _widgetManager->GetWidget("Order Fire Dark")) != NULL);
-	assert((_fireNeg = _widgetManager->GetWidget("Order Fire Neg")) != NULL);
+	assert((_fireLight = _widgetManager->GetWidget("Order Fire Light")) != nullptr);
+	assert((_fireDark = _widgetManager->GetWidget("Order Fire Dark")) != nullptr);
+	assert((_fireNeg = _widgetManager->GetWidget("Order Fire Neg")) != nullptr);
 
 	_height = _moveDark->GetHeight();
 	_width = _moveDark->GetWidth();

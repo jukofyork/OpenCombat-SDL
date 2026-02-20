@@ -71,7 +71,7 @@ SoldierActionHandlers::Handle(Soldier *soldier, Action *action, long dt)
 	if(actionIdx >= 0) {
 		// We need to perform this action before we can even attempt
 		// the one we are trying to do
-		soldier->_actionQueue.push_front(new Action(actionIdx, NULL));
+		soldier->_actionQueue.push_front(new Action(actionIdx, nullptr));
 		return false;
 	}
 
@@ -109,7 +109,7 @@ SoldierActionHandlers::ProneFireActionHandler(Soldier *soldier, Action *action, 
 		switch(fireData->TargetType) 
 		{
 		case Target::Soldier:
-			if(fireData->TargetObject != NULL) {
+			if(fireData->TargetObject != nullptr) {
 				// Make sure my target is not already dead or dying!
 				Object *o = (Object *) fireData->TargetObject;
 				if(o->IsDead())
@@ -131,12 +131,12 @@ SoldierActionHandlers::ProneFireActionHandler(Soldier *soldier, Action *action, 
 			// Find a target in the squad
 			fireData->TargetObject = soldier->FindTarget((Squad *) fireData->TargetObject);
 			fireData->TargetType = Target::Soldier;
-			if(fireData->TargetObject == NULL) {
+			if(fireData->TargetObject == nullptr) {
 				// We don't have any more targets, so we need to stop
 				soldier->_currentState.Set(SoldierState::NoTarget);
 				
 				// We need to stop doing whatever we were doing
-				Action *a = new Action(SoldierAction::Stop, NULL);
+				Action *a = new Action(SoldierAction::Stop, nullptr);
 
 				// Insert it after our current one
 				soldier->_actionQueue.insert(soldier->_actionQueue.begin() + 1, a);
@@ -196,7 +196,7 @@ SoldierActionHandlers::RunActionHandler(Soldier *soldier, Action *action, long d
 		{
 			delete p;
 			// Add a stop action
-			Action *a = new Action(SoldierAction::DestinationReached, NULL);
+			Action *a = new Action(SoldierAction::DestinationReached, nullptr);
 			// Insert it after our current one
 			soldier->_actionQueue.insert(soldier->_actionQueue.begin() + 1, a);
 			return true;
@@ -235,7 +235,7 @@ SoldierActionHandlers::WalkActionHandler(Soldier *soldier, Action *action, long 
 		{
 			delete p;
 			// Add a stop action
-			Action *a = new Action(SoldierAction::DestinationReached, NULL);
+			Action *a = new Action(SoldierAction::DestinationReached, nullptr);
 			// Insert it after our current one
 			soldier->_actionQueue.insert(soldier->_actionQueue.begin() + 1, a);
 			return true;
@@ -284,7 +284,7 @@ SoldierActionHandlers::CrawlActionHandler(Soldier *soldier, Action *action, long
 		{
 			delete p;
 			// Add a stop action
-			Action *a = new Action(SoldierAction::DestinationReached, NULL);
+			Action *a = new Action(SoldierAction::DestinationReached, nullptr);
 			// Insert it after our current one
 			soldier->_actionQueue.insert(soldier->_actionQueue.begin() + 1, a);
 			return true;
@@ -398,7 +398,7 @@ SoldierActionHandlers::DestinationReachedActionHandler(Soldier *soldier, Action 
 
 	if(soldier->IsSquadLeader())
 	{
-		if(soldier->_currentSquad != NULL)
+		if(soldier->_currentSquad != nullptr)
 		{
 			soldier->_currentSquad->ClearMarks();
 		}
@@ -451,7 +451,7 @@ SoldierActionHandlers::ReloadActionHandler(Soldier *soldier, Action *action, lon
 				soldier->_currentState.Set(SoldierState::OutOfAmmo);
 				
 				// We need to stop doing whatever we were doing
-				Action *a = new Action(SoldierAction::Stop, NULL);
+				Action *a = new Action(SoldierAction::Stop, nullptr);
 				// Insert it after our current one
 				soldier->_actionQueue.insert(soldier->_actionQueue.begin() + 1, a);
 				return true;
@@ -510,7 +510,7 @@ SoldierActionHandlers::RunToActionHandler(Soldier *soldier, Action *action, long
 	{
 		// We are at our destination, so let's stop
 		delete data;
-		action->Data = NULL;
+		action->Data = nullptr;
 		return true;
 	}
 
@@ -553,7 +553,7 @@ SoldierActionHandlers::WalkToActionHandler(Soldier *soldier, Action *action, lon
 	{
 		// We are at our destination, so let's stop
 		delete data;
-		action->Data = NULL;
+		action->Data = nullptr;
 		return true;
 	}
 
@@ -605,7 +605,7 @@ SoldierActionHandlers::CrawlToActionHandler(Soldier *soldier, Action *action, lo
 	{
 		// We are at our destination, so let's stop
 		delete data;
-		action->Data = NULL;
+		action->Data = nullptr;
 		return true;
 	}
 
@@ -645,7 +645,7 @@ SoldierActionHandlers::FollowInFormationActionHandler(Soldier *soldier, Action *
 	if(actionIdx >= 0) {
 		// We need to perform this action before we can even attempt
 		// the one we are trying to do
-		soldier->_actionQueue.push_front(new Action(actionIdx, NULL));
+		soldier->_actionQueue.push_front(new Action(actionIdx, nullptr));
 		return false;
 	}
 
@@ -719,7 +719,7 @@ SoldierActionHandlers::FollowInFormationActionHandler(Soldier *soldier, Action *
 	if(data->TargetObject->IsStopped() && data->TargetObject->IsPathComplete())
 	{
 		// Let's make sure we get to the position we need to get to
-		Action *newAction = new Action(data->MovementStyle, NULL);
+		Action *newAction = new Action(data->MovementStyle, nullptr);
 		TileData *tileData = new TileData();
 		g_Globals->World.CurrentWorld->ConvertPositionToTile(data->TargetObject->Position.x + formation.x, data->TargetObject->Position.y - formation.y, &tileData->TileI, &tileData->TileJ);
 		newAction->Data = tileData;

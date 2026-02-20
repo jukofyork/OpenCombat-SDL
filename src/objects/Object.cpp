@@ -8,8 +8,8 @@ static long g_id = 0;
 
 Object::Object()
 {
-	NextObject = NULL;
-	PrevObject = NULL;
+	NextObject = nullptr;
+	PrevObject = nullptr;
 	Position.x = Position.y = 0;
 	_isSelected = false;
 	_bHighlight = false;

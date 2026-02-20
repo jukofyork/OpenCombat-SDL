@@ -122,7 +122,7 @@ World::Render(Screen *screen, Rect *clip)
 	}
 
 	// Render all of the mobile objects that are in the clipping region
-	_rangerSelectedObject = NULL;
+	_rangerSelectedObject = nullptr;
 	for(size_t i = 0; i < _mobileObjects.size(); ++i) {
 		Object *o = _mobileObjects[i];
 		if(o->Position.x > (clip->x+_originX) && o->Position.x < (clip->x+_originX+clip->w)
@@ -226,7 +226,7 @@ World::Render(Screen *screen, Rect *clip)
 		// Find out which direction we need to show
 		Direction dir = Utilities::FindHeading(_selectedObjects[0]->Position.x - _originX, _selectedObjects[0]->Position.y-_originY, screen->GetCursorX(), screen->GetCursorY());
 		_currentHeadingArc = dir;
-		Widget *w = NULL;
+		Widget *w = nullptr;
 		switch(dir) {
 			case North:
 				w = g_Globals->World.Icons->GetWidget("Ambush Circle North");
@@ -256,7 +256,7 @@ World::Render(Screen *screen, Rect *clip)
 				assert(false);
 				break;
 		}
-		assert(w != NULL);
+		assert(w != nullptr);
 		// Center the direction circle on the unit (subtract half width/height)
 		w->Render(screen, _selectedObjects[0]->Position.x-_originX-w->GetWidth()/2, _selectedObjects[0]->Position.y-_originY-w->GetHeight()/2, w->GetWidth(), w->GetHeight(), true);
 		delete w;
@@ -269,7 +269,7 @@ World::Render(Screen *screen, Rect *clip)
 		// Find out which direction we need to show
 		Direction dir = Utilities::FindHeading(_selectedObjects[0]->Position.x - _originX, _selectedObjects[0]->Position.y-_originY, screen->GetCursorX(), screen->GetCursorY());
 		_currentHeadingArc = dir;
-		Widget *w = NULL;
+		Widget *w = nullptr;
 		switch(dir) {
 			case North:
 				w = g_Globals->World.Icons->GetWidget("Defend Circle North");
@@ -299,7 +299,7 @@ World::Render(Screen *screen, Rect *clip)
 				assert(false);
 				break;
 		}
-		assert(w != NULL);
+		assert(w != nullptr);
 		// Center the direction circle on the unit (subtract half width/height)
 		w->Render(screen, _selectedObjects[0]->Position.x-_originX-w->GetWidth()/2, _selectedObjects[0]->Position.y-_originY-w->GetHeight()/2, w->GetWidth(), w->GetHeight(), true);
 		delete w;
@@ -324,7 +324,7 @@ World::Render(Screen *screen, Rect *clip)
 			bool hasLOS = _lineOfSight->CalculateLOSForTile(x0, y0, x1, y1, &ox, &oy, &oz, _currentMap);
 			
 			// Update cursor based on hit chance
-			UpdateFireCursor(screen->GetCursorX(), screen->GetCursorY(), _rangerSelectedObject != NULL);
+			UpdateFireCursor(screen->GetCursorX(), screen->GetCursorY(), _rangerSelectedObject != nullptr);
 			
 			if(hasLOS)
 			{
@@ -703,7 +703,7 @@ World::LeftMouseUp(int x, int y)
 				IssueOrder(new MoveOrder(x+_originX, y+_originY, Orders::MoveFast));
 				break;
 			case CombatContextMenu::ContextMenuChoice::Fire:
-				if(_rangerSelectedObject != NULL) {
+				if(_rangerSelectedObject != nullptr) {
 					IssueOrder(new FireOrder(_rangerSelectedObject, _rangerSelectedObject->GetType()));
 				} else {
 					IssueOrder(new FireOrder(x+_originX, y+_originY));

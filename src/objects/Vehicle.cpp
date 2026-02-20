@@ -292,7 +292,7 @@ bool
 Vehicle::HandleFireOrder(FireOrder *order)
 {
 	// Stop moving
-	//HandleStopOrder(NULL);
+	//HandleStopOrder(nullptr);
 
 	// Set my state
 	_currentState = State::Firing;
@@ -319,7 +319,7 @@ Vehicle::HandleDestinationOrder(MoveOrder *order)
 
 	if(dist.Magnitude() < 5.01f) {
 		// Clear marks and play sound if we're the squad leader (matches infantry behavior)
-		if(IsSquadLeader() && _currentSquad != NULL) {
+		if(IsSquadLeader() && _currentSquad != nullptr) {
 			_currentSquad->ClearMarks();
 			g_Globals->World.Voices->GetSound("move completed")->Play();
 		}
@@ -453,7 +453,7 @@ Vehicle::Shoot(Weapon *weapon, Object *target, Target::Type targetType, int targ
 	Direction effectHeading=North;
 	switch(targetType) {
 		case Target::Soldier:
-			if(target != NULL) {
+			if(target != nullptr) {
 				// Make sure my target is not already dead or dying!
 				Soldier *s = (Soldier *) target;
 				if(s->IsDead()) 
@@ -494,7 +494,7 @@ Vehicle::Shoot(Weapon *weapon, Object *target, Target::Type targetType, int targ
 			// Find a target in the squad
 			_currentTarget = FindTarget((Squad *) target);
 			_currentTargetType = Target::Soldier;
-			if(_currentTarget == NULL) {
+			if(_currentTarget == nullptr) {
 				_currentAction = Unit::NoTarget;
 				_currentState = State::Stopped;
 			}
@@ -522,7 +522,7 @@ Vehicle::Shoot(Weapon *weapon, Object *target, Target::Type targetType, int targ
 
 		// Show explosion at target location (only for main gun)
 		int explosionX, explosionY;
-		if(targetType == Target::Soldier && target != NULL) {
+		if(targetType == Target::Soldier && target != nullptr) {
 			explosionX = target->Position.x;
 			explosionY = target->Position.y;
 		} else {
@@ -538,8 +538,8 @@ Vehicle::Shoot(Weapon *weapon, Object *target, Target::Type targetType, int targ
 Soldier *
 Vehicle::FindTarget(Squad *squad)
 {
-	if(NULL == squad) {
-		return NULL;
+	if(nullptr == squad) {
+		return nullptr;
 	}
 
 	bool anyAlive = false;
@@ -560,7 +560,7 @@ Vehicle::FindTarget(Squad *squad)
 			}
 		}
 	}
-	return NULL;
+	return nullptr;
 }
 
 void

@@ -7,9 +7,7 @@
 #define UNREFERENCED_PARAMETER(P) (void)(P)
 #endif
 
-#ifndef NULL
-#define NULL 0
-#endif
+
 
 #include <objects/SoldierManager.h>
 #include <objects/SquadManager.h>

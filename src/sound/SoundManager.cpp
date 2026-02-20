@@ -63,7 +63,7 @@ SoundManager::LoadSounds(const std::filesystem::path& fileName)
 	   Sound *s = new Sound(dest[i].Name, fName.string());
 	   // Load the WAV file using SDL_mixer
 	   s->_chunk = Mix_LoadWAV(s->_soundFileName.c_str());
-	   if (s->_chunk == NULL) {
+	   if (s->_chunk == nullptr) {
 		   ERROR("Failed to load sound: " + s->_soundFileName + " - " + Mix_GetError());
 	   }
 	   _sounds.push_back(s);
