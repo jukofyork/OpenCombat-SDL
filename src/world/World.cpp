@@ -25,7 +25,7 @@
 
 World::World(void)
 {
-	_currentHeadingArc = North;
+	_currentHeadingArc = Direction::North;
 	_contextMenu = new CombatContextMenu();
 	State.NumSquads = 0;
 	State.SelectedSquad = -1;
@@ -228,28 +228,28 @@ World::Render(Screen *screen, Rect *clip)
 		_currentHeadingArc = dir;
 		Widget *w = nullptr;
 		switch(dir) {
-			case North:
+			case Direction::North:
 				w = g_Globals->World.Icons->GetWidget("Ambush Circle North");
 				break;
-			case NorthEast:
+			case Direction::NorthEast:
 				w = g_Globals->World.Icons->GetWidget("Ambush Circle NorthEast");
 				break;
-			case East:
+			case Direction::East:
 				w = g_Globals->World.Icons->GetWidget("Ambush Circle East");
 				break;
-			case SouthEast:
+			case Direction::SouthEast:
 				w = g_Globals->World.Icons->GetWidget("Ambush Circle SouthEast");
 				break;
-			case South:
+			case Direction::South:
 				w = g_Globals->World.Icons->GetWidget("Ambush Circle South");
 				break;
-			case SouthWest:
+			case Direction::SouthWest:
 				w = g_Globals->World.Icons->GetWidget("Ambush Circle SouthWest");
 				break;
-			case West:
+			case Direction::West:
 				w = g_Globals->World.Icons->GetWidget("Ambush Circle West");
 				break;
-			case NorthWest:
+			case Direction::NorthWest:
 				w = g_Globals->World.Icons->GetWidget("Ambush Circle NorthWest");
 				break;
 			default:
@@ -271,28 +271,28 @@ World::Render(Screen *screen, Rect *clip)
 		_currentHeadingArc = dir;
 		Widget *w = nullptr;
 		switch(dir) {
-			case North:
+			case Direction::North:
 				w = g_Globals->World.Icons->GetWidget("Defend Circle North");
 				break;
-			case NorthEast:
+			case Direction::NorthEast:
 				w = g_Globals->World.Icons->GetWidget("Defend Circle NorthEast");
 				break;
-			case East:
+			case Direction::East:
 				w = g_Globals->World.Icons->GetWidget("Defend Circle East");
 				break;
-			case SouthEast:
+			case Direction::SouthEast:
 				w = g_Globals->World.Icons->GetWidget("Defend Circle SouthEast");
 				break;
-			case South:
+			case Direction::South:
 				w = g_Globals->World.Icons->GetWidget("Defend Circle South");
 				break;
-			case SouthWest:
+			case Direction::SouthWest:
 				w = g_Globals->World.Icons->GetWidget("Defend Circle SouthWest");
 				break;
-			case West:
+			case Direction::West:
 				w = g_Globals->World.Icons->GetWidget("Defend Circle West");
 				break;
-			case NorthWest:
+			case Direction::NorthWest:
 				w = g_Globals->World.Icons->GetWidget("Defend Circle NorthWest");
 				break;
 			default:

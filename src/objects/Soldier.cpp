@@ -133,13 +133,13 @@ Soldier::Simulate(long dt, World *world)
 		_currentFrameCurrentState = _animations[_currentAnimationState]->GetCurrentFrameNumber(_currentHeading);
 	
 		// Am I dead yet?
-		if(_currentFrameCurrentState == _animations[_currentHeading]->GetCurrentFrameNumber(_currentHeading)
+		if(_currentFrameCurrentState == _animations[static_cast<int>(_currentHeading)]->GetCurrentFrameNumber(_currentHeading)
 			&& !_currentAnimationMarker)
 		{
 			// I am dead now
 			if(_currentState.IsSet(SoldierState::DyingBackward))
 			{
-				_currentHeading = (Direction) ((_currentHeading+4) % 8);
+				_currentHeading = static_cast<Direction>((static_cast<int>(_currentHeading)+4) % 8);
 				_currentState.UnSet(SoldierState::DyingBackward);
 			}
 			else if(_currentState.IsSet(SoldierState::DyingForward))
@@ -154,7 +154,7 @@ Soldier::Simulate(long dt, World *world)
 			_currentAnimationState = AnimationState::Dead;
 			_currentStatus = Unit::Dead;
 		} else {
-			if(_currentFrameCurrentState != _animations[_currentHeading]->GetCurrentFrameNumber(_currentHeading))
+			if(_currentFrameCurrentState != _animations[static_cast<int>(_currentHeading)]->GetCurrentFrameNumber(_currentHeading))
 			{
 				_currentAnimationMarker = false;
 			}

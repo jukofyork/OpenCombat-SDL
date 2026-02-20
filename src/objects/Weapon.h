@@ -35,7 +35,7 @@ public:
 
 	// Set and get effects
 	void SetEffect(const std::string &effectName);
-	inline const std::string& GetEffect(Direction heading) const { return _effects[heading]; }
+	inline const std::string& GetEffect(Direction heading) const { return _effects[static_cast<size_t>(heading)]; }
 
 	// Does this weapon cause a big boom?
 	inline bool IsGroundShaker() { return _bGroundShaker; }
@@ -85,7 +85,7 @@ protected:
 	int _reloadTimeClip;
 	
 	// Effects
-	std::string _effects[NumDirections];
+	std::string _effects[static_cast<int>(Direction::NumDirections)];
 
 	// Goes big boom
 	bool _bGroundShaker;

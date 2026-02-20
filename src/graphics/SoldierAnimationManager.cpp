@@ -164,7 +164,7 @@ SoldierAnimationManager::LoadAnimations(const std::filesystem::path& fileName)
 		Animation *a = new Animation(dest[i].Name);
 
 		// Find out what our first direction is
-		Direction firstDir = North;
+		Direction firstDir = Direction::North;
 
 		// We need to create one frame for each file in the directory
 		// Up to the number of frames we are supposed to read in
@@ -200,7 +200,7 @@ SoldierAnimationManager::LoadAnimations(const std::filesystem::path& fileName)
 				c.Parse(dest[i].TransparentColor);
 
 				MaskFrame *frame = new MaskFrame(tga, mtga, dest[i].Time, tga->GetWidth(), tga->GetHeight(), 0, 0, &c);
-				a->AddFrame(frame, static_cast<Direction>((static_cast<int>(firstDir) + k) % NumDirections));
+				a->AddFrame(frame, static_cast<Direction>((static_cast<int>(firstDir) + k) % static_cast<int>(Direction::NumDirections)));
 			}
 		}
 		_animations.push_back(a);

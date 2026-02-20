@@ -112,7 +112,7 @@ AnimationManager::LoadAnimations(const std::filesystem::path& fileName)
             for(int n = 0; n < dest[i].nFrames; ++n) {
                 Frame *frame = new Frame(tga, dest[i].Time, dest[i].Width, dest[i].Height, 
                     n*dest[i].Width, dir*dest[i].Height, &c);
-                a->AddFrame(frame, (Direction) dir);
+                a->AddFrame(frame, static_cast<Direction>(dir));
             }
         }
         _animations.push_back(a);

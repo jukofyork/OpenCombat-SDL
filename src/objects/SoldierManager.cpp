@@ -230,7 +230,7 @@ SoldierManager::CreateSoldier(const std::string& soldierType, AnimationManager *
 			s->_canMoveFast = t->CanMoveFast;
 			s->_canSmoke = t->CanSmoke;
 			s->_canSneak = t->CanSneak;
-			s->_currentHeading = South;
+			s->_currentHeading = Direction::South;
 
 			// Now read in the speeds, accelerations, and animations for each state
 			s->_animations[Soldier::AnimationState::Standing] = GetAnimation(animationManager, "Standing", t);

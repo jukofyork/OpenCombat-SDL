@@ -68,7 +68,7 @@ static float _directionAngles[] = { 6.0f*static_cast<float>(M_PI)/4.0f, 5.0f*sta
 float
 Utilities::FindAngle(Direction dir)
 {
-	return _directionAngles[dir];
+	return _directionAngles[static_cast<int>(dir)];
 }
 
 Direction 
@@ -84,41 +84,41 @@ Utilities::ConvertAngle(float angle)
 	if(angle <=  ((6.0f*2.0f*M_PI / 8.0) + da)
 		&& angle >=  ((6.0f*2.0f*M_PI / 8.0) - da)) 
 	{
-		return South;
+		return Direction::South;
 	} 
 	else if(angle <=  ((5.0f*2.0f*M_PI / 8.0) + da)
 		&& angle >=  ((5.0f*2.0f*M_PI / 8.0) - da)) 
 	{
-		return SouthWest;
+		return Direction::SouthWest;
 	}
 	else if(angle <=  ((4.0f*2.0f*M_PI / 8.0) + da)
 		&& angle >=  ((4.0f*2.0f*M_PI / 8.0) - da)) 
 	{
-		return West;
+		return Direction::West;
 	}
 	else if(angle <=  ((3.0f*2.0f*M_PI / 8.0) + da)
 		&& angle >=  ((3.0f*2.0f*M_PI / 8.0) - da)) 
 	{
-		return NorthWest;
+		return Direction::NorthWest;
 	}
 	else if(angle <=  ((2.0f*2.0f*M_PI / 8.0) + da)
 		&& angle >=  ((2.0f*2.0f*M_PI / 8.0) - da)) 
 	{
-		return North;
+		return Direction::North;
 	}
 	else if(angle <=  ((1.0f*2.0f*M_PI / 8.0) + da)
 		&& angle >=  ((1.0f*2.0f*M_PI / 8.0) - da)) 
 	{
-		return NorthEast;
+		return Direction::NorthEast;
 	}
 	else if(angle <=  ((7.0f*2.0f*M_PI / 8.0) + da)
 		&& angle >=  ((7.0f*2.0f*M_PI / 8.0) - da)) 
 	{
-		return SouthEast;
+		return Direction::SouthEast;
 	} 
 	else 
 	{
-		return East;
+		return Direction::East;
 	}
 }
 

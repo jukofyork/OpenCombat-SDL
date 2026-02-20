@@ -2,7 +2,7 @@
 
 #include <math.h>
 
-enum Direction {
+enum class Direction {
 	South=0,
 	SouthWest,
 	West,

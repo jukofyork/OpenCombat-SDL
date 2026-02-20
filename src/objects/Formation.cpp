@@ -24,14 +24,14 @@ void Formation::GetFormationPosition(Type formationType, int formationIdx, float
     // Apply rotation based on heading (simplified)
     float angle = 0.0f;
     switch (heading) {
-        case North: angle = 0.0f; break;
-        case NorthEast: angle = 45.0f; break;
-        case East: angle = 90.0f; break;
-        case SouthEast: angle = 135.0f; break;
-        case South: angle = 180.0f; break;
-        case SouthWest: angle = 225.0f; break;
-        case West: angle = 270.0f; break;
-        case NorthWest: angle = 315.0f; break;
+        case Direction::North: angle = 0.0f; break;
+        case Direction::NorthEast: angle = 45.0f; break;
+        case Direction::East: angle = 90.0f; break;
+        case Direction::SouthEast: angle = 135.0f; break;
+        case Direction::South: angle = 180.0f; break;
+        case Direction::SouthWest: angle = 225.0f; break;
+        case Direction::West: angle = 270.0f; break;
+        case Direction::NorthWest: angle = 315.0f; break;
         default: angle = 0.0f; break;
     }
     

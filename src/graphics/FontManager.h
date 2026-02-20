@@ -7,10 +7,10 @@ class Color;
 class Screen;
 
 // Font sizes
-enum FontSize {
-	FontSize_Small = 0,   // 9pt - UI panels
-	FontSize_Large = 1,   // 14pt - Victory locations, headers
-	FontSize_Count = 2
+enum class FontSize {
+	Small = 0,   // 9pt - UI panels
+	Large = 1,   // 14pt - Victory locations, headers
+	Count = 2
 };
 
 class FontManager
@@ -29,13 +29,13 @@ public:
 	void Invalidate();
 
 	// Render text with specified font size
-	void Render(Screen *screen, const std::string &msg, int x, int y, Color *c, FontSize size = FontSize_Small);
+	void Render(Screen *screen, const std::string &msg, int x, int y, Color *c, FontSize size = FontSize::Small);
 	
 	// Get text dimensions with specified font size
-	void GetTextSize(const std::string &msg, int *w, int *h, FontSize size = FontSize_Small);
+	void GetTextSize(const std::string &msg, int *w, int *h, FontSize size = FontSize::Small);
 
 protected:
-    TTF_Font* _fonts[FontSize_Count]; // Fonts at different sizes
+    TTF_Font* _fonts[static_cast<int>(FontSize::Count)]; // Fonts at different sizes
 	
 	// Load a font at a specific size
 	TTF_Font* LoadFont(int pointSize);

@@ -13,7 +13,7 @@
 
 FontManager::FontManager(void)
 {
-	for(int i = 0; i < FontSize_Count; ++i) {
+	for(int i = 0; i < static_cast<int>(FontSize::Count); ++i) {
 		_fonts[i] = nullptr;
 	}
 }
@@ -42,16 +42,16 @@ FontManager::Initialize(void *data)
 	}
 	
 	// Load small font (9pt) for UI panels
-	_fonts[FontSize_Small] = LoadFont(9);
+	_fonts[static_cast<int>(FontSize::Small)] = LoadFont(9);
 	
 	// Load large font (14pt) for victory locations and headers
-	_fonts[FontSize_Large] = LoadFont(14);
+	_fonts[static_cast<int>(FontSize::Large)] = LoadFont(14);
 }
 
 void 
 FontManager::Cleanup()
 {
-	for(int i = 0; i < FontSize_Count; ++i) {
+	for(int i = 0; i < static_cast<int>(FontSize::Count); ++i) {
 		if(_fonts[i] != nullptr) {
 			TTF_CloseFont(_fonts[i]);
 			_fonts[i] = nullptr;
@@ -74,27 +74,29 @@ FontManager::Invalidate()
 void
 FontManager::GetTextSize(const std::string &msg, int *w, int *h, FontSize size)
 {
-	if(size < 0 || size >= FontSize_Count) {
-		size = FontSize_Small;
+	int sizeIdx = static_cast<int>(size);
+	if(sizeIdx < 0 || sizeIdx >= static_cast<int>(FontSize::Count)) {
+		sizeIdx = static_cast<int>(FontSize::Small);
 	}
 	
-	if(_fonts[size] == nullptr || msg.empty()) {
+	if(_fonts[sizeIdx] == nullptr || msg.empty()) {
 		*w = 0;
 		*h = 0;
 		return;
 	}
 	
-	TTF_SizeText(_fonts[size], msg.c_str(), w, h);
+	TTF_SizeText(_fonts[sizeIdx], msg.c_str(), w, h);
 }
 
 void 
 FontManager::Render(Screen *screen, const std::string &msg, int x, int y, Color *c, FontSize size)
 {
-	if(size < 0 || size >= FontSize_Count) {
-		size = FontSize_Small;
+	int sizeIdx = static_cast<int>(size);
+	if(sizeIdx < 0 || sizeIdx >= static_cast<int>(FontSize::Count)) {
+		sizeIdx = static_cast<int>(FontSize::Small);
 	}
 	
-	if(_fonts[size] == nullptr || msg.empty() || screen == nullptr) {
+	if(_fonts[sizeIdx] == nullptr || msg.empty() || screen == nullptr) {
 		return;
 	}
 	
@@ -106,7 +108,7 @@ FontManager::Render(Screen *screen, const std::string &msg, int x, int y, Color 
 	color.a = c->alpha;
 	
 	// Render text to surface
-	SDL_Surface *textSurface = TTF_RenderText_Blended(_fonts[size], msg.c_str(), color);
+	SDL_Surface *textSurface = TTF_RenderText_Blended(_fonts[sizeIdx], msg.c_str(), color);
 	if(textSurface == nullptr) {
 		return;
 	}

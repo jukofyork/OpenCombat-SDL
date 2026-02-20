@@ -54,19 +54,19 @@ public:
 protected:
 	// The list of frames in this animation. This includes the different directions
 	// of each frame as well (owned by Animation)
-	std::array<std::vector<std::unique_ptr<Frame>>, NumDirections> _frames;
+	std::array<std::vector<std::unique_ptr<Frame>>, static_cast<size_t>(Direction::NumDirections)> _frames;
 
 	// The name of this animation set
 	std::string _name;
 
 	// The current animation frame number
-	int _currentFrameNums[NumDirections];
+	int _currentFrameNums[static_cast<int>(Direction::NumDirections)];
 
 	// The total time for the current animation
-	long _totalTimes[NumDirections];
+	long _totalTimes[static_cast<int>(Direction::NumDirections)];
 
 	// The incremental time for this animation
-	long _incrementalTimes[NumDirections];
+	long _incrementalTimes[static_cast<int>(Direction::NumDirections)];
 
 	// Play this animation in reverse
 	bool _reverse;

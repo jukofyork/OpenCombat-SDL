@@ -77,12 +77,12 @@ Weapon::Simulate(long dt)
 void
 Weapon::SetEffect(const std::string &effectName)
 {
-	_effects[North] = effectName + " North";
-	_effects[NorthEast] = effectName + " NorthEast";
-	_effects[East] = effectName + " East";
-	_effects[SouthEast] = effectName + " SouthEast";
-	_effects[South] = effectName + " South";
-	_effects[SouthWest] = effectName + " SouthWest";
-	_effects[West] = effectName + " West";
-	_effects[NorthWest] = effectName + " NorthWest";
+	_effects[static_cast<int>(Direction::North)] = effectName + " North";
+	_effects[static_cast<int>(Direction::NorthEast)] = effectName + " NorthEast";
+	_effects[static_cast<int>(Direction::East)] = effectName + " East";
+	_effects[static_cast<int>(Direction::SouthEast)] = effectName + " SouthEast";
+	_effects[static_cast<int>(Direction::South)] = effectName + " South";
+	_effects[static_cast<int>(Direction::SouthWest)] = effectName + " SouthWest";
+	_effects[static_cast<int>(Direction::West)] = effectName + " West";
+	_effects[static_cast<int>(Direction::NorthWest)] = effectName + " NorthWest";
 }

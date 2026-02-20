@@ -303,7 +303,7 @@ SoldierActionHandlers::StandActionHandler(Soldier *soldier, Action *action, long
 	if(Soldier::AnimationState::StandingUp == soldier->_currentAnimationState)
 	{
 		// Are we done with this animation?
-		int currentFrameNumber = soldier->_animations[soldier->_currentHeading]->GetCurrentFrameNumber(soldier->_currentHeading);
+		int currentFrameNumber = soldier->_animations[static_cast<int>(soldier->_currentHeading)]->GetCurrentFrameNumber(soldier->_currentHeading);
 		if(soldier->_currentFrameCurrentState == currentFrameNumber && !soldier->_currentAnimationMarker)
 		{
 			// We are done with this action
@@ -313,7 +313,7 @@ SoldierActionHandlers::StandActionHandler(Soldier *soldier, Action *action, long
 		}
 		else
 		{
-			if(soldier->_currentFrameCurrentState != soldier->_animations[soldier->_currentHeading]->GetCurrentFrameNumber(soldier->_currentHeading))
+			if(soldier->_currentFrameCurrentState != soldier->_animations[static_cast<int>(soldier->_currentHeading)]->GetCurrentFrameNumber(soldier->_currentHeading))
 			{
 				soldier->_currentAnimationMarker = false;
 			}
@@ -339,7 +339,7 @@ SoldierActionHandlers::LieDownActionHandler(Soldier *soldier, Action *action, lo
 	if(Soldier::AnimationState::LyingDown == soldier->_currentAnimationState)
 	{
 		// Are we done with this animation?
-		int currentFrameNumber = soldier->_animations[soldier->_currentHeading]->GetCurrentFrameNumber(soldier->_currentHeading);
+		int currentFrameNumber = soldier->_animations[static_cast<int>(soldier->_currentHeading)]->GetCurrentFrameNumber(soldier->_currentHeading);
 		if(soldier->_currentFrameCurrentState == currentFrameNumber && !soldier->_currentAnimationMarker)
 		{
 			// We are done with this action
@@ -349,7 +349,7 @@ SoldierActionHandlers::LieDownActionHandler(Soldier *soldier, Action *action, lo
 		}
 		else
 		{
-			if(soldier->_currentFrameCurrentState != soldier->_animations[soldier->_currentHeading]->GetCurrentFrameNumber(soldier->_currentHeading))
+			if(soldier->_currentFrameCurrentState != soldier->_animations[static_cast<int>(soldier->_currentHeading)]->GetCurrentFrameNumber(soldier->_currentHeading))
 			{
 				soldier->_currentAnimationMarker = false;
 			}
@@ -762,7 +762,7 @@ SoldierActionHandlers::TurnActionHandler(Soldier *soldier, Action *action, long 
 {
 	UNREFERENCED_PARAMETER(dt);
 	int direction = static_cast<int>(reinterpret_cast<intptr_t>(action->Data));
-	soldier->_currentHeading = (Direction)direction;
+	soldier->_currentHeading = static_cast<Direction>(direction);
 	return true;
 }
 
@@ -812,36 +812,36 @@ SoldierActionHandlers::WaitActionHandler(Soldier *soldier, Action *action, long 
 Direction 
 SoldierActionHandlers::CalculateNewHeading(Soldier *soldier, int i, int j)
 {
-	Direction heading = South;
+	Direction heading = Direction::South;
 	int x=0,y=0;
 
 	g_Globals->World.CurrentWorld->ConvertTileToPosition(i, j, &x, &y);
 
 	if(soldier->Position.x < x) {
 		if(soldier->Position.y < y) {
-			heading = SouthEast;
+			heading = Direction::SouthEast;
 		} else if(soldier->Position.y == y) {
-			heading = East;
+			heading = Direction::East;
 		} else {
-			heading = NorthEast;
+			heading = Direction::NorthEast;
 		}
 	} else if(soldier->Position.x == x) {
 		if(soldier->Position.y < y) {
-			heading = South;
+			heading = Direction::South;
 		} else if(soldier->Position.y == y) {
 			// This case should never happen, because
 			// if it did we would be at our destination!
 			assert(false);
 		} else {
-			heading = North;
+			heading = Direction::North;
 		}
 	} else {
 		if(soldier->Position.y < y) {
-			heading = SouthWest;
+			heading = Direction::SouthWest;
 		} else if(soldier->Position.y == y) {
-			heading = West;
+			heading = Direction::West;
 		} else {
-			heading = NorthWest;
+			heading = Direction::NorthWest;
 		}
 	}
 	return heading;
@@ -887,8 +887,8 @@ SoldierActionHandlers::MoveSoldier(Soldier *soldier, long dt)
 	float oldSpeed = soldier->_velocity.Magnitude();
 	maxSpeed = (maxSpeed == 0.0f) ? oldSpeed : maxSpeed;
 
-	soldier->_velocity.x -= accel*dt*sin(_currentHeadingAngles[soldier->_currentHeading])/1000.0f;
-	soldier->_velocity.y += accel*dt*cos(_currentHeadingAngles[soldier->_currentHeading])/1000.0f;
+	soldier->_velocity.x -= accel*dt*sin(_currentHeadingAngles[static_cast<int>(soldier->_currentHeading)])/1000.0f;
+	soldier->_velocity.y += accel*dt*cos(_currentHeadingAngles[static_cast<int>(soldier->_currentHeading)])/1000.0f;
 
 	if(soldier->_velocity.Magnitude() > maxSpeed) { 
 		soldier->_velocity.Normalize();
@@ -896,8 +896,8 @@ SoldierActionHandlers::MoveSoldier(Soldier *soldier, long dt)
 	}
 
 	// Now we need to try moving this object to its new position
-	soldier->_position.x += soldier->_velocity.x*fabs(sin(_currentHeadingAngles[soldier->_currentHeading]))*dt*static_cast<float>(g_Globals->World.Constants.PixelsPerMeter)/1000.0f;
-	soldier->_position.y += soldier->_velocity.y*fabs(cos(_currentHeadingAngles[soldier->_currentHeading]))*dt*static_cast<float>(g_Globals->World.Constants.PixelsPerMeter)/1000.0f;
+	soldier->_position.x += soldier->_velocity.x*fabs(sin(_currentHeadingAngles[static_cast<int>(soldier->_currentHeading)]))*dt*static_cast<float>(g_Globals->World.Constants.PixelsPerMeter)/1000.0f;
+	soldier->_position.y += soldier->_velocity.y*fabs(cos(_currentHeadingAngles[static_cast<int>(soldier->_currentHeading)]))*dt*static_cast<float>(g_Globals->World.Constants.PixelsPerMeter)/1000.0f;
 
 	// Go ahead and move this fucker
 	Point oldPosition = soldier->Position;

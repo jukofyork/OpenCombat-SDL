@@ -460,7 +460,7 @@ Vehicle::AddWeapon(Weapon *weapon, int slot, int numClips, bool hull)
 void
 Vehicle::Shoot(Weapon *weapon, Object *target, Target::Type targetType, int targetX, int targetY)
 {
-	Direction effectHeading=North;
+	Direction effectHeading=Direction::North;
 	switch(targetType) {
 		case Target::Soldier:
 			if(target != nullptr) {
@@ -622,7 +622,7 @@ Vehicle::AimTurret(Direction dir)
 	_turretRotating = true;
 	
 	// Convert Direction enum to radians (0 = South, going clockwise)
-	float targetAngle = static_cast<float>(dir * 2.0f * M_PI / 8.0f);
+	float targetAngle = static_cast<float>(static_cast<int>(dir) * 2.0f * M_PI / 8.0f);
 	_hullTargetAngle = targetAngle;
 	_turretTargetAngle = targetAngle;
 	

@@ -20,7 +20,7 @@ Object::Object()
 	_bSquadLeader = false;
 	_moving = false;
 	_pathComplete = false;
-	_currentHeading = North;
+	_currentHeading = Direction::North;
 	
 	// Action states
 	_canFire = false;

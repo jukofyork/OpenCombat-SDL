@@ -473,7 +473,7 @@ Map::RenderVictoryLocationText(Screen *screen, Rect *clip)
 			
 			Color white(255, 255, 255);
 			int textW, textH;
-			g_Globals->World.Fonts->GetTextSize(_victoryLocations[i]->Name, &textW, &textH, FontSize_Large);
+			g_Globals->World.Fonts->GetTextSize(_victoryLocations[i]->Name, &textW, &textH, FontSize::Large);
 			
 			// Determine text placement based on victory location's position on the MAP
 			bool nearLeftEdge = (x < EDGE_MARGIN);
@@ -508,7 +508,7 @@ Map::RenderVictoryLocationText(Screen *screen, Rect *clip)
 				// Convert to view-relative coordinates for rendering
 				int renderX = textX - _originX;
 				int renderY = textY - _originY;
-				g_Globals->World.Fonts->Render(screen, _victoryLocations[i]->Name, renderX, renderY, &white, FontSize_Large);
+				g_Globals->World.Fonts->Render(screen, _victoryLocations[i]->Name, renderX, renderY, &white, FontSize::Large);
 			}
 		}
 	}

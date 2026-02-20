@@ -57,11 +57,11 @@ struct ObjectActionsContainer
 /**
  * This enum let's us know how a team is controlled.
  */
-enum TeamController
+enum class TeamController
 {
-	PlayerControlled,
-	ComputerControlled,
-	NumControllers
+	Player,
+	Computer,
+	Count
 };
 
 /**
