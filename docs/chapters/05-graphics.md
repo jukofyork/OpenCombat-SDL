@@ -1695,4 +1695,4 @@ Uses the **Ray Casting Algorithm** (odd-crossing rule) to determine if a point i
 
 ---
 
-*[Continue to Section 6: World, Map, and Terrain System]*
+**Next**: [Chapter 6: World, Map, and Terrain System](./06-world-terrain.md)

@@ -777,3 +777,5 @@ for (XMLElement* elem = root->FirstChildElement("ElementName");
 - Changes take effect on game restart (no hot-reload)
 
 ---
+
+**Next**: [Chapter 8: Asset Structure and File Formats](./08-assets.md)

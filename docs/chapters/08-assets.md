@@ -636,3 +636,5 @@ maps/{MapName}/
 - Map backgrounds must be 7200x6840 pixels (60x57 MegaTiles)
 
 ---
+
+**Next**: [Chapter 9: UI System and Combat Module](./09-ui-combat.md)

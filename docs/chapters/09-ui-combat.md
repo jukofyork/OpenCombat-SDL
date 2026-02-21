@@ -882,3 +882,5 @@ Pressing F1 shows all available controls:
 | XML Configs | `config/CombatUI.xml`, `Icons.xml`, `WeaponIcons.xml`, `Terrain.xml` |
 
 ---
+
+**Next**: [Chapter 10: Build System and Dependencies](./10-build-system.md)

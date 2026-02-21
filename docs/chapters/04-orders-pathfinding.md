@@ -1307,4 +1307,4 @@ Soldier *Soldier::FindTarget(Squad *squad) {
 
 ---
 
-*[Continue to Section 5: Graphics and Rendering System]*
+**Next**: [Chapter 5: Graphics and Rendering System](./05-graphics.md)

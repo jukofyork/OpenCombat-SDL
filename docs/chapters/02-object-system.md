@@ -1266,4 +1266,4 @@ constexpr int MAX_SQUADS = 32;
 
 ---
 
-*[Continue to Section 3: State Machine and Action System]*
+**Next**: [Chapter 3: State Machine and Action System](./03-state-machine.md)

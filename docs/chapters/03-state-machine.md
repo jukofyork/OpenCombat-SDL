@@ -1325,4 +1325,4 @@ To fix the Waiting state issue, add to `config/SoldierStates.txt`:
 
 ---
 
-*[Continue to Section 4: Order System and AI Pathfinding]*
+**Next**: [Chapter 4: Order System and AI Pathfinding](./04-orders-pathfinding.md)

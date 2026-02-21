@@ -795,4 +795,4 @@ SDL_DEBUG=1 ./opencombat
 
 ---
 
-**End of Chapter 10**
+[← Back to Chapter 9: UI System and Combat Module](./09-ui-combat.md) | [↑ Up to Table of Contents](../ARCHITECTURE.md)

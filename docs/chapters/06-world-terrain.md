@@ -915,4 +915,4 @@ Victory locations render as flags on the map and can link to other maps in campa
 
 ---
 
-*[Continue to Section 7: Configuration Files and Data Schemas]*
+**Next**: [Chapter 7: Configuration Files and Data Schemas](./07-configuration.md)
