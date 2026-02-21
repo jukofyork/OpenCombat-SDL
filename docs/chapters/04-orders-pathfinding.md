@@ -238,10 +238,10 @@ Player Action:
 
 **What the game does**:
 ```cpp
-// World.cpp - Mouse click handler
+// World.cpp - Mouse click handler (simplified)
 void World::LeftMouseUp(int x, int y) {
-    if(_selectedSquads.size() > 0 && bMoveFast) {
-        // Create ONE MoveOrder for all selected squads
+    if(_selectedObjects.size() > 0 && bMoveFast) {
+        // Create ONE MoveOrder for all selected objects
         IssueOrder(new MoveOrder(x, y, Orders::MoveFast));
     }
 }
@@ -386,30 +386,37 @@ void Soldier::Simulate(long dt, World* world) {
 }
 ```
 
-**Example - RunToActionHandler**:
+**Example - RunToActionHandler** (simplified - actual implementation uses helper functions):
 ```cpp
-bool RunToActionHandler(Soldier* s, Action* action, long dt) {
+bool RunToActionHandler(Soldier* soldier, Action* action, long dt) {
     TileData* data = (TileData*)action->Data;
     
-    // Calculate direction to target tile
-    float dx = data->TileI * TILE_SIZE - s->Position.x;
-    float dy = data->TileJ * TILE_SIZE - s->Position.y;
+    // Set animation and action state
+    soldier->_moving = true;
+    soldier->_currentAnimationState = Soldier::AnimationState::Running;
+    soldier->_currentAction = Unit::MovingFast;
     
-    // Move toward tile at running speed
-    float moveDist = RUN_SPEED * dt;
-    float dist = sqrt(dx*dx + dy*dy);
+    // Update state machine
+    g_Globals->World.Actions.Soldiers.UpdateState(action->Index, &soldier->_currentState);
     
-    if(dist <= moveDist) {
-        // Reached the tile
-        s->Position.x = data->TileI * TILE_SIZE;
-        s->Position.y = data->TileJ * TILE_SIZE;
+    // Check if at destination using helper
+    if(AtDestination(soldier, data->TileI, data->TileJ)) {
+        delete data;
+        action->Data = nullptr;
         return true;  // Action complete
-    } else {
-        // Keep moving
-        s->Position.x += (dx/dist) * moveDist;
-        s->Position.y += (dy/dist) * moveDist;
-        return false;  // Action continues
     }
+    
+    // Calculate and apply heading change using helpers
+    Direction newHeading = CalculateNewHeading(soldier, data->TileI, data->TileJ);
+    if(soldier->_currentHeading != newHeading) {
+        soldier->_velocity.x = 0.0f;
+        soldier->_velocity.y = 0.0f;
+        soldier->_currentHeading = newHeading;
+    }
+    
+    // Move the soldier
+    MoveSoldier(soldier, dt);
+    return false;  // Action continues
 }
 ```
 
@@ -549,7 +556,8 @@ namespace Orders {
 **Implementation Status**:
 - ✅ **Fully Implemented**: Move, MoveFast, Sneak, Fire, Ambush, Defend, Stop
 - ⚠️ **Partially Implemented**: Hide (squad-level state only, no HideOrder class)
-- ❌ **Not Implemented**: Smoke, Destination (handled at squad level but not processed), Pause (class exists but not processed in Squad::AddOrder)
+- ❌ **Not Implemented**: Smoke, Pause (class exists but not processed in Squad::AddOrder)
+- ✅ **Implemented**: Destination (processed in Soldier::Simulate())
 
 class Order {
 public:

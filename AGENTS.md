@@ -14,7 +14,7 @@ OpenCombat SDL is a C++17 tactical wargame being ported from DirectX/Windows to 
 ### Setup
 ```bash
 # Ubuntu/Debian
-sudo apt-get install -y build-essential libsdl2-dev libsdl2-mixer-dev libsdl2-ttf-dev libtinyxml2-dev
+sudo apt-get install -y build-essential pkg-config libsdl2-dev libsdl2-mixer-dev libsdl2-ttf-dev libtinyxml2-dev
 
 # Check dependencies
 make check-deps

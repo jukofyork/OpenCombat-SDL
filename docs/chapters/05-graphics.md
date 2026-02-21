@@ -515,17 +515,17 @@ public:
     
     // Primitive drawing
     void DrawLine(int x1, int y1, int x2, int y2, Color* c);
-    void DrawRect(int x, int y, int w, int h, Color* c);
+    void DrawRect(int x, int y, int w, int h, int width, Color* c);
     void FillRect(int x, int y, int w, int h, Color* c);
-    
+
     // BLIT METHODS - 9 variants for different use cases
     // (Detailed in following sections)
-    
+
     // Static utility
     static bool PointInRegion(int x, int y, Region* r);
-    
+
     // Self-test
-    static void SelfTest();
+    static bool SelfTest();
     
 protected:
     SDL_Surface* _surface;
@@ -1266,6 +1266,9 @@ Frame::Frame(TGA* source, int displayTime, int width, int height,
 void Frame::Render(Screen* screen, int x, int y, bool hilit,
                    Color* hilitColor, int camouflageIdx)
 {
+    // NOTE: hilitColor and camouflageIdx parameters are currently UNREFERENCED
+    // (not used in the actual implementation - marked as UNREFERENCED_PARAMETER in source)
+    
     // Calculate centered position using minimum bounds
     int dx = x - ((_sourceX + (_width >> 1)) - _minBounds.x0);
     int dy = y - ((_sourceY + (_height >> 1)) - _minBounds.y0);

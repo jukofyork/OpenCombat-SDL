@@ -54,10 +54,6 @@ The following class diagram shows the inheritance structure of all game objects:
 classDiagram
     class Object {
         +Point Position
-        +std::string _name
-        +long _id
-        +int _health
-        +bool _isSelected
         +bool Select(int x, int y)
         +void Select(bool s)
         +void AddOrder(Order* o)
@@ -72,15 +68,13 @@ classDiagram
         +void SetSquadLeader(bool v)
         +void Kill()
         +bool Contains(int x, int y)
+        #std::string _name
+        #long _id
+        #int _health
+        #bool _isSelected
     }
     
     class Soldier {
-        +enum AnimationState
-        +AnimationState _currentAnimationState
-        +Vector2 _position
-        +Vector2 _velocity
-        +std::array<Animation*, NumStates> _animations
-        +State _currentState
         +void Render(Screen*, Rect*) override
         +void Simulate(long dt, World* world) override
         +bool IsMobile() override
@@ -90,34 +84,41 @@ classDiagram
         +void Shoot(Weapon* weapon, Object* target, Target::Type targetType, int targetX, int targetY)
         +void FindTarget(Squad* squad)
         +bool CalculateShot(Soldier* shooter, Weapon* weapon)
+        #enum AnimationState
+        #AnimationState _currentAnimationState
+        #Vector2 _position
+        #Vector2 _velocity
+        #std::array<Animation*, NumStates> _animations
+        #State _currentState
+        #int _formationPosition
     }
     
     class Vehicle {
-        +enum State
-        +float _currentHullAngle
-        +float _currentTurretAngle
-        +int _numWeapons
-        +int _numCrew
         +void Render(Screen*, Rect*) override
         +void Simulate(long dt, World* world) override
         +bool IsMobile() override
         +void AddCrew(Soldier* soldier, int slot)
         +void AimTurret(int x, int y)
         +void PlanMovement(long dt)
+        #enum State
+        #float _currentHullAngle
+        #float _currentTurretAngle
+        #int _numWeapons
+        #int _numCrew
     }
     
     class Squad {
-        +enum Quality
-        +std::vector<Soldier*> _soldiers
-        +std::vector<Vehicle*> _vehicles
-        +Path* _currentPath
-        +int _currentPointManIdx
-        +Formation::Type _currentFormation
-        +float _currentFormationSpread
-        +Quality _quality
         +void AddOrder(Order* o)
         +void HandleMoveOrder(MoveOrder* order, SoldierAction::Action movementStyle, Mark::Color markColor)
         +void Select(bool s)
+        #enum Quality
+        #std::vector<Soldier*> _soldiers
+        #std::vector<Vehicle*> _vehicles
+        #Path* _currentPath
+        #int _currentPointManIdx
+        #Formation::Type _currentFormation
+        #float _currentFormationSpread
+        #Quality _quality
     }
     
     Object <|-- Soldier

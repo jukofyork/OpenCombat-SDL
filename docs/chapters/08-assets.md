@@ -219,9 +219,10 @@ msk0000.39.33.tga  <-- Mask (same origin coordinates)
 - **16-bit RGB**: Converted to 32-bit with bit expansion
 
 **Internal Storage**:
-- All images converted to 32-bit ARGB
+- All images stored as 32-bit BGRA (native TGA format)
 - Pixel data as `unsigned char*` array
-- Row order flipped during load (TGA stores bottom-to-top)
+- Row order flipped during load (TGA stores bottom-to-top, converted to top-to-bottom)
+- **No color channel conversion** - Blue, Green, Red, Alpha order is preserved
 
 ---
 
@@ -241,19 +242,19 @@ typedef struct {
     short height;                // Image height
     char  bitsperpixel;          // 16, 24, or 32
     char  imagedescriptor;       // Image descriptor
-} TGA_HEADER;
+} HEADER;  // Note: struct is named HEADER in actual code, not TGA_HEADER
 ```
 
 ---
 
 #### 8.4.3 Pixel Layout
 
-BGRA order in file, converted to ARGB internally:
+BGRA order in file, stored as BGRA in memory (no conversion):
 
 ```
-Byte 0: Blue   -> stored as Red (after conversion)
+Byte 0: Blue   -> stored as Blue
 Byte 1: Green  -> stored as Green
-Byte 2: Red    -> stored as Blue (after conversion)
+Byte 2: Red    -> stored as Red
 Byte 3: Alpha  -> stored as Alpha
 ```
 
@@ -339,49 +340,53 @@ flowchart TD
 
 #### 8.5.2 Asset Manager Relationships
 
+**Note**: There is no unified `AssetManager` class. Each manager (`SoldierAnimationManager`, `EffectManager`, `WidgetManager`, `SoundManager`) is a standalone class without a common base class.
+
 ```mermaid
 classDiagram
     class TGA {
         +Load(filename)
         +GetWidth()
         +GetHeight()
-        +GetPixelData()
+        +GetData()
         +SetOrigin(x, y)
         -_width: int
         -_height: int
-        -_pixelData: unsigned char*
+        -_data: unsigned char*
         -_originX: int
         -_originY: int
     }
-    
+
     class SoldierAnimationManager {
         +LoadAnimations(xmlFile)
         +GetAnimation(name)
         +GetFrame(direction, frame)
         -_animations: vector~Animation~
+        -inherits privately from AnimationManager
     }
-    
+
     class EffectManager {
         +LoadEffects(xmlFile)
         +GetEffect(name)
         +PlayEffect(type, position)
         -_effects: vector~Effect~
     }
-    
+
     class WidgetManager {
         +LoadWidgets(xmlFile)
         +GetWidget(name)
         +Render(screen)
-        -_widgets: map~string, Widget~
+        -_widgets: vector~Widget*~
+        -_sourceImages: vector~TGA*~
     }
-    
+
     class SoundManager {
         +LoadSounds(xmlFile)
         +PlaySound(name)
         +PlayVoice(line)
-        -_sounds: map~string, Mix_Chunk*~
+        -_sounds: vector~Sound*~
     }
-    
+
     SoldierAnimationManager --> TGA : loads
     EffectManager --> TGA : loads
     WidgetManager --> TGA : loads for icons

@@ -332,9 +332,9 @@ flowchart LR
 - `WeaponManager`: Manages weapon definitions and ammo types
 - `VehicleManager`: Handles vehicle types and configurations
 - `SquadManager`: Creates squad compositions
-- `AnimationManager`: Loads and clones animation sequences
 - `EffectManager`: Manages visual effects (muzzle flashes, explosions)
 - `ElementManager`: Terrain element definitions
+- `AnimationManager`: Loads and clones animation sequences (owned by CombatModule, not in globals)
 
 **Benefits**:
 - Single point of control for object creation
@@ -625,26 +625,17 @@ public:
 class ObjectActions {
 public:
     struct Action {
-        char Name[64];
-        char Group[64];
-        int Time;           // Time to complete (ms)
-        int Requirements;   // What state is needed
-        int Adds;          // State bits to add when complete
-        int Subtracts;     // State bits to remove when complete
+        std::string Name;
+        std::string Group;
+        long Time;                       // Time to complete (ms)
+        std::vector<StateIdx> Requirements;  // Required states
+        std::vector<StateIdx> Adds;      // States to add when complete
+        std::vector<StateIdx> Subtracts; // States to remove when complete
     };
     
-    // CheckRequirements returns -1 if satisfied, or prerequisite action index
-    int CheckRequirements(int actionIndex, unsigned long long currentState);
+    // CheckRequirements returns action index if prerequisites needed, -1 if satisfied
+    ActionIdx CheckRequirements(ActionIdx actionID, State* srcState);
 };
-
-// Action handlers process actions based on requirements
-bool StandActionHandler(Soldier* s, Action* action, long dt) {
-    // Only execute if soldier is prone
-    if(!s->HasState(SoldierState::Prone)) {
-        return true;  // Already standing
-    }
-    // ... stand up animation logic ...
-}
 ```
 
 **Note**: The action system uses requirement checking rather than automatic prerequisite chaining. Actions check their requirements in their handlers and either execute or return early.

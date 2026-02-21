@@ -339,7 +339,7 @@ classDiagram
         +SetOrigin(x, y)
         +IsPassable(i, j)
         +GetTileElement(i, j)
-        +UpdateFireCursor(cursorX, cursorY, hasTarget)
+        #UpdateFireCursor(cursorX, cursorY, hasTarget)
         +ConvertTileToPosition(i, j, x, y)
         +ConvertPositionToTile(x, y, i, j)
         +AddMark(markColor, x, y)
@@ -409,7 +409,7 @@ classDiagram
     
     class Building {
         +GetInterior()
-        +GetExterior()
+        +SetExterior()
         +BoundaryPoints
     }
     

@@ -330,9 +330,9 @@ flowchart TD
 
 ### 3.7 Implementation: State Class
 
-**Location**: `src/states/State.h` (header-only implementation)
+**Location**: `src/states/State.h` (with implementation in `src/states/State.cpp`)
 
-**⚠️ LIMIT**: Only 64 states (bits 0-63) can be stored. Current max state index: 22 (Waiting).
+**⚠️ LIMIT**: Only 64 states (bits 0-63) can be stored. Current max state index: 22 (Waiting = 23rd state, indices 0-22).
 
 ```cpp
 class State {
@@ -443,9 +443,13 @@ namespace SoldierState {
 ```
 
 **Important**: When adding new states:
-1. Add to `SoldierStates.txt` first (1-indexed)
+1. Add to `SoldierStates.txt` first (implicitly 0-indexed - first line = index 0)
 2. Add to C++ enum (0-indexed)
 3. Ensure state index < 64 (64-bit limit)
+
+**Known Issues**:
+- `ActionQueue::Peek()` has a bug at line 76: the condition `_nItems < 0` can never be true since `_nItems` is never negative, causing Peek to always return false.
+- `SoldierStateTransitionLoader.h` exists but is empty (0 bytes) - state transitions are loaded differently.
 
 ---
 

@@ -70,7 +70,7 @@ flowchart TD
 | **SDL2** | Windowing, events, 2D rendering | Creates the game window, handles keyboard/mouse input, manages the framebuffer for software rendering |
 | **SDL2_mixer** | Audio playback | Loads and plays WAV sound effects, manages audio channels for simultaneous sounds |
 | **SDL2_ttf** | TrueType font rendering | Renders text using TTF fonts for UI elements, squad information, and debug displays |
-| **tinyxml2** | XML parsing | Reads game configuration files (weapons, soldiers, terrain types), bundled in `src/misc/` if system version unavailable |
+| **tinyxml2** | XML parsing | Reads game configuration files (weapons, soldiers, terrain types), **always bundled** in `src/misc/` |
 
 ### Build Tools
 
@@ -200,12 +200,11 @@ make check-deps
 
 Expected output:
 ```
-Checking dependencies...
-✓ g++ found (version X.X.X)
+Checking SDL2 dependencies...
 ✓ SDL2 found
-✓ SDL2_mixer found
 ✓ SDL2_ttf found
-All dependencies satisfied!
+✓ SDL2_mixer found
+✓ tinyxml2 found
 ```
 
 ### Build Targets Explained
@@ -251,6 +250,7 @@ flowchart LR
 | `make` or `make all` | Builds optimized release binary | Playing the game |
 | `make debug` | Builds with debug symbols, no optimization | Debugging crashes |
 | `make test` | Builds minimal test executable | Testing SDL2 setup |
+| `make test-clean` | Removes test executables | Cleaning up test builds |
 | `make clean` | Removes object files and binaries | Starting fresh build |
 | `make distclean` | Full cleanup including backup files | Preparing for distribution |
 | `make check-deps` | Verifies all dependencies are installed | First-time setup |
@@ -487,11 +487,11 @@ pkg-config --exists sdl2 && echo "SDL2 found"
 
 **Solution**:
 ```bash
-# Option 1: Install system version
+# Option 1: Install system version (optional - for other projects)
 sudo apt-get install libtinyxml2-dev
 
-# Option 2: Use bundled version (already in src/misc/)
-# The Makefile automatically detects and uses bundled version if system version unavailable
+# Option 2: Use bundled version (always compiled from src/misc/)
+# The Makefile always uses the bundled version in src/misc/ - no action needed
 ```
 
 #### "undefined reference to pthread_create"

@@ -16,6 +16,8 @@ Configuration files define the **rules, stats, and definitions** that make the g
 
 **Key Principle**: Configuration is **what** the game contains. Assets (Chapter 8) are **how it looks and sounds**.
 
+**Loading**: Configuration is loaded by individual Manager classes (e.g., `SoldierManager`, `WeaponManager`) rather than a centralized Config class. Configuration paths are stored in `ApplicationGlobals.ConfigDirectory`.
+
 ---
 
 ### 7.2 Unit Configuration
@@ -231,7 +233,7 @@ Each soldier type maps game states to animation names:
 
 #### 7.3.2 Effects.xml
 
-**Purpose**: Defines 34 visual effects with directional variants.
+**Purpose**: Defines 42 visual effects with directional variants (2 static + 40 directional across 5 weapon types).
 
 **Schema**:
 
@@ -338,6 +340,16 @@ Each soldier type maps game states to animation names:
     <Name>American</Name>
     <VictoryLocation>UI/Flags/Static/american.14.9.tga</VictoryLocation>
     <MiniMap>UI/Flags/Static/minimap_american.tga</MiniMap>
+  </Nationality>
+  <Nationality>
+    <Name>German</Name>
+    <VictoryLocation>UI/Flags/Static/german.14.9.tga</VictoryLocation>
+    <MiniMap>UI/Flags/Static/minimap_german.tga</MiniMap>
+  </Nationality>
+  <Nationality>
+    <Name>Soviet</Name>
+    <VictoryLocation>UI/Flags/Static/soviet.14.9.tga</VictoryLocation>
+    <MiniMap>UI/Flags/Static/minimap_soviet.tga</MiniMap>
   </Nationality>
 </Nationalities>
 ```
@@ -759,10 +771,10 @@ for (XMLElement* elem = root->FirstChildElement("ElementName");
 | Vehicles.xml | 1 vehicle | Vehicle definitions |
 | Squads.xml | 4 squads | Squad compositions |
 | Elements.xml | 159 elements | Terrain properties |
-| Effects.xml | 34 effects | Visual effect definitions |
-| Nationalities.xml | 1 nationality | Faction definitions |
+| Effects.xml | 42 effects | Visual effect definitions (2 static + 40 directional) |
+| Nationalities.xml | 3 nationalities | Faction definitions (American, German, Soviet) |
 | Animation XMLs | 4 files | Animation configs |
-| UI XMLs | 5 files | Interface definitions |
+| UI XMLs | 6 files | Interface definitions |
 | Audio XMLs | 2 files | Sound mappings |
 | SoldierStates.txt | 23 states | State definitions |
 | SoldierActions.txt | ~40 actions | Action definitions |

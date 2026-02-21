@@ -18,6 +18,8 @@
 - **Lines of Code**: ~21,500 across 139 source files
 - **Status**: SDL2 port complete, testing phase
 
+**Note**: This project uses **bundled tinyxml2** (in `src/misc/`) rather than a system library.
+
 ---
 
 ## Architecture Documentation Chapters
@@ -72,7 +74,7 @@ Read sequentially for a complete understanding, or jump to specific chapters for
 
 **Topics Covered**:
 - State class - 64-bit bitfield implementation
-- Soldier states (22 logical states mapped to 16 animation states)
+- Soldier states (23 logical states mapped to 16 animation states)
 - Action system structure and definitions
 - Action loading from SoldierActions.txt
 - Action handler system (22 action types)
@@ -81,7 +83,7 @@ Read sequentially for a complete understanding, or jump to specific chapters for
 - Animation marker system for timing
 - State transition examples and complex transitions
 
-**Key Files**: `src/states/State.h` (header-only), `src/states/Action.h`, `src/states/ObjectActions.h/cpp`, `src/objects/SoldierActionHandlers.h/cpp`, `config/SoldierActions.txt`
+**Key Files**: `src/states/State.h`, `src/states/State.cpp`, `src/states/Action.h`, `src/states/ObjectActions.h/cpp`, `src/objects/SoldierActionHandlers.h/cpp`, `config/SoldierActions.txt`
 
 ---
 
@@ -91,7 +93,7 @@ Read sequentially for a complete understanding, or jump to specific chapters for
 
 **Topics Covered**:
 - Order base class and reference counting
-- Order types (Move, MoveFast, Sneak, Fire, Ambush, Defend, Stop, Pause)
+- Order types (MoveOrder with variants: Move, MoveFast, Sneak; FireOrder, AmbushOrder, DefendOrder, StopOrder, PauseOrder)
 - Order queue management in Object base class
 - Order processing in Soldier::Simulate()
 - Squad-level order distribution
@@ -235,8 +237,8 @@ Read sequentially for a complete understanding, or jump to specific chapters for
 - Required dependencies:
   - SDL2 (core)
   - SDL2_mixer (audio)
-  - SDL2_ttf (fonts, optional)
-  - tinyxml2 (XML parsing)
+  - SDL2_ttf (fonts, **required**)
+  - tinyxml2 (XML parsing, bundled)
 - Compilation flags and options
 - Debug vs Release builds
 - Installation instructions

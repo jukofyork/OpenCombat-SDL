@@ -565,9 +565,9 @@ Widgets are loaded from XML and cloned for use:
 class WidgetManager {
 public:
     void LoadWidgets(const std::filesystem::path& fileName);
-    Widget *GetWidget(const std::string& widgetName);  // Returns CLONE
-    Widget *GetWidget(int index);                       // Returns CLONE
-    Widget *GetWidget(int index, bool clone);          // clone=false for original
+    Widget *GetWidget(const std::string& widgetName);
+    Widget *GetWidget(int index);
+    Widget *GetWidget(int index, bool clone);  // clone=false for original
 
 protected:
     std::vector<Widget*> _widgets;
@@ -577,12 +577,16 @@ protected:
 class Widget {
 public:
     void Render(Screen *screen, int x, int y);
+    void Render(Screen *screen, int x, int y, Rect *clip);
     void Render(Screen *screen, int x, int y, int w, int h);
+    void Render(Screen *screen, int x, int y, int w, int h, bool useAlpha);
+    void Render(Screen *screen, int x, int y, Color *transparentColor);
     Widget *Clone();  // Shallow copy, shares TGA
-    
-    int GetWidth();
-    int GetHeight();
-    TGA *GetImage();
+    std::string GetName();
+
+    inline int GetWidth() { return _tga->GetWidth(); }
+    inline int GetHeight() { return _tga->GetHeight(); }
+    inline TGA *GetImage() { return _tga; }
 
 protected:
     std::string _name;
@@ -590,7 +594,7 @@ protected:
 };
 ```
 
-**Important**: `GetWidget()` always returns a **clone**. Callers must `delete` cloned widgets.
+**Important**: `GetWidget()` may return a clone depending on implementation. Use `GetWidget(index, false)` to get the original. Callers must `delete` cloned widgets.
 
 ### 9.4.3 Render Flow
 
@@ -785,13 +789,13 @@ protected:
 
 **Cursor Types** (`src/application/CursorInterface.h`):
 ```cpp
-enum class CursorType {
+enum CursorType {
     MarkBlue, MarkPurple, MarkRed, MarkYellow,
     MarkOrange, MarkBrown, MarkGreen, MarkGrey,
     CrosshairsBlack, CrosshairsRed, CrosshairsYellow, CrosshairsGreen,
     CrosshairsEmptyBlack, CrosshairsEmptyRed,
     CrosshairsEmptyYellow, CrosshairsEmptyGreen,
-    Regular
+    Regular, NumCursorTypes
 };
 ```
 
@@ -814,7 +818,7 @@ These features are intended for developers and debugging, not normal gameplay:
 | F8 | 119 | Building Display Cycle | Cycles: Interiors → Outlines → Elevation → None |
 | F9 | 120 | Terrain Elements | Toggles terrain detail rendering |
 | F10 | 121 | Bounding Boxes | Shows collision/debug boxes |
-| K | - | Kill Selected Units | Debug command to eliminate selected units |
+| K | - | Kill Selected Units | **NOT IMPLEMENTED** - mapped but no handler exists |
 
 ### 9.5.2 FPS Tracking
 
@@ -870,8 +874,8 @@ Pressing F1 shows all available controls:
 | Left Click | Select / Issue order | - |
 | Right Click | Open context menu | - |
 | Middle Drag | Pan camera | - |
-| K | - | Kill selected units |
-| F | Cycle formation | - |
+| K | - | Kill selected units (**NOT IMPLEMENTED**) |
+| F | Cycle formation (**NOT IMPLEMENTED**) | - |
 
 ### File Locations
 
