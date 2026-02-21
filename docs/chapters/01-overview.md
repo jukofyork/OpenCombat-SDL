@@ -513,17 +513,18 @@ public:
 // Soldiers are created from XML templates
 class SoldierManager {
 public:
-    Soldier* CreateSoldier(const char* templateName, Nationality* nation);
-    
+    Soldier *CreateSoldier(const std::string& soldierType, AnimationManager *animationManager, WeaponManager *weaponManager);
+
 private:
     // Cache of loaded templates
     std::map<std::string, SoldierTemplate> _templates;
 };
 
 // Usage
-Soldier* soldier = g_Globals->World.Soldiers->CreateSoldier(
-    "Rifleman", 
-    g_Globals->World.Nationalities[0]
+Soldier *soldier = g_Globals->World.Soldiers->CreateSoldier(
+    "Rifleman",
+    g_Globals->World.AnimationManager,
+    g_Globals->World.Weapons
 );
 ```
 

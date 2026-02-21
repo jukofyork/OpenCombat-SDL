@@ -126,7 +126,7 @@ graphics/
 
 ---
 
-#### 8.2.2 Sounds Directory
+#### 8.2.3 Sounds Directory
 
 ```
 sounds/                         # Note: lowercase 'sounds'
@@ -218,7 +218,7 @@ msk0000.39.33.tga  <-- Mask (same origin coordinates)
 
 **Internal Storage**:
 - TGA files are stored as BGRA on disk (native TGA format)
-- After loading, converted to 32-bit ARGB in memory
+- Data stays in BGRA format in memory (no channel reordering)
 - Pixel data as `unsigned char*` array
 - Row order flipped during load (TGA stores bottom-to-top, converted to top-to-bottom)
 
@@ -247,16 +247,16 @@ typedef struct {
 
 #### 8.4.3 Pixel Layout
 
-BGRA order in file, converted to ARGB in memory:
+BGRA order in file (unchanged in memory):
 
 ```
-File Byte 0: Blue   -> Memory Byte 1: Green
-File Byte 1: Green  -> Memory Byte 2: Red
-File Byte 2: Red    -> Memory Byte 3: Alpha
-File Byte 3: Alpha  -> Memory Byte 0: Blue
+File Byte 0: Blue   -> Memory Byte 0: Blue
+File Byte 1: Green  -> Memory Byte 1: Green
+File Byte 2: Red    -> Memory Byte 2: Red
+File Byte 3: Alpha  -> Memory Byte 3: Alpha
 ```
 
-**Note**: The TGA::Create() method performs color channel reordering during load to convert from BGRA (file) to ARGB (memory) format.
+**Note**: TGA pixel data is loaded directly without channel reordering. The BGRA format from the file is preserved in memory.
 
 #### 8.4.4 TGA Format Structure
 
@@ -320,8 +320,7 @@ flowchart TD
         L2[Allocate Pixel Buffer]
         L3[Read Pixel Data]
         L4[Flip Row Order]
-        L5[Convert to ARGB]
-        L6[Parse Origin<br/>from Filename]
+        L5[Parse Origin<br/>from Filename]
     end
     
     subgraph Store["Store"]
@@ -334,13 +333,13 @@ flowchart TD
     DIR --> S1 --> S2 --> S3
     P3 --> S1
     S3 --> L1
-    L1 --> L2 --> L3 --> L4 --> L5 --> L6
-    L6 --> ST1 --> ST2 --> ST3
+    L1 --> L2 --> L3 --> L4 --> L5
+    L5 --> ST1 --> ST2 --> ST3
 ```
 
 #### 8.5.2 Asset Manager Relationships
 
-**Note**: There is no unified `AssetManager` class. Each manager (`SoldierAnimationManager`, `EffectManager`, `WidgetManager`, `SoundManager`) is a standalone class without a common base class.
+**Note**: There is no unified `AssetManager` class and no common base class for all managers. Each manager (`SoldierAnimationManager`, `EffectManager`, `WidgetManager`, `SoundManager`) is a standalone class without a common base class.
 
 ```mermaid
 classDiagram
@@ -374,6 +373,7 @@ classDiagram
     class EffectManager {
         +LoadEffects(xmlFile)
         +GetEffect(name): Effect*
+        +GetFiles() void  **(unimplemented/placeholder)**
         -_effects: vector~Effect~
     }
 

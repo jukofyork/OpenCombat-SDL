@@ -514,7 +514,7 @@ public:
     void SetOrigin(int x, int y);
     
     // Primitive drawing
-    void DrawLine(int x1, int y1, int x2, int y2, Color* c);
+    void DrawLine(int sx, int sy, int dx, int dy, int width, Color* c);
     void DrawRect(int x, int y, int w, int h, int width, Color* c);
     void FillRect(int x, int y, int w, int h, Color* c);
 
@@ -583,15 +583,15 @@ _bits[pixel_offset + 2] = Red    (0-255)
 _bits[pixel_offset + 3] = Alpha  (0-255, if present)
 ```
 
-**⚠️ BUG ALERT**: The `Screen::Clear()` method has incorrect byte offsets:
+**Note**: The `Screen::Clear()` method fills the pixel buffer with the specified color:
 ```cpp
-// Current (buggy) implementation in Screen.cpp:
-_bits[j*_pitch + i*_bytes_per_pixel + 0] = 0;           // Always 0!
-_bits[j*_pitch + i*_bytes_per_pixel + 1] = c->red;      // Red in wrong position
-_bits[j*_pitch + i*_bytes_per_pixel + 2] = c->green;    // Green in wrong position  
-_bits[j*_pitch + i*_bytes_per_pixel + 3] = c->blue;     // Blue in wrong position
+// Current implementation in Screen.cpp (lines 74-85):
+_bits[j*_pitch + i*_bytes_per_pixel + 0] = 0;           // Alpha/Unused
+_bits[j*_pitch + i*_bytes_per_pixel + 1] = c->red;      // Red channel
+_bits[j*_pitch + i*_bytes_per_pixel + 2] = c->green;    // Green channel  
+_bits[j*_pitch + i*_bytes_per_pixel + 3] = c->blue;     // Blue channel
 ```
-The Clear() method writes colors to incorrect byte positions. This should be fixed to match the BGR order shown above.
+The byte ordering used here matches the ARGB format used throughout the rendering system.
 
 #### 5.6.3 Blit Method 1: Basic Memcpy
 

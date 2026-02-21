@@ -775,7 +775,7 @@ for (XMLElement* elem = root->FirstChildElement("ElementName");
 | UI XMLs | 6 files | Interface definitions |
 | Audio XMLs | 2 files | Sound mappings |
 | SoldierStates.txt | 23 states | State definitions |
-| SoldierActions.txt | 21 actions | Action definitions |
+| SoldierActions.txt | 22 actions | Action definitions |
 | USNames.txt | 473 names | Name pool |
 
 ---

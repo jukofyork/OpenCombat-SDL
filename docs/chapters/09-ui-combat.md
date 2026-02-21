@@ -399,6 +399,7 @@ stateDiagram-v2
     Normal --> ContextSelecting: Right-click on selected unit
     
     ContextSelecting --> ContextSelected: Left-click on menu choice
+    ContextSelecting --> Normal: Right-click cancels menu
     
     ContextSelected --> Normal: Order complete/cancelled
     
@@ -502,7 +503,7 @@ The main gameplay module that coordinates all combat UI elements:
 class CombatModule : public Module {
 public:
     CombatModule();
-    ~CombatModule(void);
+    virtual ~CombatModule(void);
     
     // Module interface
     virtual void Initialize(void *app);
@@ -564,6 +565,7 @@ Widgets are loaded from XML and cloned for use:
 ```cpp
 class WidgetManager {
 public:
+    virtual ~WidgetManager();
     void LoadWidgets(const std::filesystem::path& fileName);
     Widget *GetWidget(const std::string& widgetName);
     Widget *GetWidget(int index);
@@ -582,7 +584,7 @@ public:
     void Render(Screen *screen, int x, int y, int w, int h, bool useAlpha);
     void Render(Screen *screen, int x, int y, Color *transparentColor);
     Widget *Clone();  // Shallow copy, shares TGA
-    std::string GetName();
+    const std::string& GetName() const;
 
     inline int GetWidth() { return _tga->GetWidth(); }
     inline int GetHeight() { return _tga->GetHeight(); }
@@ -747,14 +749,14 @@ class MiniMap {
 public:
     Point Position;  // Screen position
     
-    void SetPosition(int x, int y);
-    void SetVisibleArea(int w, int h);
-    bool Contains(int x, int y);  // Hit test
-    void Render(Screen *screen);
+    virtual void SetPosition(int x, int y);
+    virtual void SetVisibleArea(int w, int h);
+    virtual bool Contains(int x, int y);  // Hit test
+    virtual void Render(Screen *screen);
     
     // Input handling
-    void LeftMouseUp(int x, int y);    // Center view
-    void LeftMouseDrag(int x, int y);  // Pan view
+    virtual void LeftMouseUp(int x, int y);    // Center view
+    virtual void LeftMouseDrag(int x, int y);  // Pan view
 
 protected:
     TGA *_tga;  // Minimap image

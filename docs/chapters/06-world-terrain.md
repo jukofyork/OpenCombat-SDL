@@ -569,37 +569,37 @@ void Map::SelectObjects(int x, int y, std::vector<Object*>* dest) {
     int cj = y / _nPixelsPerBlockY;
     
     // Search 3x3 area around click
-    int si = max(0, ci - 1);
-    int sj = max(0, cj - 1);
-    int di = min(_nBlocksX - 1, ci + 1);
-    int dj = min(_nBlocksY - 1, cj + 1);
+    int si = (ci - 1) >= 0 ? (ci - 1) : 0;
+    int sj = (cj - 1) >= 0 ? (cj - 1) : 0;
+    int di = (ci + 1) < _nBlocksX ? (ci + 1) : _nBlocksX - 1;
+    int dj = (cj + 1) < _nBlocksY ? (cj + 1) : _nBlocksY - 1;
     
-    for(int j = sj; j <= dj; j++) {
-        for(int i = si; i <= di; i++) {
-            Object* obj = _objects[j * _nBlocksX + i];
-            while(obj != NULL) {
-                if(obj->GetTeam() == g_Globals->World.CurrentPlayer 
-                   && obj->Contains(x, y)) {
-                    // If object is a soldier, select entire squad
-                    if(obj->IsSoldier()) {
-                        Soldier* soldier = (Soldier*)obj;
-                        Squad* squad = soldier->GetSquad();
-                        if(squad != NULL) {
-                            // Add all squad members to selection
-                            for(Soldier* member : squad->GetMembers()) {
-                                if(member->IsSelectable()) {
-                                    dest->push_back(member);
-                                }
-                            }
-                        } else {
-                            dest->push_back(obj);
+    for(int j = sj; j <= dj; ++j) {
+        for(int i = si; i <= di; ++i) {
+            Object* object = _objects[j * _nBlocksX + i];
+            while(object != nullptr) {
+                // Only select objects that are part of our team
+                if(object->GetTeam() == g_Globals->World.CurrentPlayer 
+                   && object->Contains(x, y)) {
+                    // Get the squad that this object belongs to
+                    Squad* s = object->GetSquad();
+                    
+                    // Check if squad already added to selection
+                    bool bAdd = true;
+                    for(size_t k = 0; k < dest->size(); ++k) {
+                        if((*dest)[k]->GetID() == s->GetID()) {
+                            bAdd = false;
+                            break;
                         }
-                    } else {
-                        dest->push_back(obj);
                     }
-                    break; // Only select first matching object/squad
+                    
+                    // Add squad if not already selected
+                    if(bAdd) {
+                        s->Select(x, y);
+                        dest->push_back(s);
+                    }
                 }
-                obj = obj->NextObject;
+                object = object->NextObject;
             }
         }
     }

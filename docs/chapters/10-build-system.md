@@ -26,7 +26,7 @@ Source Code (.cpp) → Compiler (g++) → Object Files (.o) → Linker → Execu
 ```mermaid
 flowchart TD
     subgraph "Source Files"
-        SRC[144 .cpp/.h files]
+        SRC[139 .cpp/.h files]
         SRC_MAIN[src/main.cpp]
         SRC_GFX[src/graphics/*.cpp]
         SRC_WORLD[src/world/*.cpp]
@@ -753,7 +753,7 @@ Key variables you can override:
 
 ### Project Statistics
 
-- **Source Files**: 144 `.cpp`/`.h` files
+- **Source Files**: 139 `.cpp`/`.h` files
 - **Lines of Code**: ~21,500
 - **Primary Directories**: 10 source folders
 - **Assets**: ~5,647 TGA files, 21 XML + 3 text config files

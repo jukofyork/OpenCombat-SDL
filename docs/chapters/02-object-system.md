@@ -90,7 +90,7 @@ classDiagram
         #Vector2 _velocity
         #std::array<Animation*, NumStates> _animations
         #State _currentState
-        #int _formationPosition
+        int _formationPosition
     }
     
     class Vehicle {
@@ -1113,7 +1113,7 @@ Only the point man (formation position 0) follows the path directly. This ensure
 #### Implementation
 
 ```cpp
-class Squad {
+class Squad : public Object {
 public:
     enum Quality {
         Useless = 0, Fragile, Weak, Average, Good, Strong, NumQuality
@@ -1125,10 +1125,14 @@ public:
     
     // Order handling
     void AddOrder(Order* o);
-    void HandleMoveOrder(MoveOrder* order, SoldierAction::Action movementStyle, 
+    void HandleMoveOrder(MoveOrder* order, SoldierAction::Action movementStyle,
                          Mark::Color markColor);
+
+protected:
     void HandleAmbushOrder(AmbushOrder* order);
     void HandleDefendOrder(DefendOrder* order);
+
+public:
     
     // Path management
     Path* _currentPath;
@@ -1147,7 +1151,7 @@ public:
     Quality _quality;
     
     // Selection
-    void Select(bool s);
+    virtual void Select(bool s);
     void Highlight(Color* color);
     void UnHighlight();
 };
@@ -1302,7 +1306,7 @@ constexpr int MAX_SQUADS = 32;
 // Animation
 // AnimationState::NumStates = 15 (Standing=0 to LyingDown=14)
 // SoldierAction::NumActions = 22 (StandingFire=0 to Wait=21)
-// Direction::NumDirections = 8 (South=0 to SouthEast=7)
+// Direction::NumDirections = 8 (South=0, SouthWest=1, West=2, NorthWest=3, North=4, NorthEast=5, East=6, SouthEast=7)
 // Formation::NumFormations = 3 (Column, File, Line)
 // Squad::NumQuality = 6 (Useless to Strong)
 ```
