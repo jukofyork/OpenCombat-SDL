@@ -380,36 +380,35 @@ state.UnSet(SoldierState::Standing);  // _bits = 0b0100
 
 **Location**: `src/states/ObjectStates.h`, `config/SoldierStates.txt`
 
-**⚠️ CRITICAL INCONSISTENCY**: The `Waiting` state (index 22) exists in the C++ enum but is **MISSING** from `SoldierStates.txt`. This means:
-- The enum has 23 states (0-22)
-- The config file only has 22 states (0-21)
-- State indices after `Waiting` cannot be added without updating the config file
+**State Configuration File Format** (`config/SoldierStates.txt`) - One name per line, no numbering:
 
-**State Configuration File Format** (`config/SoldierStates.txt`):
 ```
-1: Standing             (index 0)
-2: Prone                (index 1)
-3: Stopped              (index 2)
-4: Moving               (index 3)
-5: Firing               (index 4)
-6: Walking              (index 5)
-7: WalkingSlow          (index 6)
-8: Crawling             (index 7)
-9: Running              (index 8)
-10: Reloading           (index 9)
-11: DyingBlownUp        (index 10)
-12: DyingBackward       (index 11)
-13: DyingForward        (index 12)
-14: Dead                (index 13)
-15: Reloaded            (index 14)
-16: OutOfAmmo           (index 15)
-17: NoTarget            (index 16)
-18: FindingCover        (index 17)
-19: Following           (index 18)
-20: FollowingInFormation (index 19)
-21: Defending           (index 20)
-22: Ambushing           (index 21)
-                          (index 22 - Waiting NOT in file!)
+Standing             (index 0)
+Prone                (index 1)
+Stopped              (index 2)
+Moving               (index 3)
+Firing               (index 4)
+Walking              (index 5)
+WalkingSlow          (index 6)
+Crawling             (index 7)
+Running              (index 8)
+Reloading            (index 9)
+DyingBlownUp         (index 10)
+DyingBackward        (index 11)
+DyingForward         (index 12)
+Dead                 (index 13)
+Reloaded             (index 14)
+OutOfAmmo            (index 15)
+NoTarget             (index 16)
+FindingCover         (index 17)
+Following            (index 18)
+FollowingInFormation (index 19)
+Defending            (index 20)
+Ambushing            (index 21)
+Waiting              (index 22)
+```
+
+**Total: 23 states (indices 0-22)**
 ```
 
 **C++ Enum** (`src/states/ObjectStates.h`):
@@ -438,7 +437,7 @@ namespace SoldierState {
         FollowingInFormation = 19,
         Defending = 20,
         Ambushing = 21,
-        Waiting = 22    // ⚠️ NOT in SoldierStates.txt!
+        Waiting = 22
     };
 }
 ```
@@ -1291,9 +1290,7 @@ stateDiagram-v2
 
 1. **64-bit state limit**: Maximum 64 states (0-63). Currently using indices 0-22.
 
-2. **Waiting state inconsistency**: State index 22 (Waiting) exists in enum but NOT in `SoldierStates.txt`. This prevents proper state loading for Waiting.
-
-3. **Unused ActionQueue class**: Soldiers use `std::deque<Action*>` directly. The `ActionQueue` class is orphaned code.
+2. **Unused ActionQueue class**: Soldiers use `std::deque<Action*>` directly. The `ActionQueue` class is orphaned code.
 
 4. **Memory management**: Actions must be manually deleted after removal from queue:
    ```cpp
@@ -1315,13 +1312,6 @@ stateDiagram-v2
 #### Action Data Types Not Fully Used
 
 - `FindCoverData` - Structure defined but FindCover handler is stub
-
-#### State Configuration Issues
-
-To fix the Waiting state issue, add to `config/SoldierStates.txt`:
-```
-23: Waiting             (index 22)
-```
 
 ---
 

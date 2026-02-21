@@ -378,7 +378,11 @@ Simpler than soldiers (vehicles don't have complex postures):
 
 ### 2.4 The Formation System
 
-#### Purpose of Formations
+⚠️ **STUB IMPLEMENTATION**: The formation system is currently a stub. Only basic horizontal line spacing is implemented. All formation types (Column, Line, File) produce identical output.
+
+**See Also**: `docs/other/FORMATION_IMPLEMENTATION_LESSONS.md` for detailed implementation guidance.
+
+#### Purpose of Formations (Planned)
 
 In tactical warfare, formations control how units move and fight:
 
@@ -388,16 +392,38 @@ In tactical warfare, formations control how units move and fight:
 
 In OpenCombat, formations solve a critical problem: **How do you move a group of units together without them bunching up or wandering off?**
 
-#### How Formation Following Works
+#### Current Implementation (Stub)
 
-When you order a squad to move:
+**Location**: `src/objects/Formation.cpp`
+
+```cpp
+void Formation::GetFormationPosition(Type formationType, int formationIdx, 
+                                     float formationSpread, int *x, int *y) {
+    UNREFERENCED_PARAMETER(formationType);  // Ignored - all formations same
+    UNREFERENCED_PARAMETER(formationSpread); // Ignored
+    // TODO: Implement formation positioning logic
+    // Stub implementation - places units in a simple horizontal line
+    *x = formationIdx * 20;
+    *y = 0;
+}
+```
+
+**Current Behavior**:
+- All formation types produce a horizontal line with 20px spacing
+- Formation type parameter is ignored
+- Formation spread parameter is ignored
+- No support for rotation or dynamic adjustment
+
+#### Planned Formation Following Behavior
+
+When fully implemented, squad movement should work as follows:
 
 1. **Path Calculation**: The squad leader (point man) gets a path calculated
 2. **Formation Assignment**: Each squad member is assigned a formation position (0, 1, 2, 3...)
 3. **Relative Positioning**: Instead of following the path directly, members calculate where they should be relative to the leader
 4. **Dynamic Adjustment**: As the leader moves, followers continuously adjust to maintain formation
 
-**Example: Column Formation**
+**Planned: Column Formation**
 ```
 Leader moves here ──────►
     │
@@ -408,7 +434,7 @@ Leader moves here ──────►
     Member 3 follows at offset (-60, 0)
 ```
 
-**Example: Line Formation**
+**Planned: Line Formation**
 ```
         Member 2
            │
@@ -417,9 +443,9 @@ Member 1 ─ Leader ─ Member 3
         Member 4
 ```
 
-The `formationSpread` parameter controls how far apart units are.
+The `formationSpread` parameter should control how far apart units are.
 
-#### Squad Composition
+#### Squad Data Structures
 
 ```mermaid
 classDiagram
@@ -460,7 +486,7 @@ classDiagram
     note for Vehicle "Member with formation position"
 ```
 
-#### Implementation Details
+#### Data Structures
 
 ```cpp
 // Each member stores:
@@ -914,12 +940,23 @@ std::array<CrewSlot, MAX_CREW> _crew;
 When the vehicle fires, the appropriate crewman triggers the weapon.
 
 **Combat Status**  
-⚠️ **Important**: Vehicle combat is partially implemented:
-- Vehicles CAN fire and show effects
-- Vehicles CANNOT currently deal damage (CalculateShot not implemented)
-- Soldiers CANNOT target vehicles (no Target::Vehicle case)
+⚠️ **PARTIALLY IMPLEMENTED**: Vehicle combat has significant gaps:
 
-See `docs/VEHICLE_COMBAT_IMPLEMENTATION_PLANS.md` for implementation options.
+| Feature | Status | Notes |
+|---------|--------|-------|
+| Firing effects | ✅ Implemented | Visual effects display |
+| Turret rotation | ✅ Implemented | Tracks targets correctly |
+| Ammo tracking | ✅ Implemented | Standard weapon system |
+| **Damage calculation** | ❌ **MISSING** | `Vehicle::CalculateShot()` does NOT exist |
+| **Target acquisition** | ❌ **MISSING** | No `Target::Vehicle` case in targeting code |
+| Destruction state | ⚠️ Hardcoded | `IsDestroyed()` always returns `false` |
+
+**Key Missing Method**: Unlike `Soldier::CalculateShot()`, there is NO `Vehicle::CalculateShot()` method. To implement vehicle combat, this method needs to be:
+1. Added to `Vehicle.h` header
+2. Implemented in `Vehicle.cpp`
+3. Called from combat code where appropriate
+
+**See Also**: `docs/other/VEHICLE_COMBAT_IMPLEMENTATION_PLANS.md` for implementation guidance.
 
 #### Implementation
 
