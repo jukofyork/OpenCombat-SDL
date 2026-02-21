@@ -57,7 +57,6 @@ flowchart TD
     UI --> Status["Status/"]
     UI --> Teams["Teams/"]
     UI --> Weapons["Weapons/"]
-    UI --> Font["DejaVuSans.ttf"]
 
     graphics --> Vehicles["Vehicles/ (3 files)"]
     Vehicles --> Hull["panzer_IVG_hull.12.21.tga"]
@@ -107,7 +106,6 @@ graphics/
 ├── Terrain/                   # Tree sprites (5 files)
 ├── UI/                        # User interface
 │   ├── Actions/               # Action indicators
-│   ├── CombatContextMenu/     # Right-click context menu (22 files)
 │   ├── Cursors/               # Mouse cursors (16 files)
 │   ├── Flags/                 # National flags
 │   │   ├── Animated/          # Animated flags
@@ -149,7 +147,7 @@ sounds/                         # Note: lowercase 'sounds'
     └── 0100 - divebomber.wav
 ```
 
-**Total WAV Files**: 126 (8 effects + 118 voice files)
+**Total WAV Files**: 126 (25 effects + 101 voice files)
 
 **Note**: The directory is `sounds/` (lowercase), not `Sounds/`.
 
@@ -219,10 +217,10 @@ msk0000.39.33.tga  <-- Mask (same origin coordinates)
 - **16-bit RGB**: Converted to 32-bit with bit expansion
 
 **Internal Storage**:
-- All images stored as 32-bit BGRA (native TGA format)
+- TGA files are stored as BGRA on disk (native TGA format)
+- After loading, converted to 32-bit ARGB in memory
 - Pixel data as `unsigned char*` array
 - Row order flipped during load (TGA stores bottom-to-top, converted to top-to-bottom)
-- **No color channel conversion** - Blue, Green, Red, Alpha order is preserved
 
 ---
 
@@ -249,14 +247,16 @@ typedef struct {
 
 #### 8.4.3 Pixel Layout
 
-BGRA order in file, stored as BGRA in memory (no conversion):
+BGRA order in file, converted to ARGB in memory:
 
 ```
-Byte 0: Blue   -> stored as Blue
-Byte 1: Green  -> stored as Green
-Byte 2: Red    -> stored as Red
-Byte 3: Alpha  -> stored as Alpha
+File Byte 0: Blue   -> Memory Byte 1: Green
+File Byte 1: Green  -> Memory Byte 2: Red
+File Byte 2: Red    -> Memory Byte 3: Alpha
+File Byte 3: Alpha  -> Memory Byte 0: Blue
 ```
+
+**Note**: The TGA::Create() method performs color channel reordering during load to convert from BGRA (file) to ARGB (memory) format.
 
 #### 8.4.4 TGA Format Structure
 
@@ -345,16 +345,23 @@ flowchart TD
 ```mermaid
 classDiagram
     class TGA {
-        +Load(filename)
-        +GetWidth()
-        +GetHeight()
-        +GetData()
+        +Create(filename) TGA*
+        +GetWidth() int
+        +GetHeight() int
+        +GetDepth() int
+        +GetData() unsigned char*
+        +GetOriginX() int
+        +GetOriginY() int
         +SetOrigin(x, y)
+        +SetTransparentColor(r, g, b)
+        +GetTransparentColor() Color*
         -_width: int
         -_height: int
+        -_depth: int
         -_data: unsigned char*
         -_originX: int
         -_originY: int
+        -_transparentColor: Color
     }
 
     class SoldierAnimationManager {

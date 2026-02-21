@@ -825,7 +825,7 @@ Animation: Running (but not moving)
 | `FindCoverActionHandler` | Partial stub | SoldierActionHandlers.cpp:471 |
 | `FollowActionHandler` | Empty stub | SoldierActionHandlers.cpp:629 |
 | `DefendActionHandler` | Empty stub | SoldierActionHandlers.cpp:769 |
-| `AmbushActionHandler` | Empty stub | SoldierActionHandlers.cpp:788 |
+| `AmbushActionHandler` | Empty stub | SoldierActionHandlers.cpp:780 |
 
 #### 3.11.1 Stub Handler Examples
 
@@ -849,7 +849,27 @@ bool FindCoverActionHandler(Soldier* soldier, Action* action, long dt) {
     }
     return true;  // Immediately completes
 }
+
+// Defend - partial implementation (continues executing)
+bool DefendActionHandler(Soldier* soldier, Action* action, long dt) {
+    UNREFERENCED_PARAMETER(dt);
+    // Update our state
+    g_Globals->World.Actions.Soldiers.UpdateState(action->Index, &soldier->_currentState);
+    // XXX/GWS: Perform whatever AI we need to do this action!
+    return false;  // Continue executing (not a complete stub)
+}
+
+// Ambush - partial implementation (continues executing)
+bool AmbushActionHandler(Soldier* soldier, Action* action, long dt) {
+    UNREFERENCED_PARAMETER(dt);
+    // Update our state
+    g_Globals->World.Actions.Soldiers.UpdateState(action->Index, &soldier->_currentState);
+    // XXX/GWS: Perform whatever AI we need to do this action!
+    return false;  // Continue executing (not a complete stub)
+}
 ```
+
+**Important distinction:** Defend and Ambush handlers return `false` to indicate the action continues executing (the soldier remains in Defending/Ambushing state), while other stub handlers return `true` to complete immediately.
 
 #### 3.11.2 Stand/LieDown Handlers (Animation-Based)
 

@@ -266,8 +266,12 @@ public:
     
     // Input handling
     void LeftMouseDown(int x, int y);
+    void LeftMouseUp(int x, int y);
+    void LeftMouseDrag(int x, int y);
     void RightMouseDown(int x, int y);
+    void RightMouseUp(int x, int y);
     void KeyDown(int key);
+    void KeyUp(int key);
     
     // Orders
     void IssueOrder(Order* o);
@@ -317,6 +321,24 @@ protected:
     // Scroll state
     bool _scrollRepeating;                 // Auto-scroll repeat flag
     long _scrollTimer;                     // Scroll timing
+    
+    // Viewport state
+    int _originX, _originY;                // Camera/world offset in pixels
+    int _screenWidth, _screenHeight;       // Screen dimensions
+    int _viewWidth, _viewHeight;           // Viewport dimensions
+    
+    // UI components
+    CombatContextMenu* _contextMenu;       // Right-click context menu
+    ContextMenuChoice _currentChoice;      // Current menu selection
+    
+    // Element and minimap
+    ElementManager* _elementManager;       // Terrain element definitions
+    MiniMap* _currentMiniMap;              // Minimap display
+    
+    // Ranger/markering system
+    int _rangerX, _rangerY;                // Ranger cursor position
+    Object* _rangerSelectedObject;         // Object under ranger
+    Color _rangerColor;                    // Ranger highlight color
 };
 ```
 
@@ -539,7 +561,7 @@ void Map::MoveObject(Object* object, Point* from, Point* to) {
 }
 ```
 
-**Selection**: When the player clicks, the game searches a 3x3 tile area:
+**Selection**: When the player clicks, the game searches a 3x3 tile area and selects entire squads:
 
 ```cpp
 void Map::SelectObjects(int x, int y, std::vector<Object*>* dest) {
@@ -558,7 +580,24 @@ void Map::SelectObjects(int x, int y, std::vector<Object*>* dest) {
             while(obj != NULL) {
                 if(obj->GetTeam() == g_Globals->World.CurrentPlayer 
                    && obj->Contains(x, y)) {
-                    dest->push_back(obj);
+                    // If object is a soldier, select entire squad
+                    if(obj->IsSoldier()) {
+                        Soldier* soldier = (Soldier*)obj;
+                        Squad* squad = soldier->GetSquad();
+                        if(squad != NULL) {
+                            // Add all squad members to selection
+                            for(Soldier* member : squad->GetMembers()) {
+                                if(member->IsSelectable()) {
+                                    dest->push_back(member);
+                                }
+                            }
+                        } else {
+                            dest->push_back(obj);
+                        }
+                    } else {
+                        dest->push_back(obj);
+                    }
+                    break; // Only select first matching object/squad
                 }
                 obj = obj->NextObject;
             }
@@ -690,7 +729,6 @@ public:
 
 protected:
     TGA* _interiorGraphic;             // Floor plan view
-    TGA* _exteriorGraphic;             // Normal view with walls
 };
 ```
 
@@ -759,6 +797,7 @@ flowchart TD
 ```
 
 ```cpp
+// PSEUDOCODE - Simplified for documentation
 void Map::Render(Screen *screen, Rect *clip) {
     // ... render map background ...
     
@@ -924,6 +963,14 @@ The game uses multiple coordinate systems that convert between each other:
 | **Mega-tiles** | 12x12 tiles | Strategic objectives | `mi = i / 12` |
 | **Screen** | Pixels | Viewport-relative display | `screenX = worldX - originX` |
 
+**Coordinate Conversion Methods**:
+
+| Method | Description |
+|--------|-------------|
+| `ConvertTileToPosition(i, j, x, y)` | Convert tile coordinates to world pixel position |
+| `ConvertPositionToTile(x, y, i, j)` | Convert world pixel position to tile coordinates |
+| `ConvertMegaTileToPosition(mi, mj, x, y)` | Convert mega-tile coordinates to world pixel position |
+
 **Elevation Calculation**:
 ```cpp
 // Total elevation at a tile
@@ -937,13 +984,16 @@ int losElevation = (totalElevation + 2) * 1024;   // +2m eye height, scaled
 
 ### 6.7 Victory Locations
 
-**Location**: `src/world/VictoryLocation.cpp`
+**Location**: `src/world/VictoryLocation.h`
 
 Strategic objectives that provide victory points or campaign links:
 
 ```cpp
 class VictoryLocation {
 public:
+    VictoryLocation(void);
+    ~VictoryLocation(void);
+    
     std::string Name;                    // Display name
     int X, Y;                           // Mega-tile coordinates (12x12 blocks)
     int Value;                          // Strategic value

@@ -834,7 +834,7 @@ void Screen::Blit(unsigned char* src, unsigned char* mask,
                   int dx, int dy, int dw, int dh,
                   int sx, int sy, int sw, int sh,
                   bool bHilit, Color* hilitColor,
-                  int sbytes_per_pixel, int modifierIdx)
+                  int sbytes_per_pixel, int colorModifierIdx)
 {
     unsigned int *isrc = (unsigned int *)src;
     unsigned int *imask = (unsigned int *)mask;
@@ -901,8 +901,7 @@ void Screen::Blit(unsigned char* src, unsigned char* mask,
 ```cpp
 void Screen::Blit(unsigned char* src, int dx, int dy, int dw, int dh,
                   int sw, int sh, int sbytes_per_pixel,
-                  Color* transparentColor,
-                  int rotx, int roty, double angle);
+                  Color* transparentColor, int rotx, int roty, double angle);
 ```
 Uses trigonometry to rotate each pixel position around a pivot point.
 
@@ -1570,6 +1569,8 @@ flowchart TD
 ```
 
 #### 5.11.2 Object Rendering Example
+
+> **Note:** The following `Soldier::Render` example is pseudocode/illustrative and may not exactly match the actual implementation. It demonstrates the conceptual flow of rendering a game object.
 
 ```cpp
 void Soldier::Render(Screen* screen, Rect* clip)

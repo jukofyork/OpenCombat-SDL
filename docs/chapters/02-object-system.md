@@ -383,7 +383,7 @@ These are bitflags that can be combined:
 
 A soldier can be in multiple states simultaneously: "Prone + Firing + Defending" = lying down shooting in defensive mode.
 
-**Note**: There are 23 total logical states (0-22), not 12 as sometimes documented.
+**Note**: There are 22 total logical states (0-21), not 12 as sometimes documented.
 
 **Vehicle States**  
 Simpler than soldiers (vehicles don't have complex postures):
@@ -489,7 +489,7 @@ These formation definitions follow US Infantry doctrine:
 ```mermaid
 classDiagram
     class Squad {
-        +GetSquadLeader() Soldier*
+        +GetSquadLeader() Object*
         +std::vector~Soldier*~ _soldiers
         +std::vector~Vehicle*~ _vehicles
         +Formation::Type _currentFormation
@@ -1137,7 +1137,6 @@ public:
     // Formation
     Formation::Type _currentFormation;
     float _currentFormationSpread;
-    int _formationPosition;
     
     // Visual
     bool _bShowMark;
@@ -1168,10 +1167,8 @@ Effects are owned by individual objects and cleaned up automatically:
 // Declaration in Object class
 std::vector<std::unique_ptr<Effect>> _effects;
 
-// Adding an effect
-void Object::AddEffect(Effect* effect) {
-    _effects.push_back(std::unique_ptr<Effect>(effect));
-}
+// Adding an effect (direct push_back)
+_effects.push_back(std::unique_ptr<Effect>(effect));
 
 // No manual cleanup needed!
 // Effects are automatically deleted when:
@@ -1270,7 +1267,7 @@ Squads reference but don't own their members:
 std::vector<Soldier*> _soldiers;
 std::vector<Vehicle*> _vehicles;
 
-// Adding a member (no ownership transfer)
+// Adding a member (no ownership transfer) - illustrative pseudocode
 void Squad::AddSoldier(Soldier* soldier) {
     _soldiers.push_back(soldier);
     soldier->SetSquad(this);  // Tell soldier about squad

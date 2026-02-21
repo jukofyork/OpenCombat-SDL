@@ -706,7 +706,7 @@ struct WorldGlobals {
     // Other systems
     FontManager* Fonts;
     World* CurrentWorld;
-    Mark* Marks;
+    Mark *Marks;
     AStar Pathing;
     
     // Debugging flags (toggled with F-keys)
@@ -762,21 +762,16 @@ SoldierManager* soldiers = g_Globals->World.Soldiers;
 
 #### constexpr Instead of #define
 
-**Why Change?**
+**Why Use constexpr?**
 - `#define` constants have no type information
 - Macros can cause name collisions
 - No debugger support for macros
 
-**Before:**
+**Recommended Pattern:**
 ```cpp
-#define MAX_WEAPONS_PER_SOLDIER 8
-#define SIMULATION_TIMESTEP_MS 50
-```
-
-**After:**
-```cpp
+// Using constexpr instead of #define for constants
 constexpr int MAX_WEAPONS_PER_SOLDIER = 8;
-constexpr int SIMULATION_TIMESTEP_MS = 33;  // ~30 FPS, not 50ms
+constexpr int SIMULATION_TIMESTEP_MS = 33;  // ~30 FPS
 ```
 
 **Benefits**: Type safety, scoping, debugger visibility, no macro collisions.
@@ -803,6 +798,8 @@ int i = static_cast<int>(dir);  // Explicit conversion required
 ```
 
 **Benefits**: Type safety, namespace scoping, explicit conversions.
+
+**Note**: The `Direction` enum in this codebase (src/misc/Structs.h) is already defined as `enum class`.
 
 #### std::vector with std::unique_ptr
 

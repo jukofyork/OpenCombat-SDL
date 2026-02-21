@@ -247,6 +247,8 @@ void World::LeftMouseUp(int x, int y) {
 }
 ```
 
+> **Note**: This example is simplified pseudocode. The actual `World::LeftMouseUp` implementation uses a state machine to handle different input modes (selection, command issuing, etc.).
+
 #### 4.5.2 Order Distribution (Squad Level)
 
 ```cpp
@@ -402,7 +404,7 @@ bool RunToActionHandler(Soldier* soldier, Action* action, long dt) {
     g_Globals->World.Actions.Soldiers.UpdateState(action->Index, &soldier->_currentState);
 
     // Check if at destination using helper
-    if(AtDestination(soldier, data->TileI, data->TileJ)) {
+        if(AtDestination(soldier, data->TileI, data->TileJ)) {
         delete data;
         action->Data = nullptr;
         return true;  // Action complete
@@ -490,7 +492,7 @@ classDiagram
     class Order {
         +Order()
         +~Order()
-        +GetType() OrderType
+        +GetType() Orders::OrderType
         +Release() void
         +IncrementRefCount() void
         -_orderType: OrderType
@@ -529,7 +531,10 @@ classDiagram
     class PauseOrder {
         +PauseOrder(pauseTime, oldState, pauseState)
         +GetPauseTime() long
+        +GetTotalTime() long
         +IncrementTotalTime(dt) void
+        +GetOldState() int
+        +GetPauseState() int
         -_pauseTime: long
         -_totalTime: long
         -_oldState: int
@@ -558,14 +563,14 @@ namespace Orders {
 **Implementation Status**:
 - ✅ **Fully Implemented**: Move, MoveFast, Sneak, Fire, Ambush, Defend, Stop
 - ⚠️ **Partially Implemented**: Hide (squad-level state only, no HideOrder class)
-- ❌ **Not Implemented**: Smoke, Pause (class exists but not processed in Squad::AddOrder)
+- ⚠️ **Recognized but have empty implementations**: Smoke, Pause (class exists and is recognized in code but have empty implementations)
 - ✅ **Implemented**: Destination (processed in Soldier::Simulate())
 
 class Order {
 public:
     Order(void);
     virtual ~Order(void);
-    inline Orders::OrderType GetType() { return _orderType; }
+    inline Orders::OrderType GetType(void) { return _orderType; }
 
     // Reference counting for shared orders
     inline void Release() { 
@@ -589,6 +594,7 @@ private:
 class MoveOrder : public Order {
 public:
     MoveOrder(int x, int y, Orders::OrderType type);
+    ~MoveOrder(void);
     int X, Y;
 };
 ```
@@ -663,20 +669,24 @@ void Soldier::Simulate(long dt, World* world) {
             case Orders::Destination:
                 handled = HandleDestinationOrder((MoveOrder*)order);
                 break;
-            case Orders::Stop:
-                handled = HandleStopOrder((StopOrder*)order);
-                break;
-            case Orders::Fire:
-                handled = HandleFireOrder((FireOrder*)order);
-                break;
-            case Orders::Move:
-            case Orders::MoveFast:
-            case Orders::Sneak:
-                // These orders should NEVER reach Soldier::Simulate()
-                // They are converted to actions at the Squad level
-                assert(0);  // Crash if we get here - indicates a bug
-                break;
-        }
+        case Orders::Stop:
+            handled = HandleStopOrder((StopOrder*)order);
+            break;
+        case Orders::Fire:
+            handled = HandleFireOrder((FireOrder*)order);
+            break;
+        case Orders::Move:
+        case Orders::MoveFast:
+        case Orders::Sneak:
+            // These orders should NEVER reach Soldier::Simulate()
+            // They are converted to actions at the Squad level
+            assert(0);  // Crash if we get here - indicates a bug
+            break;
+        default:
+            // Unrecognized order type
+            assert(0);
+            break;
+    }
         
         if(handled) {
             _orders.pop_front();
@@ -713,7 +723,7 @@ bool Soldier::HandleDestinationOrder(MoveOrder* order) {
 bool Soldier::HandleStopOrder(StopOrder* order) {
     Action* action = new Action();
     action->Index = SoldierAction::Stop;
-    action->Data = NULL;
+    action->Data = nullptr;
     
     _actionQueue.clear();
     _actionQueue.push_back(action);
@@ -732,7 +742,7 @@ bool Soldier::HandleFireOrder(FireOrder* order) {
     data->Y = order->Y;
     action->Data = data;
     
-    HandleStopOrder(NULL);
+    HandleStopOrder(nullptr);
     _actionQueue.push_back(action);
     
     return true;

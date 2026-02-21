@@ -404,7 +404,7 @@ Each soldier type maps game states to animation names:
 **Additional Animation XMLs**:
 - **BazookaAnimations.xml**: `dir="Soldiers/Bazooka"`
 - **MachineGunAnimations.xml**: `dir="Soldiers/MG"`
-- **SoldierDead.xml**: Death pose definitions
+- **SoldierDead.xml**: Single static death pose (no animation sequence)
 - **SoldierDeaths.xml**: Death animation sequences
 
 ---
@@ -590,7 +590,7 @@ classDiagram
         -_weapons: vector~WeaponTemplate~
     }
     class VehicleManager {
-        +LoadVehicles(xmlFile)
+        +Load(xmlFile)
         +GetVehicle(name)
         -_vehicles: vector~VehicleTemplate~
     }
@@ -605,7 +605,7 @@ classDiagram
         -_effects: vector~EffectTemplate~
     }
     class ElementManager {
-        +LoadElements(xmlFile)
+        +Load(xmlFile)
         +GetElement(name)
         -_elements: vector~ElementTemplate~
     }
@@ -617,7 +617,6 @@ classDiagram
     
     class BuildingManager {
         +{static} LoadBuildings(xmlFile, vector~Building*~*)
-        -_buildings: vector~Building*~
     }
 
     class MapManager {
@@ -697,8 +696,11 @@ flowchart TD
     
     subgraph UI["UI Configs"]
         CUI[CombatUI.xml]
+        CMW[ContextMenuWidgets.xml]
         Icons[Icons.xml]
+        WI[WeaponIcons.xml]
         Colors[Colors.xml]
+        CM[ColorModifiers.xml]
     end
     
     subgraph Audio["Audio Configs"]
@@ -732,7 +734,6 @@ using namespace tinyxml2;
 XMLDocument doc;
 if (doc.LoadFile(fileName.c_str()) != XML_SUCCESS) {
     ERROR("Failed to load file: " + fileName.string());
-    return;
 }
 
 XMLElement* root = doc.FirstChildElement("RootElement");

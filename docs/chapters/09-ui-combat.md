@@ -31,7 +31,7 @@ flowchart TB
         end
     end
 
-    subgraph SquadPanel["Squad Panel (F6) - Unit Selection"]
+    subgraph SquadPanel["Team Panel (F6) - Squad Selection"]
         direction LR
         S0["0"]
         S1["1"]
@@ -54,7 +54,7 @@ flowchart TB
         S2 --- S5 --- S8 --- S11 --- S14
     end
 
-    subgraph UnitPanel["Unit Panel (F7) - Selected Squad Details"]
+    subgraph UnitPanel["Unit Panel (F7) - Selected Unit Details"]
         direction TB
         UI["[Icon] Name    [Title]"]
         UW["[Act]  [Weapon]  Rounds"]
@@ -79,7 +79,7 @@ flowchart TB
 
 **Panel Visibility Controls** (F-keys):
 - **F5**: Toggle minimap on/off
-- **F6**: Toggle squad panel on/off  
+- **F6**: Toggle team panel on/off  
 - **F7**: Toggle unit panel on/off
 - **F1**: Toggle help text showing all controls
 
@@ -87,7 +87,7 @@ flowchart TB
 
 The input system uses a **three-step interaction model**:
 
-1. **Selection** → Left-click on a squad in the world or squad panel
+1. **Selection** → Left-click on a squad in the world or team panel
 2. **Action Selection** → Right-click to open context menu
 3. **Target Specification** → Click destination/target for the order
 
@@ -130,7 +130,7 @@ flowchart LR
 - **Arrow Keys**: Scroll view in that direction
 - **Middle Mouse Drag**: Pan view freely
 - **Minimap Click**: Center view to that location
-- **Minimap Drag**: Pan view by dragging rectangle
+- **Minimap Drag**: Drag the yellow viewport rectangle to pan the main view
 
 ---
 
@@ -303,10 +303,10 @@ flowchart LR
     subgraph Phase2["Phase 2: Action Selection"]
         P2A["Input: Right-click on destination"]
         P2B["Context menu opens"]
-        P2C["Available actions checked"]
-        P2D["CanMove()?"]
-        P2E["CanMoveFast()?"]
-        P2F["CanFire()?"]
+        P2C["Query unit capabilities"]
+        P2D["Check movement state"]
+        P2E["Check combat readiness"]
+        P2F["Check equipment"]
         P2G["Unavailable options disabled"]
         
         P2A --> P2B --> P2C
@@ -397,7 +397,6 @@ stateDiagram-v2
     [*] --> Normal
     
     Normal --> ContextSelecting: Right-click on selected unit
-    ContextSelecting --> Normal: Left-click (cancels menu)
     
     ContextSelecting --> ContextSelected: Left-click on menu choice
     
@@ -444,7 +443,7 @@ stateDiagram-v2
 
 The context menu displays on right-click and shows available actions based on unit state:
 
-**Available Actions**:
+**Available Actions** (ContextMenuChoice enum):
 - **Move**: Standard movement order
 - **Move Fast**: Run/sprint (increased speed, reduced stealth)
 - **Fire**: Attack order (ground or unit target)
@@ -452,6 +451,7 @@ The context menu displays on right-click and shows available actions based on un
 - **Smoke**: Deploy smoke grenade at position (UI only - order not yet implemented)
 - **Defend**: Set defensive facing (360° cover arc)
 - **Ambush**: Set ambush facing (focused sector)
+- **None**: No action selected (default/invalid state)
 
 **Context Menu Flow**:
 
@@ -463,11 +463,11 @@ flowchart TD
     SELECT --> SHOW
     
     SHOW --> ENABLE["Check and enable available actions"]
-    ENABLE --> SETMOVE["SetMove: CanAnySelectedMove()"]
-    ENABLE --> SETFIRE["SetFire: CanAnySelectedFire()"]
-    ENABLE --> SETFAST["SetFast: CanAnySelectedMoveFast()"]
-    ENABLE --> SETSNEAK["SetSneak: CanAnySelectedSneak()"]
-    ENABLE --> SETSMOKE["SetSmoke: HasSmokeGrenades()"]
+    ENABLE --> SETMOVE["SetMove: Query unit state"]
+    ENABLE --> SETFIRE["SetFire: Query combat readiness"]
+    ENABLE --> SETFAST["SetFast: Query unit state"]
+    ENABLE --> SETSNEAK["SetSneak: Query unit state"]
+    ENABLE --> SETSMOKE["SetSmoke: Check equipment"]
     ENABLE --> SETDEFEND["SetDefend: Always available"]
     ENABLE --> SETAMBUSH["SetAmbush: Always available"]
     
@@ -709,17 +709,18 @@ void World::LeftMouseUp(int x, int y) {
         _contextMenu->Hide();
     } 
     else if(_currentState == ContextSelecting) {
-        // Menu was open, user clicked
-        _currentState = ContextSelected;
-        _contextMenu->Hide();
+        // Menu was open, user clicked a menu option
         _currentChoice = _contextMenu->Choose(x, y);
+        _contextMenu->Hide();
         
-        // Set up ranger line based on choice
-        SetupRangerLineForChoice(_currentChoice);
+        if(_currentChoice != None) {
+            _currentState = ContextSelected;
+            // Cursor and ranger line update based on choice
+        }
     }
     else if(_currentState == ContextSelected) {
         // Ranger line was showing, user clicked destination
-        IssueOrderBasedOnChoice(_currentChoice, x, y);
+        // Create order based on _currentChoice and target
         _currentState = Normal;
     }
 }
@@ -731,10 +732,7 @@ void World::RightMouseUp(int x, int y) {
     }
     
     // Show context menu with available actions
-    _contextMenu->SetMove(CanAnySelectedMove());
-    _contextMenu->SetFire(CanAnySelectedFire());
-    // ... other options
-    
+    // Menu internally queries unit capabilities
     _contextMenu->Show(x, y);
     _currentState = ContextSelecting;
 }
@@ -787,7 +785,7 @@ protected:
 - **Yellow**: Sneak orders
 - **Orange**: Marked positions
 - **Green**: Allied markers
-- **Brown**: Other markers
+- **Brown**: Defend/ambush positions
 
 **Cursor Types** (`src/application/CursorInterface.h`):
 ```cpp
