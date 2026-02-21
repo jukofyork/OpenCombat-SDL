@@ -33,7 +33,7 @@ The following example demonstrates how the terrain system affects gameplay mecha
 When a unit moves through grass terrain:
 - **50% cover** when prone
 - **0% cover** when standing
-- **Normal movement speed** (1.0x multiplier)
+- **Normal prone movement speed** (1.0x multiplier for prone movement)
 
 The pathfinding system evaluates each tile:
 - Passable: Yes, grass is walkable
@@ -43,7 +43,7 @@ The pathfinding system evaluates each tile:
 
 When a unit enters high grass terrain:
 - **53% cover** when prone
-- **10% cover** when crouching
+- **53% cover** when crouching
 - **Reduced movement speed** (0.667x multiplier)
 
 The movement speed reduction reflects the difficulty of navigating dense vegetation, while the improved cover percentage provides tactical benefits.
@@ -52,7 +52,7 @@ The movement speed reduction reflects the difficulty of navigating dense vegetat
 
 Stone walls demonstrate terrain blocking:
 - **Impassable** for direct movement
-- **93% cover** when positioned behind it
+- **93% cover** for all stances (Prone, Low, Medium, High)
 - **Blocks line of sight** for units on opposite sides
 
 Units must navigate around obstacles or use climbing mechanics (with associated time costs and exposure).
@@ -83,7 +83,7 @@ Cover represents how much protection the terrain provides against enemy fire. Di
 | **Medium** | Normal crouch | Low (0-20%) |
 | **High** | Standing upright | Usually none |
 
-*Example*: A trench offers 78% cover when prone but only 10% when standing.
+*Example*: A trench offers 78% cover for Prone, Low, and Medium stances, but only 10% when standing (High stance).
 
 **2. Hindrance**
 
@@ -398,7 +398,7 @@ classDiagram
     
     class Object {
         <<abstract>>
-        +Update(dt)
+        +virtual Simulate(dt)
         +Render(screen)
         +GetTeam()
         +Contains(x, y)
@@ -430,13 +430,12 @@ classDiagram
         +Simulate(dt)
         +Render(screen)
         +IssueOrder(order)
-        +AddToSquad(squad)
+        +SetSquad(squad)
     }
     
     class Vehicle {
         +Simulate(dt)
         +Render(screen)
-        +SetFormationPosition(pos)
     }
     
     class Building {
@@ -798,6 +797,7 @@ flowchart TD
 
 ```cpp
 // PSEUDOCODE - Simplified for documentation
+// NOTE: This is a simplified representation. Actual rendering logic is more complex.
 void Map::Render(Screen *screen, Rect *clip) {
     // ... render map background ...
     
@@ -969,7 +969,7 @@ The game uses multiple coordinate systems that convert between each other:
 |--------|-------------|
 | `ConvertTileToPosition(i, j, x, y)` | Convert tile coordinates to world pixel position |
 | `ConvertPositionToTile(x, y, i, j)` | Convert world pixel position to tile coordinates |
-| `ConvertMegaTileToPosition(mi, mj, x, y)` | Convert mega-tile coordinates to world pixel position |
+| `Map::ConvertMegaTileToPosition(mi, mj, x, y)` | Convert mega-tile coordinates to world pixel position (Map method) |
 
 **Elevation Calculation**:
 ```cpp

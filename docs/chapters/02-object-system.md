@@ -111,6 +111,8 @@ classDiagram
         +void AddOrder(Order* o)
         +void HandleMoveOrder(MoveOrder* order, SoldierAction::Action movementStyle, Mark::Color markColor)
         +void Select(bool s)
+        #void HandleAmbushOrder(AmbushOrder* order)
+        #void HandleDefendOrder(DefendOrder* order)
         #enum Quality
         #std::vector<Soldier*> _soldiers
         #std::vector<Vehicle*> _vehicles
@@ -166,7 +168,7 @@ Understanding memory ownership prevents crashes and memory leaks:
 
 **The World Owns Everything Mobile**  
 The `World` class is the ultimate owner of all game objects:
-- Creates soldiers and vehicles when scenarios load
+- SquadManager creates soldiers and vehicles when scenarios load; World stores them in _mobileObjects
 - Stores them in `std::vector<Object*> _mobileObjects`
 - Destroys them when the scenario ends
 - Never delete a soldier or vehicle yourself—the World handles it
@@ -482,7 +484,7 @@ The `formationSpread` parameter should control how far apart units are.
 
 These formation definitions follow US Infantry doctrine:
 - **Column vs File distinction**: The key difference is dispersion at the fire team level. File is much more compact with individuals closer together to maintain physical contact in complex terrain. At platoon level, column allows sub-units to choose their own formation while maintaining vertical alignment.
-- **Source**: Based on discussion from /r/WarCollege (alertjohn117) - see `src/objects/Formation.h:5-26` for full reference
+- **Source**: Based on discussion from /r/WarCollege (alertjohn117) - see `src/objects/Formation.h:5-27` for full reference
 
 #### Squad Data Structures
 
@@ -526,7 +528,7 @@ classDiagram
 
 ```cpp
 // Each member stores:
-Formation::Type _currentFormation;    // Column, Line, or File
+Formation::Type _currentFormation;    // Column, File, or Line
 float _currentFormationSpread;        // Distance between units
 int _formationPosition;               // Position in formation (0=leader)
 
@@ -1151,7 +1153,7 @@ public:
     Quality _quality;
     
     // Selection
-    virtual void Select(bool s);
+    virtual void Select(bool s) override;
     void Highlight(Color* color);
     void UnHighlight();
 };

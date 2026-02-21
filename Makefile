@@ -14,6 +14,9 @@ SDL_LIBS := $(shell pkg-config --libs sdl2 SDL2_ttf SDL2_mixer 2>/dev/null || ec
 TINYXML_FLAGS :=
 TINYXML_LIBS :=
 
+# Linker flags
+LDFLAGS := -lpthread -ldl
+
 # Include paths
 INCLUDES := -I./src -I./src/graphics -I./src/misc -I./src/world -I./src/objects -I./src/application -I./src/states -I./src/ai -I./src/orders -I./src/sound
 
@@ -60,7 +63,7 @@ $(DEPDIR):
 	@mkdir -p $(DEPDIR)/src/sound
 
 $(TARGET): $(OBJS)
-	$(CXX) $(OBJS) -o $@ $(SDL_LIBS) $(TINYXML_LIBS) -lpthread -ldl
+	$(CXX) $(OBJS) -o $@ $(SDL_LIBS) $(TINYXML_LIBS) $(LDFLAGS)
 
 # Debug build - separate object files to avoid mixing with release
 DEBUG_OBJS := $(SRCS:.cpp=-debug.o)
@@ -68,7 +71,7 @@ DEBUG_OBJS := $(SRCS:.cpp=-debug.o)
 debug: $(DEPDIR) $(TARGET_DEBUG)
 
 $(TARGET_DEBUG): $(DEBUG_OBJS)
-	$(CXX) $(DEBUG_OBJS) -o $@ $(SDL_LIBS) $(TINYXML_LIBS) -lpthread -ldl
+	$(CXX) $(DEBUG_OBJS) -o $@ $(SDL_LIBS) $(TINYXML_LIBS) $(LDFLAGS)
 
 %-debug.o: %.cpp
 	@mkdir -p $(DEPDIR)/$(dir $<)

@@ -31,8 +31,8 @@ flowchart TB
         end
     end
 
-    subgraph SquadPanel["Team Panel (F6) - Squad Selection"]
-        direction LR
+    subgraph SquadPanel["Team Panel (F6) - Squad Selection (Column-major layout)"]
+        direction TB
         S0["0"]
         S1["1"]
         S2["2"]
@@ -49,9 +49,7 @@ flowchart TB
         S13["13"]
         S14["14"]
         
-        S0 --- S3 --- S6 --- S9 --- S12 --- SOTHER["..."]
-        S1 --- S4 --- S7 --- S10 --- S13
-        S2 --- S5 --- S8 --- S11 --- S14
+        S0 --- S1 --- S2 --- S3 --- S4 --- S5 --- S6 --- S7 --- S8 --- S9 --- S10 --- S11 --- S12 --- S13 --- S14
     end
 
     subgraph UnitPanel["Unit Panel (F7) - Selected Unit Details"]
@@ -218,7 +216,7 @@ flowchart TD
     TERRM --> TerrainWidgets
 ```
 
-**Key Pattern**: Widgets are cloned when retrieved - caller must delete them.
+**Key Pattern**: Widgets are cloned only when explicitly requested via `GetWidget(index, true)` - caller must delete cloned widgets
 
 ### 9.2.3 Input Event Flow
 
@@ -286,7 +284,7 @@ The following sequence details the internal state transitions when processing a 
 flowchart LR
     subgraph Phase1["Phase 1: Selection"]
         P1A["Input: Left-click on squad"]
-        P1B["Hit test against all units"]
+        P1B["Select objects at cursor position (map objects first, then mobile objects)"]
         P1C["Squad becomes selected"]
         P1D["Yellow border rendered"]
         P1E["Squad panel highlighted"]
@@ -502,7 +500,7 @@ The main gameplay module that coordinates all combat UI elements:
 ```cpp
 class CombatModule : public Module {
 public:
-    CombatModule();
+    CombatModule(void);
     virtual ~CombatModule(void);
     
     // Module interface
@@ -565,7 +563,7 @@ Widgets are loaded from XML and cloned for use:
 ```cpp
 class WidgetManager {
 public:
-    virtual ~WidgetManager();
+    virtual ~WidgetManager(void);
     void LoadWidgets(const std::filesystem::path& fileName);
     Widget *GetWidget(const std::string& widgetName);
     Widget *GetWidget(int index);
@@ -583,12 +581,12 @@ public:
     void Render(Screen *screen, int x, int y, int w, int h);
     void Render(Screen *screen, int x, int y, int w, int h, bool useAlpha);
     void Render(Screen *screen, int x, int y, Color *transparentColor);
-    Widget *Clone();  // Shallow copy, shares TGA
-    const std::string& GetName() const;
+    Widget *Clone(void);  // Shallow copy, shares TGA
+    const std::string& GetName(void) const;
 
-    inline int GetWidth() { return _tga->GetWidth(); }
-    inline int GetHeight() { return _tga->GetHeight(); }
-    inline TGA *GetImage() { return _tga; }
+    inline int GetWidth(void) { return _tga->GetWidth(); }
+    inline int GetHeight(void) { return _tga->GetHeight(); }
+    inline TGA *GetImage(void) { return _tga; }
 
 protected:
     std::string _name;
@@ -604,12 +602,12 @@ protected:
 void CombatModule::Render(Screen *screen) {
     // Calculate clip rectangle (excludes UI panels)
     int bottomBarHeight = _longBottomBackground->GetHeight();
+    int squadPanelDY = _showTeamPanel ? _unitBackground->GetHeight() - 7 : 0;
     Rect clip;
     clip.x = 0;
     clip.y = 0;
     clip.w = screen->GetWidth();
-    clip.h = screen->GetHeight() - bottomBarHeight 
-             - (_showTeamPanel ? _unitBackground->GetHeight()-7 : 0);
+    clip.h = screen->GetHeight() - bottomBarHeight - squadPanelDY;
     
     // 1. Render game world (clipped)
     screen->SetClippingRectangle(clip.x, clip.y, clip.w, clip.h);
@@ -619,9 +617,7 @@ void CombatModule::Render(Screen *screen) {
     // 2. Render minimap
     if(_showMiniMap) {
         int x = 0;
-        int y = screen->GetHeight() - bottomBarHeight 
-                - (_showTeamPanel ? _unitBackground->GetHeight()-7 : 0) 
-                - _currentMiniMap->GetHeight();
+        int y = screen->GetHeight() - bottomBarHeight - squadPanelDY - _currentMiniMap->GetHeight();
         _currentMiniMap->SetPosition(x, y);
         _currentMiniMap->SetVisibleArea(clip.w, clip.h);
         _currentMiniMap->Render(screen);
@@ -738,6 +734,8 @@ void World::RightMouseUp(int x, int y) {
     _contextMenu->Show(x, y);
     _currentState = ContextSelecting;
 }
+
+**Note**: `_selectedObjects` is protected and accessed via internal methods.
 ```
 
 ### 9.4.6 MiniMap Implementation
@@ -753,6 +751,7 @@ public:
     virtual void SetVisibleArea(int w, int h);
     virtual bool Contains(int x, int y);  // Hit test
     virtual void Render(Screen *screen);
+    virtual int GetHeight(void);
     
     // Input handling
     virtual void LeftMouseUp(int x, int y);    // Center view
@@ -764,6 +763,7 @@ protected:
     
     // Viewport rectangle (yellow)
     int _zoomWidth, _zoomHeight;
+    int _visibleWidth, _visibleHeight;
     int _x, _y;  // Rectangle position within minimap
 };
 ```
@@ -872,12 +872,12 @@ Pressing F1 shows all available controls:
 | F8 | - | Cycle building display |
 | F9 | - | Toggle terrain elements |
 | F10 | - | Toggle bounding boxes |
+| F | - | Cycle formation type |
 | Arrows | Scroll view | - |
 | Left Click | Select / Issue order | - |
 | Right Click | Open context menu | - |
 | Middle Drag | Pan camera | - |
 | K | - | Kill selected units (Developer tool) |
-| F | - | Cycle formation type (stub - formation positioning not fully implemented) |
 
 ### File Locations
 

@@ -373,7 +373,7 @@ classDiagram
     class EffectManager {
         +LoadEffects(xmlFile)
         +GetEffect(name): Effect*
-        +GetFiles() void  **(unimplemented/placeholder)**
+        +GetFiles(EffectAttributes*, const std::string&): void
         -_effects: vector~Effect~
     }
 

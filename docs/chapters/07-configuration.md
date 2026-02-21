@@ -581,38 +581,38 @@ flowchart TD
 classDiagram
     class SoldierManager {
         +LoadSoldiers(xmlFile)
-        +GetSoldier(name)
-        -_soldiers: vector~SoldierTemplate~
+        +CreateSoldier(name, animationManager, weaponManager)
+        -_soldiers: vector~SoldierTemplate*~
     }
     class WeaponManager {
         +LoadWeapons(xmlFile)
         +GetWeapon(name)
-        -_weapons: vector~WeaponTemplate~
+        -_weapons: vector~WeaponTemplate*~
     }
     class VehicleManager {
         +Load(xmlFile)
         +GetVehicle(name)
-        -_vehicles: vector~VehicleTemplate~
+        -_vehicles: vector~VehicleAttributes*~
     }
     class SquadManager {
         +LoadSquads(xmlFile)
-        +GetSquad(name)
-        -_squads: vector~SquadTemplate~
+        +CreateSquad(name, soldierManager, vehicleManager, animationManager, weaponManager)
+        -_squads: vector~SquadTemplate*~
     }
     class EffectManager {
         +LoadEffects(xmlFile)
         +GetEffect(name)
-        -_effects: vector~EffectTemplate~
+        -_effects: vector~Effect*~
     }
     class ElementManager {
         +Load(xmlFile)
-        +GetElement(name)
-        -_elements: vector~ElementTemplate~
+        +GetElement(index)
+        -_elements: vector~Element*~
     }
     class AnimationManager {
         +LoadAnimations(xmlFile)
         +GetAnimation(name)
-        -_animations: vector~AnimationTemplate~
+        -_animations: vector~Animation*~
     }
     
     class BuildingManager {

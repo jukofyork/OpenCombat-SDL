@@ -286,13 +286,13 @@ Squad A AddOrder():       refCount = 1  (Squad A owns it)
 Squad B AddOrder():       refCount = 2  (Squad B also owns it)
 ```
 
-**Note**: Unlike the explicit ref counting shown in earlier documentation, the actual implementation relies on `AddOrder()` to increment the reference count. `IssueOrder()` iterates over `_selectedObjects` (not `_selectedSquads`) and calls `ClearOrders()` before adding the new order.
+> **Note**: `ClearOrders()` is called before `AddOrder()` in the actual `World::IssueOrder()` implementation. This ensures that any existing orders are removed and their reference counts properly decremented before adding the new order.
 
 #### 4.5.3 Path Calculation (One Path for the Squad)
 
 ```cpp
 // Squad.cpp - Calculate a single path for the entire squad
-void Squad::HandleMoveOrder(MoveOrder* order, SoldierAction::Action style, Mark::Color color) {
+void Squad::HandleMoveOrder(MoveOrder* order, SoldierAction::Action movementStyle, Mark::Color color) {
     // Convert world pixels to tile coordinates
     int startI, startJ, destI, destJ;
     ConvertPositionToTile(Position.x, Position.y, &startI, &startJ);

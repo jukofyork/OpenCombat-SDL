@@ -537,6 +537,7 @@ protected:
     unsigned char* _bits;    // The pixel buffer
     Rect _clip;
     int _cursorX, _cursorY;
+    int _originX, _originY;  // Camera offset (see also public Point Origin)
 };
 ```
 
@@ -586,12 +587,13 @@ _bits[pixel_offset + 3] = Alpha  (0-255, if present)
 **Note**: The `Screen::Clear()` method fills the pixel buffer with the specified color:
 ```cpp
 // Current implementation in Screen.cpp (lines 74-85):
-_bits[j*_pitch + i*_bytes_per_pixel + 0] = 0;           // Alpha/Unused
+_bits[j*_pitch + i*_bytes_per_pixel + 0] = 0;           // Unused (0)
 _bits[j*_pitch + i*_bytes_per_pixel + 1] = c->red;      // Red channel
 _bits[j*_pitch + i*_bytes_per_pixel + 2] = c->green;    // Green channel  
 _bits[j*_pitch + i*_bytes_per_pixel + 3] = c->blue;     // Blue channel
 ```
-The byte ordering used here matches the ARGB format used throughout the rendering system.
+
+**IMPORTANT INCONSISTENCY**: `Screen::Clear()` uses **0-R-G-B** byte ordering (byte 0 unused, followed by R, G, B), while all blitting functions use **BGR** ordering (Blue at byte 0, Green at byte 1, Red at byte 2). This inconsistency exists in the current implementation. The Clear() function writes color components to different byte offsets than where blitting functions read them from TGA source data.
 
 #### 5.6.3 Blit Method 1: Basic Memcpy
 
@@ -809,7 +811,7 @@ constexpr unsigned int MASK_WEAPON      = 0xC80000;  // 200, 0, 0
 constexpr unsigned int MASK_TRANSPARENT = 0xFFFFFF;  // 255, 255, 255
 ```
 
-**Color Modifiers Structure**:
+**Color Modifiers Structure** (declared in `src/misc/Color.h`):
 ```cpp
 struct ColorModifier {
     int Red;
@@ -826,6 +828,9 @@ struct ColorModifiers {
     ColorModifier Boots;
     ColorModifier Weapon;
 };
+
+// Global array of color modifiers (declared in misc/Color.h)
+extern ColorModifiers g_ColorModifiers[];
 ```
 
 **Mask-Based Blit Implementation**:

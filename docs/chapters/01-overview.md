@@ -170,7 +170,7 @@ flowchart LR
 - Each module is a complete, self-contained game mode
 - Modules can be swapped without restarting the application
 - Current modules: Combat (main game)
-- Future modules: Introduction (menus) - declared but not yet implemented
+- Introduction module: Exists only as an enum value (`AvailableModules::Introduction`) with no implementation class
 
 **Key Decision**: How does this game mode work?
 
@@ -779,19 +779,12 @@ constexpr int SIMULATION_TIMESTEP_MS = 33;  // ~30 FPS
 
 #### enum class Instead of enum
 
-**Why Change?**
+**Why Use enum class?**
 - Plain enums implicitly convert to integers (error-prone)
 - Enum names pollute global namespace
 - No type checking between different enums
 
-**Before:**
-```cpp
-enum Direction { South, West, North, East };
-Direction dir = South;
-int i = dir;  // Silent conversion - potential bug
-```
-
-**After:**
+**Example:**
 ```cpp
 enum class Direction { South, West, North, East };
 Direction dir = Direction::South;
@@ -800,7 +793,7 @@ int i = static_cast<int>(dir);  // Explicit conversion required
 
 **Benefits**: Type safety, namespace scoping, explicit conversions.
 
-**Note**: The `Direction` enum in this codebase (src/misc/Structs.h) is already defined as `enum class`.
+**Note**: The `Direction` enum in this codebase (src/misc/Structs.h) was **already defined as `enum class`** (not converted as part of modernization).
 
 #### std::vector with std::unique_ptr
 
@@ -1140,7 +1133,7 @@ The `WorldGlobals` struct includes debugging flags for visualizing game state, a
 **Default Values** (constructor in Globals.h):
 - Most debug flags default to `false` (off)
 - `bRenderElements` defaults to `true` (show terrain features)
-- All UI panels default to `true` (visible)
+- All UI panels default to `false` (hidden) until explicitly toggled
 
 ---
 
