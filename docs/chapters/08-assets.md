@@ -20,54 +20,58 @@ Assets are **binary data files** that the game loads but does not parse as text.
 
 ### 8.2 Directory Structure
 
-#### 8.2.1 Directory Structure Tree
+#### 8.2.1 Directory Structure
 
 ```mermaid
-tree
-root["assets/"]
-  graphics["graphics/"]
-    Soldiers["Soldiers/"]
-      Rifle["Rifle/ (~2,600 files)"]
-      MG["MG/ (~1,400 files)"]
-      Bazooka["Bazooka/ (~1,400 files)"]
-      Dying["Dying/ (~560 files)"]
-      Dead["Dead 1-6/"]
-      Flame["Flame/"]
-      Burned["Burned/"]
-      Surrendering["Surrendering/"]
-      Mine["Kneeling Mine/<br/>Prone Mine/"]
-    Effects["Effects/ (26 dirs)"]
-      Rifle["rifle_[n/ne/e/se/s/sw/w/nw]/"]
-      Bazooka["bazooka_[directions]/"]
-      Muzzle["muzzle_[directions]/"]
-      Explosion["Explosion/ (33 frames)"]
-      Dustcloud["Dustcloud/ (20 frames)"]
-    Terrain["Terrain/ (5 files)"]
-    UI["UI/"]
-      Actions["Actions/"]
-      Cursors["Cursors/ (16 files)"]
-      Flags["Flags/"]
-        Animated["Animated/"]
-        Static["Static/"]
-      Ranks["Ranks/"]
-      Status["Status/"]
-      Teams["Teams/"]
-      Weapons["Weapons/"]
-      Font["DejaVuSans.ttf"]
-    Vehicles["Vehicles/ (3 files)"]
-      Hull["panzer_IVG_hull.12.21.tga"]
-      Turret["panzer_IVG_turret.8.30.tga"]
-      Wreck["panzer_IVG_wreck.11.21.tga"]
-    Resources["Resources/"]
-      Icon["app_icon.tga"]
-  sounds["sounds/"]
-    Effects["Effects/ (8 files)"]
-      Rifle["rifle-0028.wav"]
-      Explosion["explosion-0050.wav"]
-      Other["..."]
-    Voices["English Voices/ (101 files)"]
-      Awaiting["0041 - awaiting orders.wav"]
-      Other["..."]
+flowchart TD
+    root["assets/"] --> graphics["graphics/"]
+    root --> sounds["sounds/"]
+
+    graphics --> Soldiers["Soldiers/"]
+    Soldiers --> Rifle["Rifle/ (~2,600 files)"]
+    Soldiers --> MG["MG/ (~1,400 files)"]
+    Soldiers --> Bazooka["Bazooka/ (~1,400 files)"]
+    Soldiers --> Dying["Dying/ (~560 files)"]
+    Soldiers --> Dead["Dead 1-6/"]
+    Soldiers --> Flame["Flame/"]
+    Soldiers --> Burned["Burned/"]
+    Soldiers --> Surrendering["Surrendering/"]
+    Soldiers --> Mine["Kneeling Mine/Prone Mine/"]
+
+    graphics --> Effects["Effects/ (26 dirs)"]
+    Effects --> RifleDir["rifle_[directions]/"]
+    Effects --> BazookaDir["bazooka_[directions]/"]
+    Effects --> Muzzle["muzzle_[directions]/"]
+    Effects --> Explosion["Explosion/ (33 frames)"]
+    Effects --> Dustcloud["Dustcloud/ (20 frames)"]
+
+    graphics --> Terrain["Terrain/ (5 files)"]
+
+    graphics --> UI["UI/"]
+    UI --> Actions["Actions/"]
+    UI --> Cursors["Cursors/ (16 files)"]
+    UI --> Flags["Flags/"]
+    Flags --> Animated["Animated/"]
+    Flags --> Static["Static/"]
+    UI --> Ranks["Ranks/"]
+    UI --> Status["Status/"]
+    UI --> Teams["Teams/"]
+    UI --> Weapons["Weapons/"]
+    UI --> Font["DejaVuSans.ttf"]
+
+    graphics --> Vehicles["Vehicles/ (3 files)"]
+    Vehicles --> Hull["panzer_IVG_hull.12.21.tga"]
+    Vehicles --> Turret["panzer_IVG_turret.8.30.tga"]
+    Vehicles --> Wreck["panzer_IVG_wreck.11.21.tga"]
+
+    graphics --> Resources["Resources/"]
+    Resources --> Icon["app_icon.tga"]
+
+    sounds --> Sfx["Effects/ (8 files)"]
+    Sfx --> RifleSnd["rifle-0028.wav"]
+    Sfx --> ExplosionSnd["explosion-0050.wav"]
+
+    sounds --> Voices["English Voices/ (101 files)"]
 ```
 
 #### 8.2.2 Graphics Directory
