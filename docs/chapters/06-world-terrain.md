@@ -262,7 +262,7 @@ public:
     // Object management
     void AddObject(Object* o);
     void MoveObject(Object* object, Point* from, Point* to);
-    bool TryMove(Object* o, int x, int y);
+    bool TryMove(Object* o, int x, int y);  // STUB: Currently always returns true
     
     // Input handling
     void LeftMouseDown(int x, int y);
@@ -311,12 +311,19 @@ protected:
     // Visual markers
     std::vector<Point> _markPoints;
     std::vector<Mark::Color> _markColors;
+    std::vector<Effect*> _effects;         // Active visual effects
+    Direction _currentHeadingArc;          // Current camera heading
+    
+    // Scroll state
+    bool _scrollRepeating;                 // Auto-scroll repeat flag
+    long _scrollTimer;                     // Scroll timing
 };
 ```
 
 **World States**: The world operates in different states that change how input is handled:
 
 ```cpp
+// Defined inside World class (accessed as World::WorldState)
 enum WorldState {
     Normal,             // Default gameplay
     ContextSelecting,   // Right-click menu open
@@ -398,19 +405,22 @@ classDiagram
     }
     
     class Soldier {
-        +UpdateStateMachine()
-        +ProcessOrders()
-        +CheckCollisions()
+        +Simulate(dt)
+        +Render(screen)
+        +IssueOrder(order)
+        +AddToSquad(squad)
     }
     
     class Vehicle {
-        +UpdatePhysics()
+        +Simulate(dt)
+        +Render(screen)
+        +SetFormationPosition(pos)
     }
     
     class Building {
-        +GetInterior()
-        +SetExterior()
+        +Position
         +BoundaryPoints
+        +Tiles
     }
     
     World --> Map : owns
@@ -420,9 +430,7 @@ classDiagram
     World --> "*" Object : _selectedObjects
     Object <|-- Soldier
     Object <|-- Vehicle
-    Object <|-- Building
-    Map --> "*" Building : owns
-    Map --> "*" Object : tile lists
+    Map --> "*" Building : owns (not inherited)
 
 #### 6.5.2 Map Class and Tile Storage
 

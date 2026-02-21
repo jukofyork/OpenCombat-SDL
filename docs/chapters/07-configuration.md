@@ -39,7 +39,7 @@ Configuration files define the **rules, stats, and definitions** that make the g
         <Name>string</Name>                       <!-- State name -->
         <Animation reverse="true|false">string</Animation>
       </State>
-      <!-- 15 states minimum -->
+      <!-- 14 states minimum -->
     </States>
     <Attributes>
       <WalkingSpeed>float</WalkingSpeed>          <!-- m/s -->
@@ -233,7 +233,7 @@ Each soldier type maps game states to animation names:
 
 #### 7.3.2 Effects.xml
 
-**Purpose**: Defines 42 visual effects with directional variants (2 static + 40 directional across 5 weapon types).
+**Purpose**: Defines 34 visual effects with directional variants (2 static + 32 directional across 5 weapon types).
 
 **Schema**:
 
@@ -616,15 +616,12 @@ classDiagram
     }
     
     class BuildingManager {
-        +LoadBuildings(xmlFile)
-        +GetBuilding(index)
-        -_buildings: vector~Building~
+        +{static} LoadBuildings(xmlFile, vector~Building*~*)
+        -_buildings: vector~Building*~
     }
-    
+
     class MapManager {
-        +LoadMap(xmlFile)
-        +GetCurrentMap()
-        -_maps: vector~Map~
+        +{static} Parse(configFile): MapAttributes*
     }
     
     SoldierManager --> WeaponManager : references
@@ -771,13 +768,13 @@ for (XMLElement* elem = root->FirstChildElement("ElementName");
 | Vehicles.xml | 1 vehicle | Vehicle definitions |
 | Squads.xml | 4 squads | Squad compositions |
 | Elements.xml | 159 elements | Terrain properties |
-| Effects.xml | 42 effects | Visual effect definitions (2 static + 40 directional) |
+| Effects.xml | 34 effects | Visual effect definitions (2 static + 32 directional) |
 | Nationalities.xml | 3 nationalities | Faction definitions (American, German, Soviet) |
 | Animation XMLs | 4 files | Animation configs |
 | UI XMLs | 6 files | Interface definitions |
 | Audio XMLs | 2 files | Sound mappings |
 | SoldierStates.txt | 23 states | State definitions |
-| SoldierActions.txt | ~40 actions | Action definitions |
+| SoldierActions.txt | 21 actions | Action definitions |
 | USNames.txt | 473 names | Name pool |
 
 ---

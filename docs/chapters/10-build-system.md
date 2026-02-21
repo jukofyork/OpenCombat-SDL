@@ -366,10 +366,9 @@ SDL_DEBUG=1 ./opencombat
 
 | Option | Description | Exit Code |
 |--------|-------------|-----------|
-| `--test-all` | Runs all self-tests | 0 on pass, 1 on fail |
-| `--test-screen` | Tests screen/blitting only | 0 on pass, 1 on fail |
-| `--test-actionqueue` | Tests action queue only | 0 on pass, 1 on fail |
-| `--help` | Not implemented (starts game) | 0 |
+| `--test-all` | Runs all self-tests | 0 on success, abort on failure |
+| `--test-screen` | Tests screen/blitting only | 0 on success, abort on failure |
+| `--test-actionqueue` | Tests action queue only | 0 on success, abort on failure |
 
 ### Self-Tests
 
@@ -428,7 +427,6 @@ Run these after building to verify core functionality:
 # Screen tests passed!
 # Testing ActionQueue...
 # ActionQueue tests passed!
-# All tests passed!
 ```
 
 **Test Details**:
@@ -797,9 +795,8 @@ pkg-config --libs sdl2 SDL2_ttf SDL2_mixer
 make clean          # Normal cleanup
 make distclean      # Full cleanup
 
-# Verbose output
-make V=1            # Show full commands
-SDL_DEBUG=1 ./opencombat
+# Debug output
+SDL_DEBUG=1 ./opencombat  # Enable SDL debugging
 ```
 
 ---

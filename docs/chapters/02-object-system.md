@@ -383,7 +383,7 @@ These are bitflags that can be combined:
 
 A soldier can be in multiple states simultaneously: "Prone + Firing + Defending" = lying down shooting in defensive mode.
 
-**Note**: There are 22 total logical states (0-21), not 12 as sometimes documented.
+**Note**: There are 23 total logical states (0-22), not 12 as sometimes documented.
 
 **Vehicle States**  
 Simpler than soldiers (vehicles don't have complex postures):
@@ -1276,15 +1276,9 @@ void Squad::AddSoldier(Soldier* soldier) {
     soldier->SetSquad(this);  // Tell soldier about squad
 }
 
-// Removing a member (e.g., soldier died)
-void Squad::RemoveSoldier(Soldier* soldier) {
-    auto it = std::find(_soldiers.begin(), _soldiers.end(), soldier);
-    if(it != _soldiers.end()) {
-        _soldiers.erase(it);
-    }
-    // Soldier is NOT deleted here!
-    // World owns the soldier and handles deletion
-}
+// Note: Squad class does not have a RemoveSoldier() method.
+// Soldiers are removed from the _soldiers vector inline when they die.
+// The World class owns and manages soldier lifecycle.
 ```
 
 **Important**: Always check if pointers are valid before dereferencing. A soldier might die while a squad still references them.
@@ -1332,7 +1326,7 @@ constexpr int MAX_SQUADS = 32;
 | Effects | Object | `std::vector<std::unique_ptr<Effect>>` | Object owns |
 | Animations | Soldier | `std::array<Animation*, NumStates>` | Soldier owns |
 | Weapons | Soldier | `std::array<Weapon*, MAX_WEAPONS_PER_SOLDIER>` | Soldier owns |
-| Action handlers | Soldier | `std::array<SoldierActionHandler, NumActions>` | Static/global |
+| Action handlers | Soldier | `std::array<SoldierActionHandler, NumActions>` | Member (per-soldier) |
 | Weapons | Vehicle | `std::array<Weapon*, MAX_WEAPONS_PER_VEHICLE>` | Vehicle owns |
 | Crew | Vehicle | `std::array<CrewSlot, MAX_CREW>` | Non-owning refs |
 | Squad templates | SquadManager | `std::vector<SquadTemplate*>` | Manager owns |

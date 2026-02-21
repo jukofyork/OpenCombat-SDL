@@ -468,7 +468,7 @@ enum AvailableModules {
 };
 
 class GameApplication : public Module {
-    Module* _modules[NumAvailableModules];  // All available modes
+    Module* _modules[AvailableModules::NumAvailableModules];  // All available modes
     AvailableModules _currentModule;         // Currently active
     
     void ChooseModule(AvailableModules module);  // Switch modes

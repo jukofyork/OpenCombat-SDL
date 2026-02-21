@@ -449,7 +449,7 @@ The context menu displays on right-click and shows available actions based on un
 - **Move Fast**: Run/sprint (increased speed, reduced stealth)
 - **Fire**: Attack order (ground or unit target)
 - **Sneak**: Crawl movement (reduced speed, increased stealth)
-- **Smoke**: Deploy smoke grenade at position
+- **Smoke**: Deploy smoke grenade at position (UI only - order not yet implemented)
 - **Defend**: Set defensive facing (360° cover arc)
 - **Ambush**: Set ambush facing (focused sector)
 
@@ -785,7 +785,9 @@ protected:
 - **Purple**: Fast move orders
 - **Red**: Fire orders, enemy targets
 - **Yellow**: Sneak orders
+- **Orange**: Marked positions
 - **Green**: Allied markers
+- **Brown**: Other markers
 
 **Cursor Types** (`src/application/CursorInterface.h`):
 ```cpp
@@ -818,7 +820,7 @@ These features are intended for developers and debugging, not normal gameplay:
 | F8 | 119 | Building Display Cycle | Cycles: Interiors → Outlines → Elevation → None |
 | F9 | 120 | Terrain Elements | Toggles terrain detail rendering |
 | F10 | 121 | Bounding Boxes | Shows collision/debug boxes |
-| K | - | Kill Selected Units | **NOT IMPLEMENTED** - mapped but no handler exists |
+| K | - | Kill Selected Units | Kills selected units (developer tool) |
 
 ### 9.5.2 FPS Tracking
 
@@ -874,8 +876,8 @@ Pressing F1 shows all available controls:
 | Left Click | Select / Issue order | - |
 | Right Click | Open context menu | - |
 | Middle Drag | Pan camera | - |
-| K | - | Kill selected units (**NOT IMPLEMENTED**) |
-| F | Cycle formation (**NOT IMPLEMENTED**) | - |
+| K | - | Kill selected units (Developer tool) |
+| F | - | Cycle formation type (stub - formation positioning not fully implemented) |
 
 ### File Locations
 
@@ -887,7 +889,7 @@ Pressing F1 shows all available controls:
 | Context Menu | `src/graphics/CombatContextMenu.h`, `.cpp` |
 | Marks | `src/graphics/Mark.h`, `.cpp` |
 | Cursor | `src/application/CursorInterface.h` |
-| XML Configs | `config/CombatUI.xml`, `Icons.xml`, `WeaponIcons.xml`, `Terrain.xml` |
+| XML Configs | `config/CombatUI.xml`, `Icons.xml`, `WeaponIcons.xml`, `Terrain.xml`, `ContextMenuWidgets.xml` |
 
 ---
 

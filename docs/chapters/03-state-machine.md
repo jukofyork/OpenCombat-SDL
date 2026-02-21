@@ -244,7 +244,7 @@ flowchart TD
     end
     
     subgraph Example3["Standing + Firing + Reloaded (Firing)"]
-        E3["Bit 0: Standing = 1<br/>Bit 4: Firing = 1<br/>Bit 14: Reloaded = 1<br/>Value: 0b01000000110001 = 0x4031"]
+        E3["Bit 0: Standing = 1<br/>Bit 4: Firing = 1<br/>Bit 14: Reloaded = 1<br/>Value: 0b01000000110001 = 0x4011"]
     end
 ```
 
@@ -344,21 +344,21 @@ public:
     
     // Check if a specific bit is set
     bool IsSet(unsigned int state) {
-        assert(state < 64);  // Must be 0-63
+        // Note: No bounds checking in actual code
         uint64_t flag = 1ULL << state;
         return (_bits & flag) != 0;
     }
     
     // Set a specific bit
     void Set(unsigned int state) {
-        assert(state < 64);
+        // Note: No bounds checking in actual code
         uint64_t flag = 1ULL << state;
         _bits |= flag;
     }
     
     // Clear a specific bit
     void UnSet(unsigned int state) {
-        assert(state < 64);
+        // Note: No bounds checking in actual code
         uint64_t flag = 1ULL << state;
         _bits &= ~flag;
     }
@@ -824,6 +824,8 @@ Animation: Running (but not moving)
 | `WalkSlowToActionHandler` | Empty stub | SoldierActionHandlers.cpp:577 |
 | `FindCoverActionHandler` | Partial stub | SoldierActionHandlers.cpp:471 |
 | `FollowActionHandler` | Empty stub | SoldierActionHandlers.cpp:629 |
+| `DefendActionHandler` | Empty stub | SoldierActionHandlers.cpp:769 |
+| `AmbushActionHandler` | Empty stub | SoldierActionHandlers.cpp:788 |
 
 #### 3.11.1 Stub Handler Examples
 

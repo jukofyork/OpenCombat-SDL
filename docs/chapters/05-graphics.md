@@ -864,14 +864,18 @@ void Screen::Blit(unsigned char* src, unsigned char* mask,
                 r += g_ColorModifiers[modifierIdx].Body.Red;
                 g += g_ColorModifiers[modifierIdx].Body.Green;
                 b += g_ColorModifiers[modifierIdx].Body.Blue;
-                CLAMP_AND_WRITE(r, g, b);
+                r = (r < 0) ? 0 : (r > 0xFF) ? 0xFF : r;
+                g = (g < 0) ? 0 : (g > 0xFF) ? 0xFF : g;
+                b = (b < 0) ? 0 : (b > 0xFF) ? 0xFF : b;
                 break;
-                
+
             case MASK_LEGS:
                 r += g_ColorModifiers[modifierIdx].Legs.Red;
                 g += g_ColorModifiers[modifierIdx].Legs.Green;
                 b += g_ColorModifiers[modifierIdx].Legs.Blue;
-                CLAMP_AND_WRITE(r, g, b);
+                r = (r < 0) ? 0 : (r > 0xFF) ? 0xFF : r;
+                g = (g < 0) ? 0 : (g > 0xFF) ? 0xFF : g;
+                b = (b < 0) ? 0 : (b > 0xFF) ? 0xFF : b;
                 break;
                 
             // ... similar for HEAD, BELT, BOOTS, WEAPON
@@ -1001,8 +1005,8 @@ TGA* TGA::Create(const std::filesystem::path& filePath)
         w++;
     }
 
-    // Parse origin from filename (see below)
-    ParseOriginFromFilename(tga, filePath);
+    // Parse origin from filename (inline in TGA::Create)
+    // Origin extraction happens within TGA::Create, not a separate function
     
     return tga;
 }
@@ -1020,6 +1024,7 @@ TGA* TGA::Create(const std::filesystem::path& filePath)
 **Filename format**: `name.x.y.tga` where x and y are origin coordinates.
 
 ```cpp
+// NOTE: This is pseudocode. Actual parsing is inline within TGA::Create()
 void ParseOriginFromFilename(TGA* tga, const std::filesystem::path& filePath)
 {
     std::string fName = filePath.filename().string();

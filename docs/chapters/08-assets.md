@@ -29,7 +29,7 @@ flowchart TD
 
     graphics --> Soldiers["Soldiers/"]
     Soldiers --> Rifle["Rifle/ (~1,520 files)"]
-    Soldiers --> MG["MG/ (~697 files)"]
+    Soldiers --> MG["MG/ (~657 files)"]
     Soldiers --> Bazooka["Bazooka/ (~656 files)"]
     Soldiers --> Dying["Dying/ (~480 files)"]
     Soldiers --> Dead["Dead 1-6/"]
@@ -93,7 +93,7 @@ graphics/
 │   └── app_icon.tga
 ├── Soldiers/                  # Soldier animations (19 subdirectories)
 │   ├── Rifle/                 # ~1,520 files - Standard infantry
-│   ├── MG/                    # ~697 files - Machine gunner
+│   ├── MG/                    # ~657 files - Machine gunner
 │   ├── Bazooka/               # ~656 files - Anti-tank
 │   ├── Dying/                 # ~480 files - Death animations
 │   ├── Dead 1/ ... Dead 6/    # Static dead poses
@@ -132,7 +132,7 @@ graphics/
 
 ```
 sounds/                         # Note: lowercase 'sounds'
-├── Effects/                    # 8 sound effect files
+├── Effects/                    # 25 sound effect files (8 weapon + 17 dying variants)
 │   ├── 30 cal MG-0010.wav
 │   ├── bar-0008.wav
 │   ├── bazooka-0011.wav
@@ -359,31 +359,27 @@ classDiagram
 
     class SoldierAnimationManager {
         +LoadAnimations(xmlFile)
-        +GetAnimation(name)
-        +GetFrame(direction, frame)
+        +GetAnimation(name): Animation*
         -_animations: vector~Animation~
-        -inherits privately from AnimationManager
+        -inherits from AnimationManager
     }
 
     class EffectManager {
         +LoadEffects(xmlFile)
-        +GetEffect(name)
-        +PlayEffect(type, position)
+        +GetEffect(name): Effect*
         -_effects: vector~Effect~
     }
 
     class WidgetManager {
         +LoadWidgets(xmlFile)
-        +GetWidget(name)
-        +Render(screen)
+        +GetWidget(name): Widget*
         -_widgets: vector~Widget*~
         -_sourceImages: vector~TGA*~
     }
 
     class SoundManager {
         +LoadSounds(xmlFile)
-        +PlaySound(name)
-        +PlayVoice(line)
+        +GetSound(name): Sound*
         -_sounds: vector~Sound*~
     }
 
@@ -398,6 +394,7 @@ classDiagram
 **Parse coordinates from RIGHT TO LEFT** (find last two dots):
 
 ```cpp
+// NOTE: This is pseudocode. Actual parsing is inline within TGA::Create()
 // CORRECT parsing - right to left
 void ParseOriginFromFilename(TGA* tga, const std::string& fName) {
     // Find last dot (before .tga)

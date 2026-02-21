@@ -386,26 +386,28 @@ void Soldier::Simulate(long dt, World* world) {
 }
 ```
 
-**Example - RunToActionHandler** (simplified - actual implementation uses helper functions):
+**Example - RunToActionHandler** (pseudocode/simplified - actual implementation uses different helper functions and structure):
 ```cpp
+// NOTE: This is conceptual pseudocode. The actual implementation in 
+// SoldierActionHandlers.cpp uses different function signatures and helpers.
 bool RunToActionHandler(Soldier* soldier, Action* action, long dt) {
     TileData* data = (TileData*)action->Data;
-    
+
     // Set animation and action state
     soldier->_moving = true;
     soldier->_currentAnimationState = Soldier::AnimationState::Running;
     soldier->_currentAction = Unit::MovingFast;
-    
+
     // Update state machine
     g_Globals->World.Actions.Soldiers.UpdateState(action->Index, &soldier->_currentState);
-    
+
     // Check if at destination using helper
     if(AtDestination(soldier, data->TileI, data->TileJ)) {
         delete data;
         action->Data = nullptr;
         return true;  // Action complete
     }
-    
+
     // Calculate and apply heading change using helpers
     Direction newHeading = CalculateNewHeading(soldier, data->TileI, data->TileJ);
     if(soldier->_currentHeading != newHeading) {
@@ -413,7 +415,7 @@ bool RunToActionHandler(Soldier* soldier, Action* action, long dt) {
         soldier->_velocity.y = 0.0f;
         soldier->_currentHeading = newHeading;
     }
-    
+
     // Move the soldier
     MoveSoldier(soldier, dt);
     return false;  // Action continues
