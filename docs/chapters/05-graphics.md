@@ -489,10 +489,12 @@ public:
     Screen(void);
     virtual ~Screen(void);
     
-    // Surface management
+    // Surface/Renderer management
     virtual void SetSurface(SDL_Surface* surface);
+    virtual void SetRenderer(SDL_Renderer* renderer);
     virtual void SetCapabilities(unsigned char* bits, int width, int height, 
                                   int format, int pitch);
+    virtual void Cleanup();
     
     // Clipping
     virtual void SetClippingRectangle(int x, int y, int w, int h);
@@ -502,21 +504,39 @@ public:
     virtual int GetWidth();
     virtual int GetHeight();
     
+    // Cursor position
+    int GetCursorX();
+    int GetCursorY();
+    void SetCursorPosition(int x, int y);
+    
     // Camera offset
     Point Origin;
     void SetOrigin(int x, int y);
     
+    // Primitive drawing
+    void DrawLine(int x1, int y1, int x2, int y2, Color* c);
+    void DrawRect(int x, int y, int w, int h, Color* c);
+    void FillRect(int x, int y, int w, int h, Color* c);
+    
     // BLIT METHODS - 9 variants for different use cases
     // (Detailed in following sections)
     
+    // Static utility
+    static bool PointInRegion(int x, int y, Region* r);
+    
+    // Self-test
+    static void SelfTest();
+    
 protected:
     SDL_Surface* _surface;
+    SDL_Renderer* _renderer;
     int _width, _height;
     int _format;
     int _bytes_per_pixel;
     int _pitch;
     unsigned char* _bits;    // The pixel buffer
     Rect _clip;
+    int _cursorX, _cursorY;
 };
 ```
 
@@ -562,6 +582,16 @@ _bits[pixel_offset + 1] = Green  (0-255)
 _bits[pixel_offset + 2] = Red    (0-255)
 _bits[pixel_offset + 3] = Alpha  (0-255, if present)
 ```
+
+**⚠️ BUG ALERT**: The `Screen::Clear()` method has incorrect byte offsets:
+```cpp
+// Current (buggy) implementation in Screen.cpp:
+_bits[j*_pitch + i*_bytes_per_pixel + 0] = 0;           // Always 0!
+_bits[j*_pitch + i*_bytes_per_pixel + 1] = c->red;      // Red in wrong position
+_bits[j*_pitch + i*_bytes_per_pixel + 2] = c->green;    // Green in wrong position  
+_bits[j*_pitch + i*_bytes_per_pixel + 3] = c->blue;     // Blue in wrong position
+```
+The Clear() method writes colors to incorrect byte positions. This should be fixed to match the BGR order shown above.
 
 #### 5.6.3 Blit Method 1: Basic Memcpy
 
@@ -1031,17 +1061,19 @@ The origin is the "hotspot" - the point that aligns with the entity's world posi
 
 ```cpp
 enum class Direction {
-    South = 0,      // 0 degrees (facing down)
-    SouthWest,      // 45 degrees
-    West,           // 90 degrees
-    NorthWest,      // 135 degrees
-    North,          // 180 degrees (facing up)
-    NorthEast,      // 225 degrees
-    East,           // 270 degrees
-    SouthEast,      // 315 degrees
+    South = 0,      // Index 0
+    SouthWest,      // Index 1
+    West,           // Index 2
+    NorthWest,      // Index 3
+    North,          // Index 4
+    NorthEast,      // Index 5
+    East,           // Index 6
+    SouthEast,      // Index 7
     NumDirections   // 8 total directions
 };
 ```
+
+**Note**: Direction is used as an array index (0-7), not actual degrees. The game uses South=0 as the reference direction for sprite organization.
 
 #### 5.8.2 Animation Class
 
@@ -1149,7 +1181,7 @@ class Frame
 public:
     Frame(TGA* source, int displayTime, int width, int height,
           int sourceX, int sourceY, Color* transparentColor);
-    ~Animation(void);
+    ~Frame(void);
     
     Frame* Clone();
     void Render(Screen* screen, int x, int y, bool hilit, 

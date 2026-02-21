@@ -250,17 +250,19 @@ void World::LeftMouseUp(int x, int y) {
 #### 4.5.2 Order Distribution (Squad Level)
 
 ```cpp
-// World.cpp - Distribute to each selected squad
+// World.cpp - Distribute to each selected object
 void World::IssueOrder(Order *order) {
-    // Increment ref count BEFORE sharing
-    order->IncrementRefCount();  // refCount = 1
-    
-    for(auto squad : _selectedSquads) {
-        order->IncrementRefCount();  // refCount++ for each squad
-        squad->AddOrder(order);
+    // Note: AddOrder() will increment ref count for each object
+    for(auto* o : _selectedObjects) {
+        o->ClearOrders();  // Clear existing orders first
+        o->AddOrder(order);
     }
-    
-    order->Release();  // Decrement our temporary reference
+}
+
+// Object.cpp - Object takes shared ownership via AddOrder
+void Object::AddOrder(Order *o) {
+    o->IncrementRefCount();  // Take shared ownership
+    _orders.push_back(o);
 }
 
 // Squad.cpp - Squad processes the order
@@ -278,10 +280,11 @@ void Squad::AddOrder(Order* o) {
 **Reference count tracking**:
 ```
 MoveOrder created:        refCount = 0
-IssueOrder increments:    refCount = 1
-For Squad A (1 squad):    refCount = 2
-IssueOrder releases:      refCount = 1  (command now owned by Squad A)
+Squad A AddOrder():       refCount = 1  (Squad A owns it)
+Squad B AddOrder():       refCount = 2  (Squad B also owns it)
 ```
+
+**Note**: Unlike the explicit ref counting shown in earlier documentation, the actual implementation relies on `AddOrder()` to increment the reference count. `IssueOrder()` iterates over `_selectedObjects` (not `_selectedSquads`) and calls `ClearOrders()` before adding the new order.
 
 #### 4.5.3 Path Calculation (One Path for the Squad)
 
@@ -307,13 +310,13 @@ void Squad::HandleMoveOrder(MoveOrder* order, SoldierAction::Action style, Mark:
     }
     
     // Assign to point man (leads the formation)
-    _soldiers[_pointManIdx]->FollowPath(path, style);
+    _soldiers[_currentPointManIdx]->FollowPath(path, style);
     
     // Other soldiers follow the point man in formation
     for(int i = 0; i < _soldiers.size(); i++) {
-        if(i != _pointManIdx) {
-            _soldiers[i]->Follow(_soldiers[_pointManIdx], 
-                                 _formation, _spread, 
+        if(i != _currentPointManIdx) {
+            _soldiers[i]->Follow(_soldiers[_currentPointManIdx], 
+                                 _currentFormation, _currentFormationSpread, 
                                  formationIndex++, style);
         }
     }
@@ -524,18 +527,15 @@ classDiagram
         -_pauseState: int
     }
     
-    class HideOrder {
-        +HideOrder()
-    }
-    
     Order <|-- MoveOrder
     Order <|-- FireOrder
     Order <|-- AmbushOrder
     Order <|-- DefendOrder
     Order <|-- StopOrder
     Order <|-- PauseOrder
-    Order <|-- HideOrder
 ```
+
+**Note**: The `Orders::Hide` enum value exists but there is no `HideOrder` class implementation. Hide functionality is handled at the squad level by setting squad state to `Team::Hiding`.
 
 ```cpp
 namespace Orders {
@@ -544,6 +544,12 @@ namespace Orders {
         Smoke, Destination, Stop, Pause, Defend
     };
 }
+```
+
+**Implementation Status**:
+- ✅ **Fully Implemented**: Move, MoveFast, Sneak, Fire, Ambush, Defend, Stop
+- ⚠️ **Partially Implemented**: Hide (squad-level state only, no HideOrder class)
+- ❌ **Not Implemented**: Smoke, Destination (handled at squad level but not processed), Pause (class exists but not processed in Squad::AddOrder)
 
 class Order {
 public:
@@ -653,8 +659,12 @@ void Soldier::Simulate(long dt, World* world) {
             case Orders::Fire:
                 handled = HandleFireOrder((FireOrder*)order);
                 break;
-            default:
-                handled = true;  // Move, MoveFast, Sneak handled via actions
+            case Orders::Move:
+            case Orders::MoveFast:
+            case Orders::Sneak:
+                // These orders should NEVER reach Soldier::Simulate()
+                // They are converted to actions at the Squad level
+                assert(0);  // Crash if we get here - indicates a bug
                 break;
         }
         

@@ -28,17 +28,17 @@ flowchart TD
     root --> sounds["sounds/"]
 
     graphics --> Soldiers["Soldiers/"]
-    Soldiers --> Rifle["Rifle/ (~2,600 files)"]
-    Soldiers --> MG["MG/ (~1,400 files)"]
-    Soldiers --> Bazooka["Bazooka/ (~1,400 files)"]
-    Soldiers --> Dying["Dying/ (~560 files)"]
+    Soldiers --> Rifle["Rifle/ (~1,520 files)"]
+    Soldiers --> MG["MG/ (~697 files)"]
+    Soldiers --> Bazooka["Bazooka/ (~656 files)"]
+    Soldiers --> Dying["Dying/ (~480 files)"]
     Soldiers --> Dead["Dead 1-6/"]
     Soldiers --> Flame["Flame/"]
     Soldiers --> Burned["Burned/"]
     Soldiers --> Surrendering["Surrendering/"]
     Soldiers --> Mine["Kneeling Mine/Prone Mine/"]
 
-    graphics --> Effects["Effects/ (26 dirs)"]
+    graphics --> Effects["Effects/ (25 dirs)"]
     Effects --> RifleDir["rifle_[directions]/"]
     Effects --> BazookaDir["bazooka_[directions]/"]
     Effects --> Muzzle["muzzle_[directions]/"]
@@ -67,7 +67,7 @@ flowchart TD
     graphics --> Resources["Resources/"]
     Resources --> Icon["app_icon.tga"]
 
-    sounds --> Sfx["Effects/ (8 files)"]
+    sounds --> Sfx["Effects/ (25 files)"]
     Sfx --> RifleSnd["rifle-0028.wav"]
     Sfx --> ExplosionSnd["explosion-0050.wav"]
 
@@ -79,7 +79,7 @@ flowchart TD
 ```
 graphics/
 ├── CombatContextMenu/         # Context menu UI elements
-├── Effects/                   # Visual effects (26 subdirectories)
+├── Effects/                   # Visual effects (25 subdirectories)
 │   ├── rifle_n/               # Rifle muzzle flashes (5 frames)
 │   ├── rifle_ne/
 │   ├── ... (8 directions)
@@ -92,21 +92,22 @@ graphics/
 ├── Resources/                 # Application icon
 │   └── app_icon.tga
 ├── Soldiers/                  # Soldier animations (19 subdirectories)
-│   ├── Rifle/                 # ~2,600 files - Standard infantry
-│   ├── MG/                    # ~1,400 files - Machine gunner
-│   ├── Bazooka/               # ~1,400 files - Anti-tank
-│   ├── Dying/                 # ~560 files - Death animations
+│   ├── Rifle/                 # ~1,520 files - Standard infantry
+│   ├── MG/                    # ~697 files - Machine gunner
+│   ├── Bazooka/               # ~656 files - Anti-tank
+│   ├── Dying/                 # ~480 files - Death animations
 │   ├── Dead 1/ ... Dead 6/    # Static dead poses
-│   ├── Flame/                 # ~1,400 files - Flamethrower
+│   ├── Flame/                 # ~1,120 files - Flamethrower
 │   ├── Burned/                # Charred corpses
 │   ├── Standing Burning/      # On fire animations
 │   ├── Prone Burning/
-│   ├── Surrendering/          # ~1,000 files
+│   ├── Surrendering/          # ~145 files
 │   ├── Kneeling Mine/         # Mine placement
 │   └── Prone Mine/
 ├── Terrain/                   # Tree sprites (5 files)
 ├── UI/                        # User interface
 │   ├── Actions/               # Action indicators
+│   ├── CombatContextMenu/     # Right-click context menu (22 files)
 │   ├── Cursors/               # Mouse cursors (16 files)
 │   ├── Flags/                 # National flags
 │   │   ├── Animated/          # Animated flags
@@ -367,10 +368,10 @@ classDiagram
         -_effects: vector~Effect~
     }
     
-    class UIManager {
-        +LoadUI(xmlFile)
+    class WidgetManager {
+        +LoadWidgets(xmlFile)
         +GetWidget(name)
-        +RenderUI()
+        +Render(screen)
         -_widgets: map~string, Widget~
     }
     
@@ -381,19 +382,9 @@ classDiagram
         -_sounds: map~string, Mix_Chunk*~
     }
     
-    class TextureManager {
-        +LoadTexture(filename)
-        +GetTexture(id)
-        -_textures: map~string, SDL_Texture*~
-    }
-    
     SoldierAnimationManager --> TGA : loads
     EffectManager --> TGA : loads
-    UIManager --> TGA : loads
-    TextureManager --> TGA : converts
-    UIManager --> TextureManager : uses
-    SoldierAnimationManager --> TextureManager : uses
-    EffectManager --> TextureManager : uses
+    WidgetManager --> TGA : loads for icons
     SoundManager --> SoundManager : SDL_mixer
 ```
 
@@ -600,7 +591,7 @@ maps/{MapName}/
 | Asset Type | Count | Location | Notes |
 |------------|-------|----------|-------|
 | TGA Images | 5,647 | graphics/ | Sprites, animations, UI |
-| WAV Sounds | 126 | sounds/ | 8 effects + 118 voices |
+| WAV Sounds | 126 | sounds/ | 25 effects + 101 voices |
 | TTF Fonts | 1 | graphics/UI/ | DejaVuSans.ttf |
 | Map Files | 3+ | maps/{name}/ | Per-map backgrounds and data |
 

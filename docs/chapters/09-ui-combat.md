@@ -401,16 +401,19 @@ stateDiagram-v2
     
     ContextSelecting --> ContextSelected: Left-click on menu choice
     
-    ContextSelected --> Normal: Order complete
+    ContextSelected --> Normal: Order complete/cancelled
     
-    ContextSelected --> MoveOrders: Move/Fast/Sneak/Smoke selected
-    MoveOrders --> Normal: Left-click on ground position
+    ContextSelected --> Ambushing: Ambush selected
+    Ambushing --> Normal: Left-click to set facing
     
-    ContextSelected --> FireOrder: Fire selected
-    FireOrder --> Normal: Left-click on target unit/ground
+    ContextSelected --> Defending: Defend selected
+    Defending --> Normal: Left-click to set facing
     
-    ContextSelected --> AmbushDefend: Defend/Ambush selected
-    AmbushDefend --> Normal: Left-click to set facing
+    note right of ContextSelected
+        Order type stored in _currentChoice:
+        Move, MoveFast, Sneak, Fire, Smoke
+        Waiting for target click
+    end note
     
     note right of Normal
         Default state:
@@ -804,6 +807,7 @@ These features are intended for developers and debugging, not normal gameplay:
 
 | Key | Code | Developer Feature | Effect |
 |-----|------|-------------------|--------|
+| F1 | 112 | Help Text | Shows control help overlay |
 | F2 | 113 | FPS/Frame Time Display | Shows performance metrics |
 | F3 | 114 | Path Rendering | Shows unit pathfinding paths |
 | F4 | 115 | Weapon Fan/LOS | Displays line-of-sight cones |

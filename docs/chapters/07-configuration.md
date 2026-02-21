@@ -46,7 +46,6 @@ Configuration files define the **rules, stats, and definitions** that make the g
       <SneakingAcceleration>float</SneakingAcceleration>
       <RunningSpeed>float</RunningSpeed>          <!-- 5.36 = historical max -->
       <RunningAcceleration>float</RunningAcceleration>
-      <CrawlingSpeed>float</CrawlingSpeed>        <!-- Optional -->
       <CanMove />      <!-- Boolean flag (empty element) -->
       <CanMoveFast />
       <CanDefend />
@@ -128,6 +127,8 @@ Each soldier type maps game states to animation names:
   </Weapon>
 </Weapons>
 ```
+
+**Note**: The following fields exist in the XML schema but are **NOT currently parsed** by WeaponManager: MaxEffectiveRange, WeaponWeight, ClipWeight, CoolRate, HeatRate, BaseAccuracy. Only the following are loaded: Name, Icon, Sound, Animation, TimeToFire, RoundsPerBurst, RoundsPerClip, ReloadTimeClip, ReloadTimeChamber, and earthShaker attribute.
 
 **Weapon Definitions**:
 
@@ -292,6 +293,7 @@ Each soldier type maps game states to animation names:
     <Protection_High>int</Protection_High>
     <Protection_Top>int</Protection_Top>
     <Protection_Flag>Behind|Elevated|Sunken|InElement|None</Protection_Flag>
+    <!-- Note: Protection_Flag field exists in XML schema but is NOT currently parsed by ElementManager -->
     
     <!-- Hindrance by stance - 0-59 scale -->
     <Hindrance_Prone>int</Hindrance_Prone>
@@ -369,7 +371,7 @@ Each soldier type maps game states to animation names:
   <Animation>
     <Name>Standing Rest</Name>
     <Directions>8</Directions>
-    <NumFrames>1</NumFrames>
+    <NumFrames>1</NumFrames>                    <!-- Number of frames per direction -->
     <Time>200</Time>
     <FirstDirection>North</FirstDirection>
     <TransparentColor>16777215</TransparentColor>  <!-- White (RGB) -->
@@ -382,7 +384,7 @@ Each soldier type maps game states to animation names:
 - **image**: Sprite file pattern (e.g., "spr*" matches spr0000.x.y.tga)
 - **mask**: Mask file pattern (e.g., "msk*" matches msk0000.x.y.tga)
 - **Directions**: Number of directional variants (8)
-- **NumFrames**: Frames per direction
+- **NumFrames**: Number of frames per direction
 - **Time**: Milliseconds per frame
 - **FirstDirection**: Starting direction
 - **TransparentColor**: 24-bit RGB color key (16777215 = white)
@@ -484,7 +486,7 @@ Each soldier type maps game states to animation names:
 
 #### 7.8.1 SoldierStates.txt
 
-**Purpose**: Line-number indexed (1-based) state definitions, 22 total states.
+**Purpose**: Line-number indexed (1-based) state definitions, 23 total states.
 
 ```
 1: Standing
@@ -509,6 +511,7 @@ Each soldier type maps game states to animation names:
 20: FollowingInFormation
 21: Defending
 22: Ambushing
+23: Waiting
 ```
 
 ---
@@ -600,9 +603,22 @@ classDiagram
         -_animations: vector~AnimationTemplate~
     }
     
+    class BuildingManager {
+        +LoadBuildings(xmlFile)
+        +GetBuilding(index)
+        -_buildings: vector~Building~
+    }
+    
+    class MapManager {
+        +LoadMap(xmlFile)
+        +GetCurrentMap()
+        -_maps: vector~Map~
+    }
+    
     SoldierManager --> WeaponManager : references
     SquadManager --> SoldierManager : references
     SquadManager --> VehicleManager : references
+    BuildingManager --> MapManager : loads for maps
 ```
 
 #### 7.9.3 Data Flow: XML → Template → Instance

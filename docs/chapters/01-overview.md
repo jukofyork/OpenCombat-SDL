@@ -80,9 +80,9 @@ flowchart TB
     subgraph Command["COMMAND LAYER (Application Control)"]
         direction LR
         MAIN[main.cpp<br/>Entry Point]
-        GA[GameApplication<br/>Module Controller]
         CSDL[CSDLApplication<br/>SDL Wrapper]
-        MAIN --> GA --> CSDL
+        GA[GameApplication<br/>Module Controller]
+        MAIN --> CSDL --> GA
     end
     
     subgraph Module["MODULE LAYER (Game Mode Management)"]
@@ -152,6 +152,8 @@ flowchart LR
     style G fill:#fff8e1
 ```
 
+**Note**: The flow is `main` → `CSDLApplication` → `GameApplication` → `CombatModule`. CSDLApplication creates and manages GameApplication.
+
 ### 2.2 Layer Responsibilities
 
 #### Command Layer
@@ -167,7 +169,8 @@ flowchart LR
 **Purpose**: Encapsulate distinct game modes with different behaviors.
 - Each module is a complete, self-contained game mode
 - Modules can be swapped without restarting the application
-- Current modules: Combat (main game), Introduction (menus)
+- Current modules: Combat (main game)
+- Future modules: Introduction (menus) - declared but not yet implemented
 
 **Key Decision**: How does this game mode work?
 
@@ -176,23 +179,23 @@ flowchart LR
 ```mermaid
 flowchart TD
     A[GameApplication] --> B{ChooseModule}
-    B -->|Introduction| C[Introduction Module]
-    B -->|Combat| D[CombatModule]
-    B -->|Future| E[Other Modules]
+    B -->|Combat| C[CombatModule]
+    B -->|Future| D[Other Modules]
     
-    C --> F[Module Interface]
-    D --> F
-    E --> F
+    C --> E[Module Interface]
+    D --> E
     
-    F --> G[Initialize]
-    F --> H[Simulate dt]
-    F --> I[Render screen]
-    F --> J[HandleInput event]
+    E --> F[Initialize]
+    E --> G[Simulate dt]
+    E --> H[Render screen]
+    E --> I[Mouse/Keyboard Events]
     
     style A fill:#e3f2fd
     style B fill:#fff3e0
-    style F fill:#e8f5e9
+    style E fill:#e8f5e9
 ```
+
+**Note**: Currently only CombatModule is implemented. The Introduction module is declared in the enum but not yet implemented.
 
 #### World Layer
 **Purpose**: Central authority for all game state.
@@ -391,7 +394,7 @@ The codebase predates widespread `shared_ptr` adoption and uses a custom lightwe
 flowchart TB
     subgraph World["World (Owner)"]
         direction TB
-        W1["_mobileObjects<br/>std::vector<std::unique_ptr<Object>>"]
+        W1["_mobileObjects<br/>std::vector<Object*>"]
         W2[Soldier A]
         W3[Soldier B]
         W4[Soldier C]
@@ -416,50 +419,14 @@ flowchart TB
     style Squad fill:#fff3e0
 ```
 
+**Note**: World uses raw pointers (`std::vector<Object*>`, not `std::unique_ptr<Object>`) for legacy compatibility. The World is responsible for object lifetime management.
+
 **Implementation**:
 - `World::_mobileObjects` **owns** all soldiers and vehicles (vector of objects)
 - `Squad::_soldiers` **references** soldiers (vector of pointers, no ownership)
 - When a soldier dies, World removes and deletes it; Squad's pointer becomes stale (handled via cleanup)
 
-### 3.4 State Machine with Prerequisites
-
-**The Problem**: Complex actions often require setup. To fire a weapon, a soldier must first face the target, which requires rotating, which requires standing up if prone.
-
-**The Solution**: Automatic action chaining based on prerequisites.
-
-**Analogy**: Actions have **dependency chains**:
-- To fire a weapon (FireWeapon), you must face the target (FaceTarget)
-- To face the target, you must be standing (StandUp if prone)
-- The system automatically prepends prerequisite actions
-
-**Action Chaining Flow:**
-
-```mermaid
-flowchart TD
-    A[Request<br/>FireWeapon] --> B{Can Execute?}
-    B -->|Yes| C[Execute FireWeapon]
-    B -->|No| D{Check Prerequisite}
-    D -->|FaceTarget| E[Prepend<br/>FaceTarget Action]
-    E --> F{Can Execute?}
-    F -->|Yes| G[Execute FaceTarget]
-    F -->|No| H{Check Prerequisite}
-    H -->|StandUp| I[Prepend<br/>StandUp Action]
-    I --> J[Execute StandUp]
-    J --> G
-    G --> C
-    
-    style A fill:#e3f2fd
-    style C fill:#e8f5e9
-    style E fill:#fff3e0
-    style I fill:#fff3e0
-```
-
-**Benefits**:
-- Actions are atomic and reusable
-- Complex behaviors compose from simple actions
-- State transitions are explicit and debuggable
-
-### 3.5 Module System for Game Modes
+### 3.4 Module System for Game Modes
 
 **The Problem**: A game has different modes (main menu, combat, victory screen) with different update and render needs.
 
@@ -512,12 +479,25 @@ class GameApplication : public Module {
 ```cpp
 class Module {
 public:
-    virtual void Initialize() = 0;
-    virtual void Simulate(float dt) = 0;
-    virtual void Render(Screen* screen) = 0;
-    virtual void HandleInput(const SDL_Event& event) = 0;
+    virtual void Initialize(void *app) = 0;
+    virtual void Simulate(long dt) = 0;  // long, not float
+    virtual void Render(Screen *screen) = 0;
+    // Individual event handling methods (not a generic HandleInput)
+    virtual void LeftMouseDown(int x, int y) = 0;
+    virtual void LeftMouseUp(int x, int y) = 0;
+    virtual void LeftMouseDrag(int x, int y) = 0;
+    virtual void RightMouseDown(int x, int y) = 0;
+    virtual void RightMouseUp(int x, int y) = 0;
+    virtual void RightMouseDrag(int x, int y) = 0;
+    virtual void MiddleMouseDown(int x, int y) = 0;
+    virtual void MiddleMouseUp(int x, int y) = 0;
+    virtual void MiddleMouseDrag(int x, int y) = 0;
+    virtual void KeyUp(int key) = 0;
+    virtual void KeyDown(int key) = 0;
 };
 ```
+
+**Note**: The interface uses separate methods for each event type rather than a generic `HandleInput(const SDL_Event& event)` method. The `dt` parameter is `long` (milliseconds), not `float`.
 
 **Why This Works**: The application only knows about the Module interface. It can switch between completely different game modes without caring about implementation details.
 
@@ -548,7 +528,7 @@ Soldier* soldier = g_Globals->World.Soldiers->CreateSoldier(
 ```
 
 **Benefits of This Approach**:
-1. **Data-driven**: Change `config/soldiers.xml` to modify stats without recompiling
+1. **Data-driven**: Change `config/Soldiers.xml` to modify stats without recompiling
 2. **Validation**: Manager can validate templates on load
 3. **Caching**: Templates loaded once, reused for multiple instances
 
@@ -599,13 +579,13 @@ void Soldier::SetOrder(Order* order) {
 **Code**:
 
 ```cpp
-// World OWNS all mobile objects
+// World OWNS all mobile objects (using raw pointers for legacy compatibility)
 class World {
-    std::vector<std::unique_ptr<Object>> _mobileObjects;
+    std::vector<Object*> _mobileObjects;  // Raw pointers, not unique_ptr
     
 public:
-    void AddObject(std::unique_ptr<Object> object) {
-        _mobileObjects.push_back(std::move(object));
+    void AddObject(Object* object) {
+        _mobileObjects.push_back(object);
     }
     
     void RemoveObject(Object* object) {
@@ -625,6 +605,8 @@ public:
 };
 ```
 
+**Note**: The codebase currently uses raw pointers (`Object*`) rather than modern `std::unique_ptr<Object>` for legacy compatibility. Future refactoring may modernize this.
+
 **Why This Is Safe**:
 - World controls lifetime; when World deletes a soldier, it notifies Squad
 - Squad can check if pointers are still valid before use
@@ -634,49 +616,38 @@ public:
 
 **Concept → Algorithm → Code**
 
-**Concept**: Complex actions break down into prerequisite steps automatically.
-**Algorithm**: Each action declares what it needs; system prepends prerequisites to action queue.
+**Concept**: Complex actions break down into simple steps executed in sequence.
+**Algorithm**: Actions are pushed to a queue; handlers process them based on current state and requirements.
 **Code**:
 
 ```cpp
-class Action {
+// Action requirements are checked, not automatic prerequisites
+class ObjectActions {
 public:
-    virtual bool CanExecute(Object* object) = 0;
-    virtual ActionType GetPrerequisite() = 0;  // What we need first
-    virtual void Execute(Object* object, float dt) = 0;
+    struct Action {
+        char Name[64];
+        char Group[64];
+        int Time;           // Time to complete (ms)
+        int Requirements;   // What state is needed
+        int Adds;          // State bits to add when complete
+        int Subtracts;     // State bits to remove when complete
+    };
+    
+    // CheckRequirements returns -1 if satisfied, or prerequisite action index
+    int CheckRequirements(int actionIndex, unsigned long long currentState);
 };
 
-// Example: FireWeapon requires facing target first
-class FireWeaponAction : public Action {
-public:
-    bool CanExecute(Object* object) override {
-        return object->IsFacingTarget();
+// Action handlers process actions based on requirements
+bool StandActionHandler(Soldier* s, Action* action, long dt) {
+    // Only execute if soldier is prone
+    if(!s->HasState(SoldierState::Prone)) {
+        return true;  // Already standing
     }
-    
-    ActionType GetPrerequisite() override {
-        return ActionType::FaceTarget;  // Must face target first
-    }
-};
-
-// System automatically chains actions
-void Object::ProcessActionQueue() {
-    Action* current = _actionQueue.front();
-    
-    if(!current->CanExecute(this)) {
-        // Prepend prerequisite action
-        Action* prereq = CreateAction(current->GetPrerequisite());
-        _actionQueue.push_front(prereq);
-        return;  // Try again next frame with prerequisite
-    }
-    
-    current->Execute(this, dt);
+    // ... stand up animation logic ...
 }
 ```
 
-**Benefits**:
-- Actions are simple and testable
-- Complex behaviors emerge from action composition
-- Prerequisites are explicit, not hidden in code
+**Note**: The action system uses requirement checking rather than automatic prerequisite chaining. Actions check their requirements in their handlers and either execute or return early.
 
 ### 4.6 Global State Management
 
@@ -814,7 +785,7 @@ SoldierManager* soldiers = g_Globals->World.Soldiers;
 **After:**
 ```cpp
 constexpr int MAX_WEAPONS_PER_SOLDIER = 8;
-constexpr long SIMULATION_TIMESTEP_MS = 50;
+constexpr int SIMULATION_TIMESTEP_MS = 33;  // ~30 FPS, not 50ms
 ```
 
 **Benefits**: Type safety, scoping, debugger visibility, no macro collisions.
@@ -1140,34 +1111,47 @@ void Update() {
     long currentMillis = GetTickCount();
     if(currentMillis - oldMillis >= SIMULATION_TIMESTEP_MS) {
         _millis = currentMillis;
-        _game->Simulate(SIMULATION_TIMESTEP_MS);
+        _game->Simulate(SIMULATION_TIMESTEP_MS);  // long dt in milliseconds
     }
 }
 ```
 
+**Note**: The simulation timestep is 33ms (not 50ms as sometimes documented), giving approximately 30 updates per second.
+
 ---
 
-## 9. Debug Rendering Flags
+## 9. Debug Rendering Flags and UI Toggles
 
-The `WorldGlobals` struct includes debugging flags for visualizing game state:
+The `WorldGlobals` struct includes debugging flags for visualizing game state, and CombatModule includes UI panel toggles:
 
-**Location**: `src/application/Globals.h:148-159`
+**Debug Flags Location**: `src/application/Globals.h:151-159`
+**UI Toggles Location**: `src/application/CombatModule.h:79-85`
+
+### Debug Rendering Flags (F1-F4, F8-F10)
 
 | Flag | F-Key | Description |
 |------|-------|-------------|
-| bRenderElevation | - | Show terrain elevation |
-| bRenderElements | - | Show terrain elements (trees, etc.) |
-| bRenderStats | F1 | Show FPS and frame time |
-| bWeaponFan | F2 | Show weapon line-of-sight fan |
-| bRenderBoundingBoxes | F3 | Show object bounding boxes |
-| bRenderPaths | F4 | Show movement paths |
-| bRenderHelpText | F5 | Show control help overlay |
-| bRenderBuildingOutlines | F6 | Show building outlines |
-| bRenderBuildingInteriors | F7 | Show building interiors |
+| bRenderHelpText | **F1** | Show control help overlay |
+| bRenderStats | **F2** | Show FPS and frame time |
+| bRenderPaths | **F3** | Show movement paths |
+| bWeaponFan | **F4** | Show weapon line-of-sight fan |
+| bRenderBuildingOutlines/Interiors | **F8** | Cycle building display mode |
+| bRenderElements | **F9** | Toggle terrain elements display |
+| bRenderBoundingBoxes | **F10** | Show object bounding boxes |
+| bRenderElevation | - | Show terrain elevation (no F-key) |
+
+### UI Panel Toggles (F5-F7)
+
+| Toggle | F-Key | Description |
+|--------|-------|-------------|
+| _showMiniMap | **F5** | Toggle minimap on/off |
+| _showTeamPanel | **F6** | Toggle team/squad panel |
+| _showUnitPanel | **F7** | Toggle unit details panel |
 
 **Default Values** (constructor in Globals.h):
-- Most flags default to `false` (off)
+- Most debug flags default to `false` (off)
 - `bRenderElements` defaults to `true` (show terrain features)
+- All UI panels default to `true` (visible)
 
 ---
 

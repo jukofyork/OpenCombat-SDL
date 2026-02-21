@@ -15,7 +15,7 @@
 - **Perspective**: Top-down isometric view
 - **Engine**: SDL2-based (port from DirectX)
 - **Language**: C++17
-- **Lines of Code**: ~14,000-21,500 across 139-158 source files
+- **Lines of Code**: ~21,500 across 139 source files
 - **Status**: SDL2 port complete, testing phase
 
 ---
@@ -81,7 +81,7 @@ Read sequentially for a complete understanding, or jump to specific chapters for
 - Animation marker system for timing
 - State transition examples and complex transitions
 
-**Key Files**: `src/states/State.h/cpp`, `src/states/Action.h`, `src/states/ObjectActions.h/cpp`, `src/objects/SoldierActionHandlers.h/cpp`, `config/SoldierActions.txt`
+**Key Files**: `src/states/State.h` (header-only), `src/states/Action.h`, `src/states/ObjectActions.h/cpp`, `src/objects/SoldierActionHandlers.h/cpp`, `config/SoldierActions.txt`
 
 ---
 
@@ -129,7 +129,7 @@ Read sequentially for a complete understanding, or jump to specific chapters for
 - Effect rendering (muzzle flashes, explosions)
 - Self-test for rendering validation
 
-**Key Files**: `src/graphics/Screen.h/cpp`, `src/graphics/FontManager.h/cpp`, `src/graphics/Animation.h/cpp`, `src/graphics/TGA.h/cpp`, `src/graphics/Effect.h/cpp`, `src/misc/SoldierMasks.h`
+**Key Files**: `src/graphics/Screen.h/cpp`, `src/graphics/FontManager.h/cpp`, `src/graphics/Animation.h/cpp`, `src/misc/TGA.h/cpp`, `src/graphics/Effect.h/cpp`, `src/graphics/SoldierMasks.h`
 
 ---
 
@@ -221,7 +221,7 @@ Read sequentially for a complete understanding, or jump to specific chapters for
 - Keyboard shortcuts and help system
 - Game state visualization
 
-**Key Files**: `src/application/CombatModule.h/cpp`, `src/application/GameApplication.h/cpp`, `src/application/CSDLApplication.h/cpp`
+**Key Files**: `src/application/CombatModule.h/cpp`, `src/application/GameApplication.h/cpp`, `src/main.h/cpp` (CSDLApplication)
 
 ---
 

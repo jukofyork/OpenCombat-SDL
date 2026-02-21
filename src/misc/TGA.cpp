@@ -7,7 +7,7 @@
 #include <assert.h>
 
 /**
- * TGA pixel data is stored in {G,B,R,A} format
+ * TGA pixel data is stored in BGR/BGRA format (Blue-Green-Red)
  */
 typedef struct {
    char  idlength;

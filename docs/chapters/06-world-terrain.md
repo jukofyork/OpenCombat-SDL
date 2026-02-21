@@ -120,7 +120,7 @@ Factors affecting visibility:
 
 **Example Scenario**: A unit on a hill (elevation 5m) observing a field below (elevation 1m) has clear visibility. However, if the target position is behind a stone wall (height 3m) between the two points, the wall blocks the line of sight—even though the observer is at higher elevation.
 
-**Precomputed LOS**: The game precomputes line-of-sight data for all tile pairs during map load or export. This enables O(1) visibility queries during gameplay without runtime raycasting.
+**LOS Calculation**: Line-of-sight is calculated at runtime using a 3D Bresenham algorithm. The `CalculateLOSForTile()` method traces a ray between two points to determine visibility. While an export function exists for precomputation, the current implementation uses live runtime calculation.
 
 #### 6.3.3 Buildings as Strategic Points
 
@@ -295,7 +295,22 @@ protected:
     std::vector<Object*> _selectedObjects;  // Currently selected (non-owning)
     WorldState _currentState;         // Normal, ContextSelecting, etc.
     LineOfSight* _lineOfSight;        // LOS calculation system
-    // ... additional members
+    
+    // Managers
+    SquadManager *_squadManager;      // Squad creation and management
+    EffectManager *_effectManager;    // Visual effects
+    WeaponManager *_weaponManager;    // Weapon templates
+    VehicleManager *_vehicleManager;  // Vehicle templates
+    ColorManager *_colorManager;      // Color modifications
+    
+    // UI/Input state
+    bool _scrollLeft, _scrollRight, _scrollUp, _scrollDown;  // Scroll key states
+    bool _middleDragActive;           // Middle mouse drag state
+    int _middleDragLastX, _middleDragLastY;
+    
+    // Visual markers
+    std::vector<Point> _markPoints;
+    std::vector<Mark::Color> _markColors;
 };
 ```
 
@@ -324,12 +339,32 @@ classDiagram
         +SetOrigin(x, y)
         +IsPassable(i, j)
         +GetTileElement(i, j)
+        +UpdateFireCursor(cursorX, cursorY, hasTarget)
+        +ConvertTileToPosition(i, j, x, y)
+        +ConvertPositionToTile(x, y, i, j)
+        +AddMark(markColor, x, y)
+        +ClearMarks()
         -Map* _currentMap
         -vector~Object*~ _mobileObjects
         -vector~Object*~ _staticObjects
         -vector~Object*~ _selectedObjects
         -LineOfSight* _lineOfSight
         -WorldState _currentState
+        -CombatContextMenu* _contextMenu
+        -ContextMenuChoice _currentChoice
+        -SquadManager* _squadManager
+        -EffectManager* _effectManager
+        -WeaponManager* _weaponManager
+        -VehicleManager* _vehicleManager
+        -ElementManager* _elementManager
+        -ColorManager* _colorManager
+        -MiniMap* _currentMiniMap
+        -int _rangerX, _rangerY
+        -Object* _rangerSelectedObject
+        -Color _rangerColor
+        -vector~Point~ _markPoints
+        -vector~Mark::Color~ _markColors
+        #CalculateHitChance(shooterX, shooterY, targetX, targetY, hasLOS)
     }
     
     class Object {
@@ -347,6 +382,7 @@ classDiagram
         +GetTileElement(i, j)
         +GetTileElevation(i, j)
         +MoveObject(object, from, to)
+        +PlaceObject(object, to)
         +SelectObjects(x, y, dest)
         -int _nBlocksX, _nBlocksY
         -unsigned short* _elements
@@ -867,7 +903,7 @@ graph TD
     end
 ```
 
-**Precomputation**: LOS is precomputed for all tile pairs and stored using Run-Length Encoding (RLE) for efficient storage and quick lookup during gameplay.
+**Runtime Calculation**: LOS is calculated at runtime using the 3D Bresenham algorithm described above. While an `Export()` method exists for precomputing LOS data to a file, the current implementation calculates visibility on-demand during gameplay.
 
 ### 6.6 Coordinate Systems
 

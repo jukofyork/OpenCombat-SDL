@@ -58,7 +58,8 @@ classDiagram
         +long _id
         +int _health
         +bool _isSelected
-        +bool Select()
+        +bool Select(int x, int y)
+        +void Select(bool s)
         +void AddOrder(Order* o)
         +void ClearOrders()
         +virtual void Render(Screen* screen, Rect* clip)*
@@ -68,7 +69,7 @@ classDiagram
         +bool IsMoving()
         +bool IsStopped()
         +bool IsSquadLeader()
-        +void SetSquad(Squad* squad)
+        +void SetSquadLeader(bool v)
         +void Kill()
         +bool Contains(int x, int y)
     }
@@ -79,14 +80,14 @@ classDiagram
         +Vector2 _position
         +Vector2 _velocity
         +std::array<Animation*, NumStates> _animations
-        +State _state
+        +State _currentState
         +void Render(Screen*, Rect*) override
         +void Simulate(long dt, World* world) override
         +bool IsMobile() override
         +bool IsDead() override
         +void Kill() override
-        +void FollowPath(Path* path)
-        +void Shoot(Weapon* weapon, Object* target)
+        +void FollowPath(Path* path, SoldierAction::Action movementStyle)
+        +void Shoot(Weapon* weapon, Object* target, Target::Type targetType, int targetX, int targetY)
         +void FindTarget(Squad* squad)
         +bool CalculateShot(Soldier* shooter, Weapon* weapon)
     }
@@ -115,17 +116,20 @@ classDiagram
         +float _currentFormationSpread
         +Quality _quality
         +void AddOrder(Order* o)
-        +void HandleMoveOrder(MoveOrder* order)
+        +void HandleMoveOrder(MoveOrder* order, SoldierAction::Action movementStyle, Mark::Color markColor)
         +void Select(bool s)
     }
     
     Object <|-- Soldier
     Object <|-- Vehicle
+    Object <|-- Squad
     
     note for Soldier "Individual infantryman with complex animation and attributes"
     note for Vehicle "Armored vehicle with crew and turret mechanics"
-    note for Squad "Tactical grouping of soldiers and vehicles"
+    note for Squad "Tactical grouping of soldiers and vehicles (inherits from Object)"
 ```
+
+**Important**: Squad inherits from Object, just like Soldier and Vehicle. This means Squad has position, selection, orders, and health like any other Object.
 
 ---
 
@@ -358,15 +362,27 @@ These are bitflags that can be combined:
 | Moving | In motion |
 | Firing | Currently firing weapon |
 | Walking | Using walking speed |
-| Running | Using running speed |
+| WalkingSlow | Using slow walking speed |
 | Crawling | Moving while prone |
+| Running | Using running speed |
 | Reloading | Reloading weapon |
+| DyingBlownUp | Death by explosion |
+| DyingBackward | Falling backward |
+| DyingForward | Falling forward |
 | Dead | Deceased |
+| Reloaded | Just completed reload |
+| OutOfAmmo | No ammunition remaining |
+| NoTarget | No target acquired |
+| FindingCover | Looking for cover |
+| Following | Following another unit |
+| FollowingInFormation | Moving in formation |
 | Defending | In defensive posture |
 | Ambushing | In ambush mode |
-| FollowingInFormation | Moving in formation |
+| Waiting | Waiting for next action |
 
 A soldier can be in multiple states simultaneously: "Prone + Firing + Defending" = lying down shooting in defensive mode.
+
+**Note**: There are 22 total logical states (0-21), not 12 as sometimes documented.
 
 **Vehicle States**  
 Simpler than soldiers (vehicles don't have complex postures):
@@ -472,7 +488,7 @@ These formation definitions follow US Infantry doctrine:
 ```mermaid
 classDiagram
     class Squad {
-        +SquadLeader : Soldier*
+        +GetSquadLeader() Soldier*
         +std::vector~Soldier*~ _soldiers
         +std::vector~Vehicle*~ _vehicles
         +Formation::Type _currentFormation
@@ -484,13 +500,10 @@ classDiagram
     
     class Soldier {
         +int _formationPosition
-        +Formation::Type _currentFormation
         +bool _bSquadLeader
     }
     
     class Vehicle {
-        +int _formationPosition
-        +Formation::Type _currentFormation
     }
     
     class Formation {

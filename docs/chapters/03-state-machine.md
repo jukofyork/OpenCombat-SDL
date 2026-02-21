@@ -330,7 +330,7 @@ flowchart TD
 
 ### 3.7 Implementation: State Class
 
-**Location**: `src/states/State.h`, `src/states/State.cpp`
+**Location**: `src/states/State.h` (header-only implementation)
 
 **⚠️ LIMIT**: Only 64 states (bits 0-63) can be stored. Current max state index: 22 (Waiting).
 

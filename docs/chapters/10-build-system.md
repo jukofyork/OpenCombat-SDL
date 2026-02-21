@@ -231,7 +231,7 @@ flowchart LR
     subgraph "Outputs"
         RELEASE[opencombat]
         DEBUG_OUT[opencombat-debug]
-        TEST_OUT[test-runner]
+        TEST_OUT[test_sdl]
     end
 
     CHECK --> ALL
@@ -281,7 +281,7 @@ After successful compilation, you'll have:
 
 - `./opencombat` - Release executable
 - `./opencombat-debug` - Debug executable (if you ran `make debug`)
-- `obj/` - Compiled object files (intermediate, can be ignored)
+- `.o` files - Compiled object files alongside source files
 
 ### Understanding the Build Process
 
@@ -296,7 +296,7 @@ flowchart TD
     CHECK -->|Yes| DISCOVER[Discover .cpp files
     in src/ subdirectories]
     DISCOVER --> COMPILE[Compile each .cpp
-    to .o in obj/]
+    to .o alongside source]
     COMPILE --> LINK[Link with SDL2 libs
     via pkg-config]
     LINK --> OUTPUT{Build type?}
@@ -318,7 +318,7 @@ flowchart TD
 
 The Makefile:
 1. Discovers all `.cpp` files in `src/` subdirectories
-2. Compiles each to `.o` files in `obj/`
+2. Compiles each to `.o` files alongside `.cpp` files
 3. Links with SDL2 libraries detected via `pkg-config`
 4. Produces the final executable
 
@@ -369,7 +369,7 @@ SDL_DEBUG=1 ./opencombat
 | `--test-all` | Runs all self-tests | 0 on pass, 1 on fail |
 | `--test-screen` | Tests screen/blitting only | 0 on pass, 1 on fail |
 | `--test-actionqueue` | Tests action queue only | 0 on pass, 1 on fail |
-| `--help` | Shows available options | 0 |
+| `--help` | Not implemented (starts game) | 0 |
 
 ### Self-Tests
 
@@ -437,18 +437,27 @@ Run these after building to verify core functionality:
 
 ### Debug Mode Features
 
-When running a debug build (`./opencombat-debug`), you can toggle visual debug overlays:
+When running a debug build (`./opencombat-debug`), you can toggle visual debug overlays and UI panels:
+
+#### Debug Rendering Toggles (F1-F4, F8-F10)
 
 | Key | Feature | Description |
 |-----|---------|-------------|
-| F2 | Elevation display | Shows height values on terrain |
-| F3 | Element indices | Shows tile type numbers |
-| F4 | Performance stats | FPS and timing info |
-| F5 | Weapon range fans | Displays firing ranges |
-| F6 | AI paths | Shows calculated movement paths |
-| F7 | Help text overlay | Context-sensitive controls |
-| F8 | Building outlines | Highlights building boundaries |
-| F9 | Interior rendering | Forces indoor view mode |
+| F1 | Help text overlay | Shows control help and F-key mappings |
+| F2 | Performance stats | FPS and frame time display |
+| F3 | AI paths | Shows calculated movement paths |
+| F4 | Weapon range fans | Displays line-of-sight cones |
+| F8 | Building display cycle | Cycles: Interiors → Outlines → Elevation → None |
+| F9 | Terrain elements | Toggles terrain detail rendering |
+| F10 | Bounding boxes | Shows object collision boundaries |
+
+#### UI Panel Toggles (F5-F7)
+
+| Key | Feature | Description |
+|-----|---------|-------------|
+| F5 | Toggle minimap | Show/hide tactical minimap |
+| F6 | Toggle team panel | Show/hide squad selection panel |
+| F7 | Toggle unit panel | Show/hide unit details panel |
 
 ---
 
@@ -685,8 +694,8 @@ strip opencombat  # Removes debug symbols, reduces size
 
 ```
 opencombat              # Binary executable (can be renamed)
-config/                 # 24 XML configuration files
-graphics/               # ~8,000 TGA image files
+config/                 # 21 XML + 3 text configuration files
+graphics/               # ~5,647 TGA image files
 maps/                   # Map data (Acqueville/)
 sounds/                 # WAV audio files (optional but recommended)
 README.md               # Project documentation
@@ -742,9 +751,9 @@ Key variables you can override:
 ### Project Statistics
 
 - **Source Files**: 139 `.cpp`/`.h` files
-- **Lines of Code**: ~16,100
+- **Lines of Code**: ~21,500
 - **Primary Directories**: 10 source folders
-- **Assets**: ~8,000 TGA files, 24 config files
+- **Assets**: ~5,647 TGA files, 21 XML + 3 text config files
 
 ---
 
