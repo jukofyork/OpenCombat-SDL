@@ -427,23 +427,45 @@ When fully implemented, squad movement should work as follows:
 ```
 Leader moves here ──────►
     │
-    Member 1 follows at offset (-20, 0)
+    Member 1 follows behind at moderate distance
     │
-    Member 2 follows at offset (-40, 0)
+    Member 2 follows behind at moderate distance
     │
-    Member 3 follows at offset (-60, 0)
+    Member 3 follows behind at moderate distance
 ```
+Units follow one behind another with moderate spacing. Used for movement along routes where contact is possible but not expected. Allows quick transition to Line formation.
+
+**Planned: File Formation**
+```
+Leader moves here ──────►
+    │
+    Member 1 follows directly behind (tight spacing)
+    │
+    Member 2 follows directly behind (tight spacing)
+    │
+    Member 3 follows directly behind (tight spacing)
+```
+Tight "follow the leader" formation with units walking directly behind each other. Used in dense terrain, low visibility, or when navigating obstacles. Key difference from Column is the tighter spacing and single-file nature.
 
 **Planned: Line Formation**
 ```
-        Member 2
-           │
-Member 1 ─ Leader ─ Member 3
-           │
-        Member 4
+Direction of movement ──────►
+
+Member 1    Member 2    Leader    Member 3    Member 4
+   │            │          │          │          │
+   └────────────┴──────────┴──────────┴──────────┘
+                    Line perpendicular
+                   to movement direction
 ```
+Units positioned side-by-side perpendicular to the direction of movement. Used when presenting maximum firepower to the front, crossing danger areas, or assaulting. Leader typically centered or at one end.
 
 The `formationSpread` parameter should control how far apart units are.
+
+**Formation Doctrine Reference**
+
+These formation definitions follow US Infantry doctrine:
+- **Column vs File distinction**: The key difference is dispersion at the fire team level. File is much more compact with individuals closer together to maintain physical contact in complex terrain. At platoon level, column allows sub-units to choose their own formation while maintaining vertical alignment.
+- **Source**: Based on discussion from /r/WarCollege (alertjohn117) - see `src/objects/Formation.h:5-26` for full reference
 
 #### Squad Data Structures
 
