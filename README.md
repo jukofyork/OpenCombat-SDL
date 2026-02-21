@@ -1,11 +1,15 @@
 # OpenCombat SDL2 Port
 
+**🎮 Original Project**: https://sourceforge.net/projects/adv-warfare/
+
 ## Overview
 
 OpenCombat is an open-source clone of the classic Close Combat tactical wargame series. This version is being ported from DirectX/Windows to SDL2/Linux.
 
 **Original**: Windows/DirectX (2005)  
 **Target**: Cross-platform (Linux, Windows, macOS) with SDL2
+
+📚 **Architecture Documentation**: See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for comprehensive technical documentation covering all 10 major systems (10,000+ lines, 72 diagrams).
 
 ---
 
@@ -248,8 +252,6 @@ The `original/` folder contains the legacy codebase from the original SourceForg
 - **adv-warfare.zip** - Complete CVS repository export from the original project
 - **build-20051201.zip** - Original "snapshot 0.1a" release from December 2005
 - **screenshots/** - 4 original screenshots from the SourceForge project page
-
-**Original Project**: https://sourceforge.net/projects/adv-warfare/
 
 The original was written for Windows/DirectX and could not be built from the CVS repository due to missing files. This SDL2 port makes the game cross-platform and playable.
 
