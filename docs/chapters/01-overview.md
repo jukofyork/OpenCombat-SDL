@@ -967,29 +967,29 @@ if(testActionQueue) {
 ## 5. Directory Structure
 
 ```mermaid
-tree
+flowchart TD
     root["OpenCombat-SDL/"] --> src["src/"]
     root --> config["config/"]
     root --> graphics["graphics/"]
     root --> maps["maps/"]
     root --> sounds["sounds/"]
-    
-    src --> ai["ai/<br/>A* pathfinding"]
-    src --> app["application/<br/>GameApplication, Modules, Globals"]
-    src --> gfx["graphics/<br/>Rendering, Animations, Effects"]
-    src --> misc["misc/<br/>Utilities, TGA, tinyxml2"]
-    src --> obj["objects/<br/>Soldier, Vehicle, Squad"]
-    src --> ord["orders/<br/>Move, Attack, etc."]
-    src --> snd["sound/<br/>SDL2_mixer audio"]
-    src --> st["states/<br/>State machine, Actions"]
-    src --> wrld["world/<br/>World, Map, Buildings, LOS"]
-    src --> maincpp["main.cpp<br/>Entry point"]
-    src --> mainh["main.h<br/>CSDLApplication"]
-    
-    config --> xml["XML configs<br/>soldiers, weapons, vehicles"]
-    graphics --> tga["TGA assets<br/>Visual images"]
-    maps --> mapdata["Map data<br/>Building graphics"]
-    sounds --> wav["WAV files<br/>Audio assets"]
+
+    src --> ai["ai/ - A* pathfinding"]
+    src --> app["application/ - GameApplication, Modules"]
+    src --> gfx["graphics/ - Rendering, Animations"]
+    src --> misc["misc/ - Utilities, TGA, tinyxml2"]
+    src --> obj["objects/ - Soldier, Vehicle, Squad"]
+    src --> ord["orders/ - Move, Attack, etc."]
+    src --> snd["sound/ - SDL2_mixer audio"]
+    src --> st["states/ - State machine, Actions"]
+    src --> wrld["world/ - World, Map, Buildings"]
+    src --> maincpp["main.cpp - Entry point"]
+    src --> mainh["main.h - CSDLApplication"]
+
+    config --> xml["XML configs"]
+    graphics --> tga["TGA assets"]
+    maps --> mapdata["Map data"]
+    sounds --> wav["WAV files"]
 ```
 
 **Text Version:**
